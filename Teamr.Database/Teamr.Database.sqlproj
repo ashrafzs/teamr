@@ -67,6 +67,7 @@
     <Folder Include="users\Tables" />
     <Folder Include="nofy\Tables" />
     <Folder Include="core\Tables" />
+    <Folder Include="core\View" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="nofy\ntf.sql" />

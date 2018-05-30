@@ -16,13 +16,13 @@ namespace Teamr.Core.Domain
 		{
 			this.CreatedOn = DateTime.UtcNow;
 			this.Remarks = remarks;
-			this.CreatedByUserId = userId;
+			this.UserId = userId;
 			this.Name = name;
 			this.Unit = unit;
 			this.Points = points;
 		}
 
-		public int CreatedByUserId { get; private set; }
+		public int UserId { get; private set; }
 
 		/// <summary>
 		/// Gets date when the leave was requested.
@@ -35,5 +35,7 @@ namespace Teamr.Core.Domain
 		public decimal Points { get; private set; }
 		public string Remarks { get; private set; }
 		public string Unit { get; private set; }
+
+		public virtual RegisteredUser User { get; private set; }
 	}
 }

@@ -12,7 +12,7 @@ namespace Teamr.Core
 		{
 			if (userData != null)
 			{
-				yield return CoreRoles.ToolUser;
+				yield return CoreRoles.SysAdmin;
 			}
 		}
 	}

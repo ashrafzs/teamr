@@ -58,7 +58,7 @@ namespace Teamr.DataSeed
 
 			await this.roleManager.EnsureRoles(manuallyAssignableSystemRoles);
 
-			await this.EnsureUser("admin@example.com", "Password1", UserManagementRoles.UserAdmin, CoreRoles.ToolUser);
+			await this.EnsureUser("admin@example.com", "Password1", UserManagementRoles.UserAdmin, CoreRoles.SysAdmin);
 		}
 	}
 }

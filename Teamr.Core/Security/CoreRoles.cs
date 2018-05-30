@@ -4,6 +4,6 @@ namespace Teamr.Core.Security
 
 	public class CoreRoles : RoleContainer
 	{
-		public static readonly SystemRole ToolUser = new SystemRole(nameof(ToolUser));
+		public static readonly SystemRole SysAdmin = new SystemRole(nameof(SysAdmin));
 	}
 }

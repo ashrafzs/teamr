@@ -14,7 +14,7 @@ namespace Teamr.Core.Security.SomeThing
 				yield return SomeThingRole.Owner;
 			}
 
-			if (user.HasRole(CoreRoles.ToolUser))
+			if (user.HasRole(CoreRoles.SysAdmin))
 			{
 				yield return SomeThingRole.Viewer;
 			}
