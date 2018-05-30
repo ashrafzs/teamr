@@ -7,7 +7,7 @@ namespace Teamr.Core.DataAccess
 	{
 		public CoreDbContext CreateDbContext(string[] args)
 		{
-			const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=Teamr;Trusted_Connection=True;MultipleActiveResultSets=true";
+			const string ConnectionString = "Server=;Database=Teamr;Trusted_Connection=True;MultipleActiveResultSets=true";
 			var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(ConnectionString).Options;
 			return new CoreDbContext(dbContextOptions);
 		}
