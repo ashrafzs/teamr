@@ -31,8 +31,4 @@
     <ProjectReference Include="..\Teamr.Infrastructure\Teamr.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataAccess\" />
-  </ItemGroup>
-
 </Project>

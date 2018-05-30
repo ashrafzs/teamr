@@ -1,0 +1,10 @@
+CREATE TABLE [dbo].[ActivityType]
+(
+	[Id] INT NOT NULL IDENTITY (1, 1) PRIMARY KEY CLUSTERED,
+	CreatedOn DATETIME NOT NULL,
+	[CreatedByUserId] INT NOT NULL,
+	[Name] NVARCHAR(100) NOT NULL, 
+    [Unit] NVARCHAR(250) NOT NULL, 
+    [Remarks] NVARCHAR(MAX) NULL, 
+    [Points] DECIMAL(18, 2) NOT NULL
+)
