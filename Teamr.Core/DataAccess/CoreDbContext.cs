@@ -11,12 +11,14 @@ namespace Teamr.Core.DataAccess
 
 		public virtual DbSet<SomeThing> SomeThings { get; set; }
 		public virtual DbSet<ActivityType> ActivityTypes { get; set; }
+		public virtual DbSet<ActivityType> Activities { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
 			builder.ApplyConfiguration(new SomeThingMap());
 			builder.ApplyConfiguration(new ActivityTypeMap());
+			builder.ApplyConfiguration(new ActivityMap());
 		}
 	}
 }
