@@ -1,10 +1,11 @@
-namespace Teamr.Core.Commands
+namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Linq;
 	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
+	using Teamr.Core.Commands.Activity;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
 	using Teamr.Core.Menus;
@@ -63,7 +64,7 @@ namespace Teamr.Core.Commands
 
 		public UserAction GetPermission()
 		{
-			return CoreActions.UseTools;
+			return CoreActions.ViewActivities;
 		}
 
 		private ActionList GetActions(Activity activity)

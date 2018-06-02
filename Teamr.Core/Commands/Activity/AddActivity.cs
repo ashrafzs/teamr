@@ -1,4 +1,4 @@
-namespace Teamr.Core.Commands
+namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Threading.Tasks;
@@ -6,7 +6,6 @@ namespace Teamr.Core.Commands
 	using MediatR;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
 	using Teamr.Core.Pickers;
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure;
@@ -19,8 +18,7 @@ namespace Teamr.Core.Commands
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(PostOnLoad = true, Id = "add-activity", Label = "Add Activity")]
-	public class AddActivity : IMyAsyncForm<AddActivity.Request, AddActivity.Response>,
-		ISecureHandler
+	public class AddActivity : IMyAsyncForm<AddActivity.Request, AddActivity.Response>,ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
@@ -48,7 +46,7 @@ namespace Teamr.Core.Commands
 
 		public UserAction GetPermission()
 		{
-			return CoreActions.UseTools;
+			return CoreActions.AddActivity;
 		}
 
 		public static FormLink Button()

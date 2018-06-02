@@ -1,4 +1,4 @@
-namespace Teamr.Core.Commands
+namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Collections.Generic;
@@ -8,18 +8,19 @@ namespace Teamr.Core.Commands
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Pickers;
 	using Teamr.Core.Security;
+	using Teamr.Core.Security.Activity;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Forms.Record;
 	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "edit-activity", PostOnLoad = true,PostOnLoadValidation = false ,Label = "Edit activity", SubmitButtonLabel = "Save changes")]
-	public class EditActivity : IMyAsyncForm<EditActivity.Request, EditActivity.Response>, ISecureHandler
+	public class EditActivity : IMyAsyncForm<EditActivity.Request, EditActivity.Response>, 
+		IAsyncSecureHandler<Domain.Activity, EditActivity.Request, EditActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -52,8 +53,8 @@ namespace Teamr.Core.Commands
 			{
 				Notes = activity.Notes,
 				PerformedOn = activity.PerformedOn,
-				//Quantity = activity.Quantity,
-				//ActivityType = new TypeaheadValue<int>(activity.ActivityTypeId),
+				Quantity = activity.Quantity,
+				ActivityType = new TypeaheadValue<int>(activity.ActivityTypeId),
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = activity.Notes
@@ -61,9 +62,9 @@ namespace Teamr.Core.Commands
 			};
 		}
 
-		public UserAction GetPermission()
+		public UserAction<Domain.Activity> GetPermission()
 		{
-			return CoreActions.UseTools;
+			return ActivityAction.Edit;
 		}
 
 		public static FormLink Button(int userId)
@@ -82,7 +83,7 @@ namespace Teamr.Core.Commands
 		public class Request : RecordRequest<Response>, ISecureHandlerRequest
 		{
 			[BindToOutput(nameof(Response.ActivityType))]
-			[TypeaheadInputField(typeof(ActivityTypeTypeaheadRemoteSource))]
+			[TypeaheadInputField(typeof(ActivityTypeTypeaheadRemoteSource), Required = true)]
 			public TypeaheadValue<int> ActivityType { get; set; }
 
 			[InputField(Hidden = true, Required = true)]
@@ -96,9 +97,9 @@ namespace Teamr.Core.Commands
 			[InputField( OrderIndex = 0)]
 			public DateTime? PerformedOn { get; set; }
 
-			//[BindToOutput(nameof(Response.Quantity))]
-			//[InputField(OrderIndex = 0)]
-			//public decimal Quantity { get; set; }
+			[BindToOutput(nameof(Response.Quantity))]
+			[InputField(OrderIndex = 0, Required = true)]
+			public decimal? Quantity { get; set; }
 
 			[NotField]
 			public int ContextId => this.Id;

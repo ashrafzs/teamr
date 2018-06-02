@@ -1,4 +1,4 @@
-namespace Teamr.Core.Commands
+namespace Teamr.Core.Commands.Activity
 {
 	using System.Collections.Generic;
 	using System.Linq;
@@ -6,7 +6,8 @@ namespace Teamr.Core.Commands
 	using CPermissions;
 	using MediatR;
 	using Teamr.Core.DataAccess;
-	using Teamr.Core.Security;
+	using Teamr.Core.Domain;
+	using Teamr.Core.Security.Activity;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Security;
@@ -15,13 +16,19 @@ namespace Teamr.Core.Commands
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "delete-activity", PostOnLoad = true)]
-	public class DeleteActivity : IMyAsyncForm<DeleteActivity.Request, DeleteActivity.Response>, ISecureHandler
+	public class DeleteActivity : IMyAsyncForm<DeleteActivity.Request, DeleteActivity.Response>,
+		IAsyncSecureHandler<Activity, DeleteActivity.Request, DeleteActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
 		public DeleteActivity(CoreDbContext dbContext)
 		{
 			this.dbContext = dbContext;
+		}
+
+		public UserAction<Activity> GetPermission()
+		{
+			return ActivityAction.Delete;
 		}
 
 		public async Task<Response> Handle(Request message)
@@ -36,11 +43,6 @@ namespace Teamr.Core.Commands
 			this.dbContext.Activities.Remove(activity);
 			await this.dbContext.SaveChangesAsync();
 			return new Response();
-		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.UseTools;
 		}
 
 		public static FormLink Button(int userId)
@@ -60,10 +62,13 @@ namespace Teamr.Core.Commands
 		{
 		}
 
-		public class Request : IRequest<Response>
+		public class Request : IRequest<Response>, ISecureHandlerRequest
 		{
 			[InputField(Hidden = true)]
 			public int Id { get; set; }
+
+			[NotField]
+			public int ContextId => this.Id;
 		}
 	}
 }
