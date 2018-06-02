@@ -1,0 +1,122 @@
+namespace Teamr.Core.Commands
+{
+	using System;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
+	using CPermissions;
+	using Microsoft.EntityFrameworkCore;
+	using Teamr.Core.DataAccess;
+	using Teamr.Core.Pickers;
+	using Teamr.Core.Security;
+	using Teamr.Infrastructure;
+	using Teamr.Infrastructure.Forms;
+	using Teamr.Infrastructure.Forms.Record;
+	using Teamr.Infrastructure.Security;
+	using Teamr.Infrastructure.User;
+	using UiMetadataFramework.Basic.EventHandlers;
+	using UiMetadataFramework.Basic.Input.Typeahead;
+	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Core.Binding;
+
+	[MyForm(Id = "edit-activity", PostOnLoad = true,PostOnLoadValidation = false ,Label = "Edit activity", SubmitButtonLabel = "Save changes")]
+	public class EditActivity : IMyAsyncForm<EditActivity.Request, EditActivity.Response>, ISecureHandler
+	{
+		private readonly CoreDbContext dbContext;
+
+		public EditActivity(CoreDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+		public async Task<Response> Handle(Request message)
+		{
+			var activity = this.dbContext.Activities
+				.Include(s => s.ActivityType)
+				.Include(s => s.CreatedByUser)
+				.SingleOrException(t => t.Id == message.Id);
+
+			if (message.Operation?.Value == RecordRequestOperation.Post)
+			{
+				if (message.PerformedOn != null)
+				{
+					activity.EditPerformedDate(message.PerformedOn.Value);
+				}
+
+				activity.EditNotes(message.Notes);
+				activity.EditActivityType(message.ActivityType.Value);
+
+				await this.dbContext.SaveChangesAsync();
+			}
+
+			return new Response
+			{
+				Notes = activity.Notes,
+				PerformedOn = activity.PerformedOn,
+				//Quantity = activity.Quantity,
+				//ActivityType = new TypeaheadValue<int>(activity.ActivityTypeId),
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = activity.Notes
+				}
+			};
+		}
+
+		public UserAction GetPermission()
+		{
+			return CoreActions.UseTools;
+		}
+
+		public static FormLink Button(int userId)
+		{
+			return new FormLink
+			{
+				Form = typeof(EditActivity).GetFormId(),
+				Label = "Edit",
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.Id), userId }
+				}
+			};
+		}
+
+		public class Request : RecordRequest<Response>, ISecureHandlerRequest
+		{
+			[BindToOutput(nameof(Response.ActivityType))]
+			[TypeaheadInputField(typeof(ActivityTypeTypeaheadRemoteSource))]
+			public TypeaheadValue<int> ActivityType { get; set; }
+
+			[InputField(Hidden = true, Required = true)]
+			public int Id { get; set; }
+
+			[BindToOutput(nameof(Response.Notes))]
+			[InputField(OrderIndex = 0)]
+			public string Notes { get; set; }
+
+			[BindToOutput(nameof(Response.PerformedOn))]
+			[InputField( OrderIndex = 0)]
+			public DateTime? PerformedOn { get; set; }
+
+			//[BindToOutput(nameof(Response.Quantity))]
+			//[InputField(OrderIndex = 0)]
+			//public decimal Quantity { get; set; }
+
+			[NotField]
+			public int ContextId => this.Id;
+		}
+
+		public class Response : RecordResponse
+		{
+			[NotField]
+			public TypeaheadValue<int> ActivityType { get; set; }
+
+			[NotField]
+			public string Notes { get; set; }
+
+			[NotField]
+			public DateTime? PerformedOn { get; set; }
+
+			[NotField]
+			public decimal Quantity { get; set; }
+		}
+	}
+}

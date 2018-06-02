@@ -1,5 +1,5 @@
+{{#if field.data != null && pages.length > 1}}
 <ul class="paginator">
-	{{#if pages.length > 1}}
 	{{#each pages as page}}
 		{{#if parent.get('useUrl')}}
 		<li><a href="{{app.makeUrl(form.metadata.id, page.params)}}" class="{{page.cssClass}}">{{page.number}}</a></li>
@@ -7,8 +7,9 @@
 		<li><button on:click="goToPage(page)" class="{{page.cssClass}}">{{page.number}}</button></li>
 		{{/if}}
 	{{/each}}
-	{{/if}}
 </ul>
+<div class="paginator-summary">showing {{field.data.results.length}} out of {{field.data.totalCount}} items</div>
+{{/if}}
 
 <div ref:container></div>
 
@@ -19,6 +20,10 @@
 	export default {
 		oncreate() {
 			var field = this.get("field");
+
+			if (field.data == null) {
+				return;
+			}
 
 			var tableField = new OutputFieldValue();
 			tableField.data = field.data.results;
@@ -108,5 +113,11 @@
 	.paginator>li>a:hover, .paginator>li>button:hover {
 		color: #f3818c;
 		text-decoration: none
+	}
+
+	.paginator-summary {
+		font-size: 0.7em;
+		opacity: 0.6;
+		margin: 5px 0;
 	}
 </style>

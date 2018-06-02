@@ -2,7 +2,11 @@
 <ul class="actionlist">
 	{{#each field.data.actions as action}}
 	<li>
-		<button on:click="run(action, app)" class="btn btn-default">{{action.label}}</button>
+		{{#if action.action !== "redirect"}}
+		<button on:click="run(action, app)" class="btn btn-default">{{{action.label}}}</button>
+		{{else}}
+		<a href="{{app.makeUrl(action.form, action.inputFieldValues)}}" class="btn btn-default">{{action.label}}</a>
+		{{/if}}
 	</li>
 	{{/each}}
 </ul>

@@ -12,6 +12,7 @@ header.top {
     min-height: 186px;
 	}
 }
+
 header.top .logo {
 	float:left;
 	padding-top: 28px;
@@ -25,10 +26,11 @@ header.top .logo:hover {
 	text-decoration: none;
 }
 
-header{
-z-index: 5;
-background: rgba(41,51,63,.95) !important;
+header {
+	z-index: 5;
+	background: rgba(41,51,63,.95) !important;
 }
+
 .sub-nav-check { position:absolute; top:-9999px; left:-9999px }
 
 .xmenu
@@ -62,9 +64,16 @@ background: rgba(41,51,63,.95) !important;
 	margin:0;
 }
 
+.xmenu ul>li>div.top-menu-div>a
+{
+	color: $mainColor;
+	text-decoration:none;
+}
+
 .xmenu ul>li>a:hover,
 .xmenu ul>li>div.top-menu-div:hover,
-.xmenu ul>li>label:hover
+.xmenu ul>li>label:hover,
+.xmenu ul > li > div.top-menu-div > a:hover
 {
 	color:$secondColor;
 }
@@ -81,7 +90,6 @@ background: rgba(41,51,63,.95) !important;
 {
 	color: #ccc;
 }
-
 
 .xmenu ul>li> div.top-menu-div::before {
     content: '';

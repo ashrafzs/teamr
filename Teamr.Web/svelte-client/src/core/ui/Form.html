@@ -1,26 +1,32 @@
-<div class ="form-header">
-	<h2>{{responseMetadata.title || metadata.label}}</h2>
-</div>
+{{#if initialized}}
+<div class="{{cssClass}}">
+	 {{#if (responseMetadata.title != null && responseMetadata.title != "") || (metadata.label != null && metadata.label != "")}}
+	  <div class="form-header">		 
+		<h2>{{responseMetadata.title || metadata.label}}</h2>		 
+	  </div>
+	 {{/if}}
 
-{{#if initialized && visibleInputFields.length > 0}}
-<div class="form-body">
-<form on:submit="submit(event, true)">
-	{{#each visibleInputFields as inputField}}
-	<FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" form="{{self}}" />
-	{{/each}}
+	{{#if initialized && visibleInputFields.length > 0}}
+	<div class="form-body">
+	<form on:submit="submit(event, true)">
+		{{#each visibleInputFields as inputField}}
+		<FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" form="{{self}}" />
+		{{/each}}
 
-	<button type="submit" disabled="{{disabled}}" tabindex="-1" class="btn btn-info">{{submitButtonLabel}}</button>
-</form>
-</div>
-{{/if}}
-
-{{#if outputFieldValues != null}}
-<div class="response">
-	{{#each outputFieldValues as outputField}}
-	{{#if outputField.metadata.hidden == false}}
-	<FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" parent="{{self}}" />
+		<button type="submit" disabled="{{disabled}}" tabindex="-1" class="btn btn-info">{{{submitButtonLabel}}}</button>
+	</form>
+	</div>
 	{{/if}}
-	{{/each}}
+
+	{{#if outputFieldValues != null}}
+	<div class="response">
+		{{#each outputFieldValues as outputField }}
+		{{#if outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)}}
+		<FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" parent="{{self}}" />
+		{{/if}}
+		{{/each}}
+	</div>
+	{{/if}}
 </div>
 {{/if}}
 
@@ -37,13 +43,12 @@
 		let formInstance = formComponent.get("form");
 		let app = formComponent.get("app");
 
-		// Bind all "form event handlers". 
 		for (let eventHandler of eventHandlers) {
 			// Don't bind default event handlers, because they are already auto-bound inside FormInstance.
 			if (eventHandler.runAt.indexOf("form:") === 0) {
 				continue;
 			}
-
+			
 			formComponent.on(eventHandler.runAt, e => {
 				// Augment event args with form which is firing the event. This is needed,
 				// so that event handler can know from which particular form this event is coming.
@@ -67,17 +72,21 @@
 						self: this,
 						initialized: true,
 						visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
-						submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel
-							? form.metadata.customProperties.submitButtonLabel
-							: "Submit"
+						submitButtonLabel: form.metadata.getCustomProperty("submitButtonLabel") || "Submit",
+						cssClass: form.metadata.getCustomProperty("cssClass") || ""
 					});
 
 					tabindex += 1;
 
 					var app = this.get("app");
 
-					bindEventHandlersToCustomEvents(this, form.metadata.eventHandlers);
-					// TODO: bind input and output event handlers.
+					// Subscribe all event handlers (form, inputs, outputs).
+					var formMetadata = form.metadata;
+					var handlers = [];
+					formMetadata.inputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
+					formMetadata.outputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
+					formMetadata.eventHandlers.forEach(h => handlers.push(h));
+					bindEventHandlersToCustomEvents(this, handlers);
 
 					form.fire("form:loaded", { app: app });
 
@@ -198,6 +207,9 @@
 				for (let f of openForms) {
 					f.reloadTopForm();
 				}				
+			},
+			getInputComponent(inputId) {
+				return this.get("inputs").find(t => t.get("field").metadata.id === inputId);
 			}
 		},
 		data: function () {
@@ -208,7 +220,8 @@
 				initialized: false,
 				responseMetadata: {},
 				useUrl: true,
-				parent: null // Can be set if this is a nested form within another form (i.e. - InlineForm.html)
+				parent: null, // Can be set if this is a nested form within another form (i.e. - InlineForm.html)
+				inputs: []
 			};
 		},
 		components: {

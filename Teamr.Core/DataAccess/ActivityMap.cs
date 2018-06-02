@@ -15,8 +15,9 @@ namespace Teamr.Core.DataAccess
 			entity.Property(t => t.ActivityTypeId).HasColumnName("ActivityTypeId");
 			entity.Property(t => t.Id).HasColumnName("Id");
 			entity.Property(t => t.CreatedOn).HasColumnName("CreatedOn");
+			entity.Property(t => t.ScheduledOn).HasColumnName("ScheduledOn");
 			entity.Property(t => t.PerformedOn).HasColumnName("PerformedOn");
-			entity.Property(t => t.Quantity).HasColumnName("Qantity");
+			entity.Property(t => t.Quantity).HasColumnName("Quantity");
 
 			entity.HasOne(t => t.CreatedByUser)
 				.WithMany()

@@ -39,7 +39,7 @@ app.load().then(response => {
     buildMenu(app);
 });
 
-function buildMenu(app: UmfApp) {
+function buildMenu(app:UmfApp) {
     // Remove old menu.
     var myNode = document.getElementById("topmenu");
     while (myNode.firstChild) {
@@ -62,19 +62,20 @@ function buildMenu(app: UmfApp) {
     });
 }
 
-function showLoader() {
-    var progress = document.getElementById("progress");
+function showLoader(){
+    var progress = document.getElementById("progress");  
     progress.setAttribute('style', 'width:50%');
-    var loader = document.getElementById("loader");
-    loader.setAttribute("class", "");
+     var loader = document.getElementById("loader");
+    loader.setAttribute("class","");   
 }
 
-function hideLoader() {
+function hideLoader(){
     var loader = document.getElementById("loader");
     var progress = document.getElementById("progress");
     progress.setAttribute('style', 'width:100%');
 
-    setTimeout(function () {
-        loader.setAttribute("class", "hidden");
-    }, 500);
+    setTimeout(function() {
+     loader.setAttribute("class","hidden"); 
+}, 500);
+      
 }

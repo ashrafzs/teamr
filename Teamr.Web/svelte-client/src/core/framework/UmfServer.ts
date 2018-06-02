@@ -52,7 +52,7 @@ export class UmfServer {
         });
     }
 
-    postForm(form: string, data: any): Promise<FormResponse> {
+    postForm(form: string, data: any): Promise<any> {
         this.fire("request:started");
         return axios.post(this.postFormUrl, JSON.stringify([{
             Form: form,

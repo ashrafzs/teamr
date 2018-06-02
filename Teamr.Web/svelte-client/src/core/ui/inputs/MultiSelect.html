@@ -1,4 +1,5 @@
-<select class="multi-select form-control" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}" ref:input multiple>
+<select on:change="onChange()" class="multi-select form-control" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}"
+ ref:input multiple>
 </select>
 
 <script>
@@ -127,7 +128,7 @@
 										return false;
 									});
 
-									callback(toAdd, "value", "label");
+									callback(mapToTypeaheadItems(toAdd), "value", "label");
 								});
 							});
 						});
@@ -135,19 +136,22 @@
 				});
 
 				var currentValue = getIdsQuery(field);
-				
+
 				// If the field has a value, we need to load it.
 				if (currentValue.length > 0) {
 					a.ajax(callback => {
-						return app.server.postForm(source, { ids: { items: currentValue } }).then(data => {
-							// Mark items as added as "choices".
-							for (let t of data.items) {
-								var key = JSON.stringify(t.value);
-								addedItems[key] = true;
-							}
+						return buildFilter(parentForm, parameters, query).then(filter => {
+							filter.ids = { items: currentValue };
+							return app.server.postForm(source, filter).then(data => {
+								// Mark items as added as "choices".
+								for (let t of data.items) {
+									var key = JSON.stringify(t.value);
+									addedItems[key] = true;
+								}
 
-							callback(mapToTypeaheadItems(data.items), "value", "label");
-							setInputValue(a, field);
+								callback(mapToTypeaheadItems(data.items), "value", "label");
+								setInputValue(a, field);
+							});
 						});
 					});
 				}
@@ -167,7 +171,15 @@
 			a.passedElement.addEventListener("change", function (e) {
 				setFieldValue(field, a.getValue());
 			});
+		},
+		methods: {
+			onChange() {
+				this.get("form").fireAndBubbleUp('input:changed', {
+					app: this.get('app'),
+					form: this.get('form'),
+					input: this
+				});
+			}
 		}
 	}
 </script>
-

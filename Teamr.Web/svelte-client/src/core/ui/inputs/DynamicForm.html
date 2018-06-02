@@ -1,0 +1,55 @@
+{{#if inputs != null}}
+{{#each inputs as inputField}}
+    <FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" form="{{form}}"/>
+{{/each}}
+{{/if}}
+
+<script>
+    import * as umf from "core-framework";
+    import FormInput from "../Input";
+    var inputId = 0;
+
+    export default {
+        oncreate () {
+            let field = this.get("field");
+            let app = this.get("app");
+
+            if (field.value == null) {
+                return;
+            }
+
+            var self = this;
+            this.initialiseInputs(field, app).then(() => {
+                self.set({
+                    inputs: field.inputs
+                });
+            });
+        },
+        methods: {
+            initialiseInputs: async function (field, app) {
+                field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
+                
+                var promises = [];
+                for (let input of field.inputs) {
+                    let i = field.value.inputs.find(t => t.inputId == input.metadata.inputId);
+                    if (i != null) {
+                        let p = input.init(i.value);
+                        promises.push(p);
+                    }
+                }
+
+                await Promise.all(promises);
+            },
+        },
+        data() {
+            inputId += 1;
+            return {
+                id: "dfi" + inputId
+            }
+        },
+        components: {
+            FormInput
+        }
+    }
+
+</script>

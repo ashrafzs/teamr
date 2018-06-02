@@ -10,6 +10,7 @@ import { TypeaheadInputController } from "core-ui/inputs/TypeaheadInputControlle
 import { PasswordInputController } from "core-ui/inputs/PasswordInputController";
 import { TextareaInputController } from "core-ui/inputs/TextareaInputController";
 import { FileUploaderController } from "core-ui/inputs/FileUploaderController";
+import { DynamicFormInputController } from "core-ui/inputs/DynamicFormInputController";
 
 import TextInput from "core-ui/inputs/Text";
 import NumberInput from "core-ui/inputs/Number";
@@ -20,6 +21,7 @@ import MultiSelectInput from "core-ui/inputs/MultiSelect";
 import Password from "core-ui/inputs/Password";
 import Textarea from "core-ui/inputs/Textarea";
 import FileUploader from "core-ui/inputs/FileUploader";
+import DynamicForm from "core-ui/inputs/DynamicForm";
 
 import TextOutput from "core-ui/outputs/Text";
 import NumberOutput from "core-ui/outputs/Number";
@@ -31,19 +33,24 @@ import Paginator from "core-ui/outputs/Paginator";
 import ActionList from "core-ui/outputs/ActionList";
 import InlineForm from "core-ui/outputs/InlineForm";
 import TextValue from "core-ui/outputs/TextValue";
+import TextValueMultiline from "core-ui/outputs/TextValueMultiline";
 import DownloadableFile from "core-ui/outputs/DownloadableFile";
 import Alert from "core-ui/outputs/Alert";
 import FileSize from "core-ui/outputs/FileSize";
 import Image from "core-ui/outputs/Image";
 import Link from "core-ui/outputs/Link";
-import ObjectList from "core-ui/outputs/ObjectList";
+import DynamicOutput from "core-ui/outputs/DynamicOutput";
+import FormInstance from "core-ui/outputs/FormInstance";
+import PieGraph from "core-ui/outputs/PieGraph";
 
 import {
 	FormLogToConsole,
 	BindToOutput,
 	InputLogToConsole,
 	OutputLogToConsole,
-	ReloadFormAfterAction
+	ReloadFormAfterAction,
+	DependOn
+
 } from "core-eventHandlers";
 
 import { Growl } from "core-functions";
@@ -61,6 +68,7 @@ controlRegister.registerInputFieldControl("multiselect", MultiSelectInput, Multi
 controlRegister.registerInputFieldControl("password", Password, PasswordInputController);
 controlRegister.registerInputFieldControl("textarea", Textarea, TextareaInputController, { block: true });
 controlRegister.registerInputFieldControl("file-uploader", FileUploader, FileUploaderController, { alwaysHideLabel: true, block: true });
+controlRegister.registerInputFieldControl("dynamic-form", DynamicForm, DynamicFormInputController);
 
 controlRegister.registerOutputFieldControl("text", TextOutput);
 controlRegister.registerOutputFieldControl("number", NumberOutput);
@@ -72,12 +80,15 @@ controlRegister.registerOutputFieldControl("paginated-data", Paginator, { block:
 controlRegister.registerOutputFieldControl("action-list", ActionList, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("inline-form", InlineForm, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("text-value", TextValue);
+controlRegister.registerOutputFieldControl("text-value-multiline", TextValueMultiline, { block: true });
 controlRegister.registerOutputFieldControl("downloadable-file", DownloadableFile);
 controlRegister.registerOutputFieldControl("alert", Alert, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("file-size", FileSize);
 controlRegister.registerOutputFieldControl("image", Image, { block: true });
 controlRegister.registerOutputFieldControl("link", Link);
-controlRegister.registerOutputFieldControl("object-list", ObjectList, { block: true });
+controlRegister.registerOutputFieldControl("object-list", DynamicOutput, { block: true });
+controlRegister.registerOutputFieldControl("form-instance", FormInstance, { alwaysHideLabel: true });
+controlRegister.registerOutputFieldControl("pie-graph", PieGraph, { block: true });
 
 // Form event handlers.
 controlRegister.registerFormEventHandler("log-to-console", new FormLogToConsole());
@@ -86,6 +97,7 @@ controlRegister.registerFormEventHandler("reload-form-after-action", new ReloadF
 // Input event handlers.
 controlRegister.registerInputFieldEventHandler("bind-to-output", new BindToOutput());
 controlRegister.registerInputFieldEventHandler("log-to-console", new InputLogToConsole());
+controlRegister.registerInputFieldEventHandler("depend-on", new DependOn());
 
 // Output event handlers.
 controlRegister.registerOutputFieldEventHandler("log-to-console", new OutputLogToConsole());

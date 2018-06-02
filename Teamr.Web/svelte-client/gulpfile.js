@@ -13,7 +13,7 @@ var gulp = require("gulp"),
 
 const distDir = "../wwwroot";
 
-process.on('unhandledRejection', r => console.log(r));
+process.on("unhandledRejection", r => console.log(r));
 
 function build(entry, tsconfig, outfile, moduleName) {
     return rollup.rollup(
@@ -45,7 +45,7 @@ function build(entry, tsconfig, outfile, moduleName) {
 }
 
 gulp.task("build-app", ["build-svelte"], function () {
-    build("src/app.ts", "src/tsconfig.json", distDir + "/js/app.js");
+    return build("src/app.ts", "src/tsconfig.json", distDir + "/js/app.js");
 });
 
 gulp.task("browser-sync", function () {

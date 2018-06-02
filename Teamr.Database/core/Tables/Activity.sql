@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[Activity]
     [Notes] NVARCHAR(MAX) NULL, 
     [Quantity] DECIMAL(18, 2) NOT NULL, 
     [ActivityTypeId] INT NOT NULL,
+    [ScheduledOn] DATETIME NOT NULL, 
     CONSTRAINT [FK_dbo.Activity_dbo.User_ActivityTypeId] FOREIGN KEY ([ActivityTypeId]) REFERENCES [dbo].[ActivityType] ([Id]),
 	CONSTRAINT [FK_dbo.Activity_dbo.AspNetUsers_CreatedByUserId] FOREIGN KEY ([CreatedByUserId]) REFERENCES [dbo].[AspNetUsers] ([Id])
 )

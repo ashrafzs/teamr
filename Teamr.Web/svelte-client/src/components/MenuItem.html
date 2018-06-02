@@ -1,12 +1,16 @@
 {{#if menu.url != null}}
-<a href="{{menu.url}}">{{menu.label}}</a>
+<a href="{{menu.url}}">{{{menu.label}}}</a>
 {{else}}
 <div class="top-menu-div">
+	{{#if menu.items.length > 1}}
 	<label for="menu{{id}}" class="toggle-sub" onclick="">{{menu.id}}</label>
+	{{else}}
+	<a href="{{menu.items[0].url}}">{{{menu.items[0].label}}}</a>
+	{{/if}}
 </div>
 
 <input type="checkbox" id="menu{{id}}" class="sub-nav-check"/>
-{{#if menu.items.length > 0}}
+{{#if menu.items.length > 1}}
 <ul class="sub-nav">
 	{{#each menu.items as submenu}}
 	<li><:Self menu="{{submenu}}" /></li>

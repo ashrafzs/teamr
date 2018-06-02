@@ -186,7 +186,7 @@ export class FormInstance {
 
     private async fire(eventName: string, parameters: FormEventArguments): Promise<void> {
         var promises = [];
-
+        
         // Run input event handlers.
         for (let input of this.inputs) {
             if (input.metadata.eventHandlers != null) {
