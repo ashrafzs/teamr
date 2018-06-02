@@ -15,7 +15,7 @@ namespace Teamr.Web
 	using Nofy.EntityFrameworkCore;
 	using StructureMap;
 	using StructureMap.TypeRules;
-	using Teamr.Core.Commands;
+	using Teamr.Core.Commands.ActivityType;
 	using Teamr.Core.DataAccess;
 	using Teamr.DataSeed;
 	using Teamr.Filing;
@@ -87,12 +87,11 @@ namespace Teamr.Web
 			services.ConfigureMvc(this.Configuration);
 
 			// Register all assemblies with IRequestHandler.
-			services.AddMediatR(typeof(DoSomeThing));
+			services.AddMediatR(typeof(ActivityTypes));
 			services.AddMediatR(typeof(InvokeForm));
 			services.AddMediatR(typeof(MyForms));
 			services.AddMediatR(typeof(ManageUsers));
 			services.AddMediatR(typeof(AttachFiles));
-
 			var container = new Container();
 
 			container.Configure(config =>

@@ -2,6 +2,7 @@ namespace Teamr.Core.DataAccess
 {
 	using Microsoft.EntityFrameworkCore;
 	using Teamr.Core.Domain;
+	using Unops.Spgs.Core.DataAccess.Mapping;
 
 	public class CoreDbContext : DbContext
 	{
@@ -11,7 +12,8 @@ namespace Teamr.Core.DataAccess
 
 		public virtual DbSet<SomeThing> SomeThings { get; set; }
 		public virtual DbSet<ActivityType> ActivityTypes { get; set; }
-		public virtual DbSet<ActivityType> Activities { get; set; }
+		public virtual DbSet<Activity> Activities { get; set; }
+		public virtual DbSet<RegisteredUser> Users { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -19,6 +21,7 @@ namespace Teamr.Core.DataAccess
 			builder.ApplyConfiguration(new SomeThingMap());
 			builder.ApplyConfiguration(new ActivityTypeMap());
 			builder.ApplyConfiguration(new ActivityMap());
+			builder.ApplyConfiguration(new RegisteredUserMap());
 		}
 	}
 }

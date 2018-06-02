@@ -21,8 +21,8 @@ namespace Teamr.Core.DataAccess
 
 			entity.HasOne(t => t.User)
 				.WithMany()
-				.HasForeignKey(t => t.UserId);
-
+				.HasForeignKey(t => t.UserId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }
