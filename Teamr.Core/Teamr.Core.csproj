@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Compile Remove="Domain\Category.cs" />
+    <Compile Remove="Filing\SomeThingFileManager.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Teamr.Filing\Teamr.Filing.csproj" />
     <ProjectReference Include="..\Teamr.Infrastructure\Teamr.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Filing\" />
   </ItemGroup>
 
 </Project>
