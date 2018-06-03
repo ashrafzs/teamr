@@ -19,14 +19,14 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Id = "activites", PostOnLoad = true, Label = "View activites", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
-	public class MemberActivities : IForm<MemberActivities.Request, MemberActivities.Response>, ISecureHandler
+	[MyForm(Id = "user-day-report", PostOnLoad = true, Label = "User day report", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
+	public class UserDayReport : IForm<UserDayReport.Request, UserDayReport.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly SystemPermissionManager permissionManager;
 		private readonly UserContext userContext;
 
-		public MemberActivities(
+		public UserDayReport(
 			SystemPermissionManager permissionManager,
 			UserContext userContext,
 			CoreDbContext dbContext)
@@ -40,24 +40,18 @@ namespace Teamr.Core.Commands.Activity
 		{
 			var query = this.dbContext.Activities
 				.Include(a => a.ActivityType)
-				.Where(a => a.CreatedByUserId == this.userContext.User.UserId)
-				.AsNoTracking();
+				.Where(a => a.CreatedByUserId == this.userContext.User.UserId && a.PerformedOn != null && a.PerformedOn.Value.Date == message.Day.Date)
+				.OrderBy(t => t.Id);
 
-			if (message.Id != null)
-			{
-				query = query.Where(u => u.Id.Equals(message.Id));
-			}
-
-			var result = query
-				.OrderBy(t => t.Id)
-				.Paginate(t => new Item(t, this), message.Paginator);
+				var result = query.Paginate(t => new Item(t), message.Paginator);
 
 			return new Response
 			{
 				Users = result,
-				Actions = this.permissionManager.CanDo(CoreActions.UseTools, this.userContext)
+				Actions = this.permissionManager.CanDo(CoreActions.AddActivity, this.userContext)
 					? new ActionList(AddActivity.Button())
-					: null
+					: null,
+				TotalPoints = query.Sum(s => s.Points)
 			};
 		}
 
@@ -66,19 +60,10 @@ namespace Teamr.Core.Commands.Activity
 			return CoreActions.ViewActivities;
 		}
 
-		private ActionList GetActions(Activity activity)
-		{
-			var result = new ActionList();
-			result.Actions.Add(EditActivity.Button(activity.Id));
-			result.Actions.Add(DeleteActivity.Button(activity.Id));
-
-			return result;
-		}
-
 		public class Request : IRequest<Response>
 		{
-			[InputField(OrderIndex = 0)]
-			public int? Id { get; set; }
+			[InputField(OrderIndex = 0, Required = true)]
+			public DateTime Day { get; set; }
 
 			public Paginator Paginator { get; set; }
 		}
@@ -88,13 +73,16 @@ namespace Teamr.Core.Commands.Activity
 			[OutputField(OrderIndex = -10)]
 			public ActionList Actions { get; set; }
 
-			[PaginatedData(nameof(Request.Paginator), Label = "")]
+			[OutputField(OrderIndex = 1, Label = "Total points")]
+			public decimal TotalPoints { get; set; }
+
+			[PaginatedData(nameof(Request.Paginator), Label = "", OrderIndex = 20)]
 			public PaginatedData<Item> Users { get; set; }
 		}
 
 		public class Item
 		{
-			public Item(Activity t, MemberActivities cmd)
+			public Item(Activity t)
 			{
 				this.Id = t.Id;
 				this.Notes = t.Notes;
@@ -102,12 +90,8 @@ namespace Teamr.Core.Commands.Activity
 				this.ScheduledOn = t.ScheduledOn;
 				this.ActivityType = t.ActivityType.Name;
 				this.Quantity = t.Quantity;
-				this.Actions = cmd.GetActions(t);
 				this.Points = t.Points;
 			}
-
-			[OutputField(OrderIndex = 20)]
-			public ActionList Actions { get; set; }
 
 			[OutputField(OrderIndex = 2, Label = "Activity type")]
 			public string ActivityType { get; set; }

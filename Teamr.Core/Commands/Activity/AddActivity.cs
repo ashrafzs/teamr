@@ -73,10 +73,10 @@ namespace Teamr.Core.Commands.Activity
 			[InputField(OrderIndex = 40)]
 			public DateTime ScheduledOn { get; set; }
 
-			[InputField(OrderIndex = 40)]
+			[InputField(OrderIndex = 50)]
 			public DateTime? PerformedOn { get; set; }
 
-			[InputField(OrderIndex = 40)]
+			[InputField(OrderIndex = 60)]
 			public decimal Quantity { get; set; }
 		}
 	}
