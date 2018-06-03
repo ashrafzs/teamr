@@ -59,6 +59,7 @@
 							}
 						}
 					}
+
 					currentFolder.items.push({
 						label: form.label,
 						url: makeUrl(form.id),
@@ -67,6 +68,7 @@
 					});
 				}
 			}
+
 			nestedSort(tree, (a, b) => {
 				return a.orderIndex - b.orderIndex;
 			});

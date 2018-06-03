@@ -13,10 +13,12 @@ export class DependOn extends InputFieldEventHandler {
 			var parentInput = args.form.getInputComponent(eventHandlerMetadata.customProperties.field); // multiselect.html
 			var inputWrapper = childInput.get("wrapper");
 			var parentInputController = parentInput.get("field");
+
 			// Special case for multiselect.html.
 			var parentInputValue = parentInputController.metadata.type == "typeahead"
 				? parentInputController.value.value
 				: parentInputController.value;
+
 			var visible = parentInputValue != null;
 			inputWrapper.show(visible);
 		});

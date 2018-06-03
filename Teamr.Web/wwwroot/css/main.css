@@ -483,9 +483,14 @@ header {
   padding: 2px 15px;
   margin: 0; }
 
+.xmenu ul > li > div.top-menu-div > a {
+  color: #1eb1c8;
+  text-decoration: none; }
+
 .xmenu ul > li > a:hover,
 .xmenu ul > li > div.top-menu-div:hover,
-.xmenu ul > li > label:hover {
+.xmenu ul > li > label:hover,
+.xmenu ul > li > div.top-menu-div > a:hover {
   color: #f3818c; }
 
 .xmenu ul ul a:hover,

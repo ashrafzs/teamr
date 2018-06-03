@@ -1,38 +1,8 @@
-{{#if field.data != null}}
-<div>	
-	{{#if field.data.isFormCompleted}}
-	<span><i class="fa fa-check-circle icon success"></i></span>
-	<span class="font-italic">Form completed </span>
-	{{else}}
-	<span><i class="fa fa-times-circle icon failed"></i></span>
-	<span class="font-italic">Form not completed </span>
-	{{/if}}
-	
-</div>
-{{#if field.data.values != null}}
+{{#if field.data != null && field.data.values != null}}
 {{#each field.data.values as input}}
-<div style="padding-left: 30px;">
-	<strong class="text">{{input.label}}:</strong>
-	{{#if input.value != null}} 
+<div>
+	<strong>{{input.label}}:</strong>
 	<span>{{input.value}}</span>
-	{{/if}}  
 </div>
 {{/each}}
 {{/if}}
-{{/if}}
-
-<style>
-	.success{
-		color:#4CAF50
-	}
-	.failed{
-		color:#F44336;
-	}
-	.icon{
-		font-size: 19px;
-		margin-bottom: 8px;
-	}
-	.text{
-		font-size: 0.9rem;
-	}
-</style>
