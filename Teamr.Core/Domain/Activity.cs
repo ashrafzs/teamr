@@ -5,7 +5,6 @@
 namespace Teamr.Core.Domain
 {
 	using System;
-	using UiMetadataFramework.Basic.Input.Typeahead;
 
 	public class Activity
 	{
@@ -22,6 +21,7 @@ namespace Teamr.Core.Domain
 			this.ScheduledOn = scheduledOn;
 			this.PerformedOn = performedOn;
 			this.ActivityType = type;
+			this.Points = type.Points * quantity;
 		}
 
 		public int CreatedByUserId { get; private set; }
@@ -36,6 +36,7 @@ namespace Teamr.Core.Domain
 
 		public int Id { get; set; }
 		public decimal Quantity { get; private set; }
+		public decimal Points { get; private set; }
 		public string Notes { get; private set; }
 
 		public void EditPerformedDate(DateTime performedOn)
@@ -51,6 +52,11 @@ namespace Teamr.Core.Domain
 		public void EditActivityType(int activityTypeId)
 		{
 			this.ActivityTypeId = activityTypeId;
+		}
+
+		public void EditPoints(decimal points)
+		{
+			this.Points = points * this.Quantity;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿namespace Teamr.Core.Commands.ActivityType
 {
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Threading.Tasks;
 	using CPermissions;
 	using Teamr.Core.DataAccess;
@@ -33,7 +34,16 @@
 			{
 				if (message.Points != null)
 				{
+					if (message.Points != activityType.Points && message.ChangeOldActivityPoints)
+					{
+						foreach (var activity in this.context.Activities.Where(w => w.ActivityTypeId == message.Id))
+						{
+							activity.EditPoints(message.Points.Value);
+						}
+					}
+
 					activityType.Edit(message.Name, message.Unit, message.Points.Value, message.Remarks.Value);
+					this.context.SaveChanges();
 				}
 			}
 
@@ -70,6 +80,9 @@
 
 		public class Request : RecordRequest<Response>
 		{
+			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
+			public bool ChangeOldActivityPoints { get; set; }
+
 			[InputField(Hidden = true)]
 			public int Id { get; set; }
 
@@ -94,10 +107,13 @@
 		{
 			[NotField]
 			public string Name { get; set; }
+
 			[NotField]
 			public decimal Points { get; set; }
+
 			[NotField]
 			public string Remarks { get; set; }
+
 			[NotField]
 			public string Unit { get; set; }
 		}
