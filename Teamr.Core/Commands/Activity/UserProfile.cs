@@ -1,5 +1,6 @@
 namespace Teamr.Core.Commands.Activity
 {
+	using System.Collections.Generic;
 	using System.Linq;
 	using CPermissions;
 	using MediatR;
@@ -7,6 +8,7 @@ namespace Teamr.Core.Commands.Activity
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Security;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -34,6 +36,18 @@ namespace Teamr.Core.Commands.Activity
 			};
 		}
 
+		public static FormLink Button(int userId, string label)
+		{
+			return new FormLink
+			{
+				Label = label,
+				Form = typeof(UserProfile).GetFormId(),
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.UserId), userId }
+				}
+			};
+		}
 		public UserAction GetPermission()
 		{
 			return CoreActions.ViewActivities;
