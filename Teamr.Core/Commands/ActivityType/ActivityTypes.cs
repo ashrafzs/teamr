@@ -17,7 +17,7 @@ namespace Teamr.Core.Commands.ActivityType
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Menu = CoreMenus.Main, Id = "activity-types", Label = "Activity Types", PostOnLoad = true)]
+	[MyForm(Menu = CoreMenus.Activity, Id = "activity-types", Label = "Activity Types", PostOnLoad = true)]
 	public class ActivityTypes : IForm<ActivityTypes.Request, ActivityTypes.Response>,
 		ISecureHandler
 	{

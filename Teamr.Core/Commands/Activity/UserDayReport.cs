@@ -1,6 +1,7 @@
 namespace Teamr.Core.Commands.Activity
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using CPermissions;
 	using MediatR;
@@ -19,7 +20,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Id = "user-day-report", PostOnLoad = true, Label = "User day report", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
+	[MyForm(Id = "user-day-report", PostOnLoad = true, Label = "User day report", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
 	public class UserDayReport : IForm<UserDayReport.Request, UserDayReport.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
@@ -78,6 +79,19 @@ namespace Teamr.Core.Commands.Activity
 
 			[PaginatedData(nameof(Request.Paginator), Label = "", OrderIndex = 20)]
 			public PaginatedData<Item> Users { get; set; }
+		}
+
+		public static FormLink Button(DateTime date,string label)
+		{
+			return new FormLink
+			{
+				Label=label,
+				Form = typeof(UserDayReport).GetFormId(),
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.Day), date }
+				}
+			};
 		}
 
 		public class Item

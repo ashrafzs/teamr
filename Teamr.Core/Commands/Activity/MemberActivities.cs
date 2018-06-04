@@ -19,7 +19,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Id = "activites", PostOnLoad = true, Label = "View activites", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
+	[MyForm(Id = "activites", PostOnLoad = true, Label = "View activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
 	public class MemberActivities : IForm<MemberActivities.Request, MemberActivities.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;

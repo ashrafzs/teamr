@@ -6,6 +6,7 @@ namespace Teamr.Core.Commands.Activity
 	using MediatR;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
+	using Teamr.Core.Menus;
 	using Teamr.Core.Pickers;
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure;
@@ -17,7 +18,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(PostOnLoad = true, Id = "add-activity", Label = "Add Activity")]
+	[MyForm(PostOnLoad = true, Id = "add-activity", Label = "Add Activity" , Menu = CoreMenus.Activity)]
 	public class AddActivity : IMyAsyncForm<AddActivity.Request, AddActivity.Response>,ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
