@@ -18,6 +18,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
+	
 
 	[MyForm(Id = "user-points-by-day-report", PostOnLoad = true, Label = "User points by day report", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
 	public class UserPointsByDayReport : IForm<UserPointsByDayReport.Request, UserPointsByDayReport.Response>, ISecureHandler
@@ -37,7 +38,7 @@ namespace Teamr.Core.Commands.Activity
 				.Include(a => a.ActivityType)
 				.Where(a => a.CreatedByUserId == this.userContext.User.UserId && a.PerformedOn != null)
 				.OrderBy(t => t.Id)
-				.GroupBy(t => t.ScheduledOn);
+				.GroupBy(t => t.ScheduledOn.Date);
 
 			var activitiesList = new List<ActivityModel>();
 
