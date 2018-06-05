@@ -5,7 +5,6 @@
 	using MediatR;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Security;
@@ -15,7 +14,7 @@
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Menu = CoreMenus.Activity, Id = "add-activity-type", Label = "Add activity type",
+	[MyForm(Id = "add-activity-type", Label = "Add activity type",
 		SubmitButtonLabel = "Save changes")]
 	public class AddActivityType : IMyForm<AddActivityType.Request, AddActivityType.Response>, ISecureHandler
 	{
