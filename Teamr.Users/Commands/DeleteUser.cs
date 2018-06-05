@@ -54,12 +54,12 @@ namespace Teamr.Users.Commands
 			return new FormLink
 			{
 				Form = typeof(DeleteUser).GetFormId(),
-				Label = "Delete",
+				Label = UiFormConstants.DeleteLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), userId }
 				}
-			}.WithAction(FormLinkActions.Run);
+			}.WithAction(FormLinkActions.Run).WithCssClass("btn-danger btn-icon");
 		}
 
 		public class Response : FormResponse<MyFormResponseMetadata>

@@ -34,12 +34,12 @@ namespace Teamr.Users.Commands
 			return new FormLink
 			{
 				Form = typeof(EditUser).GetFormId(),
-				Label = "Edit",
+				Label = UiFormConstants.EditLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), userId }
 				}
-			};
+			}.WithCssClass("btn-primary btn-icon");
 		}
 
 		public async Task<Response> Handle(Request message)

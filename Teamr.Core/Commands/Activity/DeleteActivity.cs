@@ -45,17 +45,17 @@ namespace Teamr.Core.Commands.Activity
 			return new Response();
 		}
 
-		public static FormLink Button(int userId, string label)
+		public static FormLink Button(int userId)
 		{
 			return new FormLink
 			{
 				Form = typeof(DeleteActivity).GetFormId(),
-				Label = label,
+				Label = UiFormConstants.DeleteLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), userId }
 				}
-			}.WithAction(FormLinkActions.Run);
+			}.WithAction(FormLinkActions.Run).WithCssClass("btn-danger btn-icon");
 		}
 
 		public class Response : FormResponse<MyFormResponseMetadata>

@@ -67,17 +67,17 @@ namespace Teamr.Core.Commands.Activity
 			return ActivityAction.Edit;
 		}
 
-		public static FormLink Button(int id, string label)
+		public static FormLink Button(int id)
 		{
 			return new FormLink
 			{
 				Form = typeof(EditActivity).GetFormId(),
-				Label =label,
+				Label = UiFormConstants.EditIconLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), id }
 				}
-			};
+			}.WithCssClass("btn-primary btn-icon");
 		}
 
 		public class Request : RecordRequest<Response>, ISecureHandlerRequest

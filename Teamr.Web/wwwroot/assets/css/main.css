@@ -552,7 +552,8 @@ footer {
 
 .btn-icon {
   border: none !important;
-  background-color: transparent !important; }
+  background-color: transparent !important;
+  padding:2px !important; }
 
 .btn-icon:not([disabled]):not(.disabled).active,
 .btn-icon:not([disabled]):not(.disabled):active,

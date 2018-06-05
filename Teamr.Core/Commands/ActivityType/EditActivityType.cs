@@ -6,6 +6,7 @@
 	using CPermissions;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Security;
+	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Forms.Record;
 	using Teamr.Infrastructure.Security;
@@ -69,13 +70,13 @@
 		{
 			return new FormLink
 			{
-				Label = "Edit",
+				Label = UiFormConstants.EditLabel,
 				Form = typeof(EditActivityType).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), id }
 				}
-			};
+			}.WithCssClass("btn-primary btn-icon");
 		}
 
 		public class Request : RecordRequest<Response>
