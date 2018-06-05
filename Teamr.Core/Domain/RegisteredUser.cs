@@ -2,6 +2,11 @@
 
 namespace Teamr.Core.Domain
 {
+	using System.Collections.Generic;
+	using Teamr.Core.Commands.Activity;
+	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Core.Binding;
+
 	/// <summary>
 	/// Represents user registered in the system.
 	/// </summary>
@@ -23,6 +28,20 @@ namespace Teamr.Core.Domain
 			{
 				Id = userId,
 				Name = name
+			};
+		}
+
+		public FormLink GetUserProfileLink()
+		{
+			return new FormLink
+			{
+				Label = this.Name,
+				Form = typeof(UserProfile).GetFormId(),
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(UserProfile.Request.UserId), this.Id }
+				}
+
 			};
 		}
 	}

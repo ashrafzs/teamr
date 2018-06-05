@@ -9,11 +9,11 @@
 	using UiMetadataFramework.Core.Binding;
 
 	[Form]
-	public class ActivityTypeTypeaheadRemoteSource : ITypeaheadRemoteSource<ActivityTypeTypeaheadRemoteSource.Request, int>
+	public class UserTypeaheadRemoteSource : ITypeaheadRemoteSource<UserTypeaheadRemoteSource.Request, int>
 	{
 		private readonly CoreDbContext dbContext;
 
-		public ActivityTypeTypeaheadRemoteSource(CoreDbContext dbContext)
+		public UserTypeaheadRemoteSource(CoreDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}
@@ -21,8 +21,8 @@
 		public TypeaheadResponse<int> Handle(Request message)
 		{
 			var types = message.GetByIds
-				? this.dbContext.ActivityTypes.Where(t => message.Ids.Items.Contains(t.Id))
-				: this.dbContext.ActivityTypes.Where(t => t.Id.ToString() == message.Query || t.Name.ToLower().Contains(message.Query.ToLower()));
+				? this.dbContext.Users.Where(t => message.Ids.Items.Contains(t.Id))
+				: this.dbContext.Users.Where(t => t.Id.ToString() == message.Query || t.Name.ToLower().Contains(message.Query.ToLower()));
 
 			return new TypeaheadResponse<int>
 			{
