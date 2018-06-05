@@ -3,7 +3,15 @@
 	 {{#if (responseMetadata.title != null && responseMetadata.title != "") || (metadata.label != null && metadata.label != "")}}
 	  <div class="form-header">		 
 		<h2>{{responseMetadata.title || metadata.label}}</h2>		 
+		
+		{{#if documentation }}
+			{{#each  documentation as document }}
+				<Help data={{document}}/>
+			{{/each}}
+		{{/if}}
 	  </div>
+
+		
 	 {{/if}}
 
 	{{#if initialized && visibleInputFields.length > 0}}
@@ -13,7 +21,7 @@
 		<FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" form="{{self}}" />
 		{{/each}}
 
-		<button type="submit" disabled="{{disabled}}" tabindex="-1" class="btn btn-info">{{submitButtonLabel}}</button>
+		<button type="submit" disabled="{{disabled}}" tabindex="-1" class="btn btn-info">{{{submitButtonLabel}}}</button>
 	</form>
 	</div>
 	{{/if}}
@@ -33,6 +41,7 @@
 <script>
 	import FormInput from "./Input";
 	import FormOutput from "./Output";
+	import Help from './help/Help';
 
 	let tabindex = 1;
 	let formCount = 0;
@@ -73,7 +82,8 @@
 						initialized: true,
 						visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
 						submitButtonLabel: form.metadata.getCustomProperty("submitButtonLabel") || "Submit",
-						cssClass: form.metadata.getCustomProperty("cssClass") || ""
+						cssClass: form.metadata.getCustomProperty("cssClass") || "",
+						documentation : form.metadata.getCustomProperty("documentation")
 					});
 
 					tabindex += 1;
@@ -226,7 +236,8 @@
 		},
 		components: {
 			FormInput,
-			FormOutput
+			FormOutput,
+			Help
 		}
 	};
 </script>
@@ -236,17 +247,5 @@
 		margin-top: 15px;
 		padding-left: 10px;
 		padding-right: 10px;
-	}
-
-	.inline-form .response {
-		margin-top:0;
-		padding: 10px 15px;
-	}
-
-	.inline-form h2 {
-		margin: 0;
-		background: #eee;
-		padding: 10px 15px 15px;
-		font-size: 15px;
 	}
 </style>

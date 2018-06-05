@@ -2,6 +2,11 @@
 $mainColor: #1eb1c8 !default;
 $secondColor:#f3818c !default;
 
+$primaryColor:#3598dc !default;
+$successColor:#32c5d2 !default;
+$dangerColor:#e7505a !default;
+$warningColor:#c49f47 !default;
+
 @font-face {
     font-family: Trocchi;
     src: url("./fonts/Trocchi.otf") format("opentype");
@@ -122,9 +127,20 @@ input, textarea, select{
 .form-header{
     text-align: center;
     padding-top: 20px;
-    padding-bottom: 10px;
     border-bottom: 1px solid #bbd2d6;
     background-color: #fff
+}
+
+.form-header h2{
+  display: inline-block;
+}
+.help-content {
+  text-align: left;
+}
+
+.modal .card {
+  max-width: 85%;
+  padding: 10px 15px;
 }
 
 .form-body{
@@ -185,6 +201,86 @@ footer {
     color: #fff !important;
 }
 
+.btn-danger {
+    background-color: #fff !important;
+    border: 1px solid $dangerColor !important;
+    color: $dangerColor !important;
+}
+
+.btn-danger:not([disabled]):not(.disabled).active, 
+.btn-danger:not([disabled]):not(.disabled):active, 
+.show>.btn-danger.dropdown-toggle {
+   background-color: $dangerColor !important;
+  color: #fff !important;
+    box-shadow: none !important ; 
+}
+
+.btn-danger:hover, .btn-danger.focus, .btn-danger:focus {
+    background-color: $dangerColor !important;
+    color: #fff !important;
+        border-color: $dangerColor !important;
+}
+
+.btn-success {
+    background-color: #fff !important;
+    border: 1px solid $successColor !important;
+    color: $successColor !important;
+}
+
+.btn-success:not([disabled]):not(.disabled).active, 
+.btn-success:not([disabled]):not(.disabled):active, 
+.show>.btn-success.dropdown-toggle {
+   background-color: $successColor !important;
+  color: #fff !important;
+    box-shadow: none !important ; 
+}
+
+.btn-success:hover, .btn-success.focus, .btn-success:focus {
+    background-color: $successColor !important;
+    color: #fff !important;
+        border-color: $successColor !important;
+}
+
+.btn-primary {
+    background-color: #fff !important;
+    border: 1px solid $primaryColor !important;
+    color: $primaryColor !important;
+}
+
+.btn-primary:not([disabled]):not(.disabled).active, 
+.btn-primary:not([disabled]):not(.disabled):active, 
+.show>.btn-primary.dropdown-toggle {
+   background-color: $primaryColor !important;
+  color: #fff !important;
+    box-shadow: none !important ; 
+}
+
+.btn-primary:hover, .btn-primary.focus, .btn-primary:focus {
+    background-color: $primaryColor !important;
+    color: #fff !important;
+        border-color: $primaryColor !important;
+}
+
+.btn-warning {
+    background-color: #fff !important;
+    border: 1px solid $warningColor !important;
+    color: $warningColor !important;
+}
+
+.btn-warning:not([disabled]):not(.disabled).active, 
+.btn-warning:not([disabled]):not(.disabled):active, 
+.show>.btn-warning.dropdown-toggle {
+   background-color: $warningColor !important;
+  color: #fff !important;
+    box-shadow: none !important ; 
+}
+
+.btn-warning:hover, .btn-warning.focus, .btn-warning:focus {
+    background-color: $warningColor !important;
+    color: #fff !important;
+    border-color: $warningColor !important;
+}
+
 .btn-info.focus, .btn-info:focus {
     box-shadow: 0 0 0 0.1rem rgba(23,162,184,.5) !important;
 }
@@ -192,3 +288,102 @@ footer {
 .btn{
   margin-left:10px
 }
+
+.alert-nodata {
+		padding: 5px 15px;
+    	font-style: italic;
+	}
+
+	.table>tbody>tr>td .actionlist {
+		background: none;
+		border: none;
+		margin: 0;
+		padding: 0;	
+		text-align: left;
+	}
+
+	.table{
+		border: 1px solid #e5eff8;
+	}
+
+	.table thead th{
+    	border-bottom: 1px solid #e5eff8;
+    	border-left: 1px solid #e5eff8;
+    	font-weight: normal;
+    	background: #f4f9fe;
+    	color: #3f6e94;
+	}
+
+	.table tbody td{
+    	border-top: 1px solid #e9ecef;
+    	color: #333;
+    	border-bottom: 1px solid #e5eff8;
+    	border-left: 1px solid #e5eff8;
+	}
+
+	.table tbody tr:nth-child(even) td {
+		background: #f4f9fe
+	}
+
+	.table tbody tr:nth-child(odd) td {
+		background: #FFF
+	}
+.table .table thead th{
+  border-left: 0;
+  background: #fff;
+  border-bottom: 3px solid #e9ecef;
+}
+
+.table .table tbody td{
+  border-left: 0;
+}
+
+.table .table tbody tr:nth-child(even) td {
+    background: #fff;
+}
+.btn-icon{
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.btn-icon:not([disabled]):not(.disabled).active, 
+.btn-icon:not([disabled]):not(.disabled):active, 
+.show>.btn-icon.dropdown-toggle {
+    background-color: transparent !important;
+    box-shadow: none !important ; 
+}
+
+.btn-icon:hover, .btn-icon.focus, .btn-icon:focus {
+    background-color: transparent !important;
+    box-shadow: none !important ; 
+}
+
+.btn-danger.btn-icon:not([disabled]):not(.disabled).active, 
+.btn-danger.btn-icon:not([disabled]):not(.disabled):active, 
+.show>.btn-danger.btn-icon.dropdown-toggle {
+  color: $dangerColor !important;
+   box-shadow: none !important ; 
+}
+
+.btn-danger.btn-icon:hover, .btn-danger.btn-icon.focus, .btn-danger.btn-icon:focus {
+  color: $dangerColor !important;
+}
+
+.btn-primary.btn-icon:not([disabled]):not(.disabled).active, 
+.btn-primary.btn-icon:not([disabled]):not(.disabled):active, 
+.show>.btn-primary.btn-icon.dropdown-toggle {
+  color: #3598dc !important;
+   box-shadow: none !important ; 
+}
+
+.btn-primary.btn-icon:hover, .btn-primary.btn-icon.focus, .btn-primary.btn-icon:focus {
+  color: $primaryColor !important;
+}
+
+	 .icon-danger{
+    color:#F44336;    
+  }
+
+  .icon-success{
+    color:#4CAF50;
+  }

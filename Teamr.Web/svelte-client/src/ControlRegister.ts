@@ -42,6 +42,7 @@ import Link from "core-ui/outputs/Link";
 import DynamicOutput from "core-ui/outputs/DynamicOutput";
 import FormInstance from "core-ui/outputs/FormInstance";
 import PieGraph from "core-ui/outputs/PieGraph";
+import HtmlString from "core-ui/outputs/HtmlString";
 
 import {
 	FormLogToConsole,
@@ -89,6 +90,7 @@ controlRegister.registerOutputFieldControl("link", Link);
 controlRegister.registerOutputFieldControl("object-list", DynamicOutput, { block: true });
 controlRegister.registerOutputFieldControl("form-instance", FormInstance, { alwaysHideLabel: true });
 controlRegister.registerOutputFieldControl("pie-graph", PieGraph, { block: true });
+controlRegister.registerOutputFieldControl("html-string", HtmlString);
 
 // Form event handlers.
 controlRegister.registerFormEventHandler("log-to-console", new FormLogToConsole());

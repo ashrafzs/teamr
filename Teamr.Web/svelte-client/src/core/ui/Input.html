@@ -1,13 +1,15 @@
+<span hidden="{{!visible}}">
     {{#if !alwaysHideLabel && field.metadata.label !== "" }}
-    <div hidden={{!visibility}} class="form-group row">
-        <label for="{{id}}" class="col-sm-2 col-form-label">{{field.metadata.label}}</label>
-        <div ref:container class="{{class}} col-sm-10"></div>
+    <div class="form-group row">
+        <label for="{{id}}" class="col-sm-3 col-form-label">{{field.metadata.label}}</label>
+        <div ref:container class="{{class}} col-sm-9"></div>
     </div>
     {{else}}
-    <div hidden={{!visibility}} class="form-group row">
+    <div class="form-group row">
         <div ref:container class="{{class}} col-sm-12"></div>
     </div>
-    {{/if}} 
+    {{/if}}
+</span>
 
 
 <script>
@@ -43,15 +45,14 @@
                 }
             });
 
+            form.get("inputs").push(i);
+
             if (field.metadata.eventHandlers.length) {
-                var event = field.metadata.eventHandlers.find(t => t.id === "show-dependent-input");
+                var event = field.metadata.eventHandlers.find(t => t.id === "depend-on");
                 if (event != null) {
                     this.show(false);
                 }
             }
-            console.log(i);
-
-            form.get("inputs").push(i);
         },
         data() {
             inputId += 1;
@@ -61,12 +62,15 @@
             }
         },
         methods: {
-            show(v) {
-                this.set({ visible: !!v });
+            show(visible) {
+                var field = this.get("field");
+                this.set({ visible: !!visible });
+                if (!visible) {
+                    field.metadata.type == "typeahead"
+                        ? field.value.value = null
+                        : field.value = null;
+                }
             }
-        },
-        computed: {
-            visibility: (visible) => visible
         }
     }
 

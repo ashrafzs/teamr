@@ -226,5 +226,17 @@ namespace Teamr.Infrastructure
 				Action = action
 			};
 		}
+
+		public static StyledFormLink WithCssClass(this FormLink formLink, string cssClass)
+		{
+			return new StyledFormLink
+			{
+				Label = formLink.Label,
+				Form = formLink.Form,
+				InputFieldValues = formLink.InputFieldValues,
+				Action = formLink.Action,
+				CssClass = cssClass
+			};
+		}
 	}
 }

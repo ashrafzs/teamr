@@ -68,7 +68,6 @@ export class AppRouter implements umf.IAppRouter {
 			},
 			resolve: function (data, parameters, cb) {
 				var formInstance = app.getFormInstance(parameters._id, true);
-
 				formInstance.initializeInputFields(parameters).then(() => {
 					cb(false, {
 						metadata: formInstance.metadata,

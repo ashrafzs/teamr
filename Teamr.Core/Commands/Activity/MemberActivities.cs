@@ -9,6 +9,7 @@ namespace Teamr.Core.Commands.Activity
 	using Teamr.Core.Domain;
 	using Teamr.Core.Menus;
 	using Teamr.Core.Security;
+	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.EntityFramework;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Security;
@@ -69,8 +70,8 @@ namespace Teamr.Core.Commands.Activity
 		private ActionList GetActions(Activity activity)
 		{
 			var result = new ActionList();
-			result.Actions.Add(EditActivity.Button(activity.Id));
-			result.Actions.Add(DeleteActivity.Button(activity.Id));
+			result.Actions.Add(EditActivity.Button(activity.Id, UiFormConstants.EditIconLabel).WithCssClass("btn-primary btn-icon"));
+			result.Actions.Add(DeleteActivity.Button(activity.Id , UiFormConstants.DeleteLabel).WithCssClass("btn-primary btn-icon"));
 
 			return result;
 		}

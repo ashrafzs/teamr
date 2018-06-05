@@ -3,9 +3,9 @@
 	{{#each field.data.actions as action}}
 	<li>
 		{{#if action.action !== "redirect"}}
-		<button on:click="run(action, app)" class="btn btn-default">{{action.label}}</button>
+		<button on:click="run(action, app)" class="btn btn-default {{action.cssClass}}">{{{action.label}}}</button>
 		{{else}}
-		<a href="{{app.makeUrl(action.form, action.inputFieldValues)}}" class="btn btn-default">{{action.label}}</a>
+		<a href="{{app.makeUrl(action.form, action.inputFieldValues)}}" class="btn btn-default {{action.cssClass}}">{{action.label}}</a>
 		{{/if}}
 	</li>
 	{{/each}}
@@ -146,11 +146,7 @@
 </script>
 
 <style>
-	.modal .card {
-		max-width: 85%;
-		padding: 10px 15px;
-	}
-
+	
 	.hidden {
 		width: 0;
 		height: 0;

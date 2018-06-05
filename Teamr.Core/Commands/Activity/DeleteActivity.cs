@@ -45,12 +45,12 @@ namespace Teamr.Core.Commands.Activity
 			return new Response();
 		}
 
-		public static FormLink Button(int userId)
+		public static FormLink Button(int userId, string label)
 		{
 			return new FormLink
 			{
 				Form = typeof(DeleteActivity).GetFormId(),
-				Label = "Delete",
+				Label = label,
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), userId }

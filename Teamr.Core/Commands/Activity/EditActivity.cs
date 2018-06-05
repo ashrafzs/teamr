@@ -18,7 +18,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "edit-activity", PostOnLoad = true,PostOnLoadValidation = false ,Label = "Edit activity", SubmitButtonLabel = "Save changes")]
+	[MyForm(Id = "edit-activity", PostOnLoad = true,PostOnLoadValidation = false ,Label = "Edit activity", SubmitButtonLabel = UiFormConstants.EditSubmitLabel)]
 	public class EditActivity : IMyAsyncForm<EditActivity.Request, EditActivity.Response>, 
 		IAsyncSecureHandler<Domain.Activity, EditActivity.Request, EditActivity.Response>
 	{
@@ -67,15 +67,15 @@ namespace Teamr.Core.Commands.Activity
 			return ActivityAction.Edit;
 		}
 
-		public static FormLink Button(int userId)
+		public static FormLink Button(int id, string label)
 		{
 			return new FormLink
 			{
 				Form = typeof(EditActivity).GetFormId(),
-				Label = "Edit",
+				Label =label,
 				InputFieldValues = new Dictionary<string, object>
 				{
-					{ nameof(Request.Id), userId }
+					{ nameof(Request.Id), id }
 				}
 			};
 		}

@@ -20,7 +20,6 @@ export class FileUploaderController extends umf.InputController<FileUploaderValu
 
 	getValue(): Promise<FileUploaderValue> {
 		var self = this;
-
 		if (self.selected == null ||
 			self.selected.length === 0) {
 			return Promise.resolve(new FileUploaderValue());
@@ -32,6 +31,9 @@ export class FileUploaderController extends umf.InputController<FileUploaderValu
 		for (let f of self.selected) {
 			if (f.fileId != null) {
 				result.files.push(f.fileId);
+				if (result.files.length == self.selected.length) {
+					self.selected = null;
+				}
 				continue;
 			}
 
