@@ -1,5 +1,6 @@
 namespace Teamr.Core.Commands.Activity
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using CPermissions;
@@ -28,12 +29,27 @@ namespace Teamr.Core.Commands.Activity
 			var query = this.dbContext.Activities
 				.Where(a => a.CreatedByUserId == message.UserId && a.PerformedOn != null);
 
+			var totalPoints = query.Sum(s => s.Points);
+			var firstDate = query.OrderBy(a => a.PerformedOn).FirstOrDefault()?.PerformedOn;
+			int totalDays = 0;
+			if (firstDate != null)
+			{
+				totalDays = DateTime.UtcNow.Subtract(firstDate.Value).Days / 7 * 5;
+			}
+
 			var user = this.dbContext.Users.FindOrException(message.UserId);
+
 			return new Response
 			{
 				Name = user.Name,
-				TotalPoints = query.Sum(s => s.Points)
+				TotalPoints = totalPoints,
+				AveragePerDay = totalDays > 0 ? totalPoints / totalDays : 0
 			};
+		}
+
+		public UserAction GetPermission()
+		{
+			return CoreActions.ViewActivities;
 		}
 
 		public static FormLink Button(int userId, string label)
@@ -48,10 +64,6 @@ namespace Teamr.Core.Commands.Activity
 				}
 			};
 		}
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewActivities;
-		}
 
 		public class Request : IRequest<Response>
 		{
@@ -61,14 +73,14 @@ namespace Teamr.Core.Commands.Activity
 
 		public class Response : FormResponse
 		{
-			[OutputField(OrderIndex = 2, Label = "Total points")]
-			public decimal TotalPoints { get; set; }
-
 			[OutputField(OrderIndex = 2, Label = "Average per day")]
 			public decimal AveragePerDay { get; set; }
 
 			[OutputField(OrderIndex = 1, Label = "Name")]
 			public string Name { get; set; }
+
+			[OutputField(OrderIndex = 2, Label = "Total points")]
+			public decimal TotalPoints { get; set; }
 		}
 	}
 }
