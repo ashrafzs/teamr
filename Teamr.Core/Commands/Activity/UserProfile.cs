@@ -49,7 +49,7 @@ namespace Teamr.Core.Commands.Activity
 
 		public UserAction GetPermission()
 		{
-			return CoreActions.ViewActivities;
+			return CoreActions.ViewUserProfile;
 		}
 
 		public static FormLink Button(int userId, string label)

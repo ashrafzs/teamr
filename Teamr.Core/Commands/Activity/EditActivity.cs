@@ -7,7 +7,6 @@ namespace Teamr.Core.Commands.Activity
 	using Microsoft.EntityFrameworkCore;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Pickers;
-	using Teamr.Core.Security;
 	using Teamr.Core.Security.Activity;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;

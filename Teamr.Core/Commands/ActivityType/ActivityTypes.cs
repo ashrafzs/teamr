@@ -44,7 +44,7 @@ namespace Teamr.Core.Commands.ActivityType
 					CreatedBy = s.User?.Name,
 					CreatedOn = s.CreatedOn,
 					Remarks = s.Remarks,
-					Actions = new ActionList(EditActivityType.Button(s.Id))
+					Actions = new ActionList(EditActivityType.Button(s.Id), DeleteActivityType.Button(s.Id))
 				}),
 				Actions = new ActionList(AddActivityType.Button())
 			};

@@ -55,7 +55,7 @@ namespace Teamr.Core.Commands.Activity
 			return new Response
 			{
 				Users = result,
-				Actions = this.permissionManager.CanDo(CoreActions.UseTools, this.userContext)
+				Actions = this.permissionManager.CanDo(CoreActions.ViewActivities, this.userContext)
 					? new ActionList(AddActivity.Button())
 					: null
 			};

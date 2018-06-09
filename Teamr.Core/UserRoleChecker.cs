@@ -12,7 +12,7 @@ namespace Teamr.Core
 		{
 			if (userData != null)
 			{
-				yield return CoreRoles.SysAdmin;
+				yield return CoreRoles.ToDo;
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 namespace Teamr.Core.Commands.Activity
 {
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Threading.Tasks;
 	using CPermissions;
 	using MediatR;
@@ -33,15 +32,11 @@ namespace Teamr.Core.Commands.Activity
 
 		public async Task<Response> Handle(Request message)
 		{
-			var activity = this.dbContext.Activities.SingleOrDefault(t => t.Id == message.Id);
-
-			if (activity == null)
-			{
-				return new Response();
-			}
+			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == message.Id);
 
 			this.dbContext.Activities.Remove(activity);
 			await this.dbContext.SaveChangesAsync();
+
 			return new Response();
 		}
 
