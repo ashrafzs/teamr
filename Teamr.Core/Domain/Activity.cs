@@ -8,9 +8,8 @@ namespace Teamr.Core.Domain
 
 	public class Activity: IDeletable
 	{
-		private Activity(bool isDeleted)
+		private Activity()
 		{
-			this.IsDeleted = isDeleted;
 		}
 
 		internal Activity(int userId, ActivityType type, decimal quantity, string notes, DateTime scheduledOn, DateTime? performedOn)
@@ -24,6 +23,7 @@ namespace Teamr.Core.Domain
 			this.IsDeleted = false;
 			this.ActivityType = type;
 			this.Points = type.Points * quantity;
+			this.IsDeleted = false;
 		}
 
 		public int CreatedByUserId { get; private set; }

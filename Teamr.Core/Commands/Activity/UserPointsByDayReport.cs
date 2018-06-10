@@ -68,19 +68,6 @@ namespace Teamr.Core.Commands.Activity
 			return CoreActions.ViewUserPointsByDayReport;
 		}
 
-		public static FormLink Button(DateTime date, string label)
-		{
-			return new FormLink
-			{
-				Label = label,
-				Form = typeof(UserDayReport).GetFormId(),
-				InputFieldValues = new Dictionary<string, object>
-				{
-					{ nameof(Request.Day), date }
-				}
-			};
-		}
-
 		public class Request : IRequest<Response>
 		{
 			[InputField(OrderIndex = 0)]
