@@ -17,7 +17,7 @@ namespace Teamr.Core.Commands.ActivityType
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Menu = CoreMenus.Activity, Id = "activity-types", Label = "Activity Types", PostOnLoad = true)]
+	[MyForm(Menu = CoreMenus.Activity, Id = "activity-types", Label = "Activity types", PostOnLoad = true)]
 	public class ActivityTypes : IForm<ActivityTypes.Request, ActivityTypes.Response>,
 		ISecureHandler
 	{
@@ -72,10 +72,10 @@ namespace Teamr.Core.Commands.ActivityType
 		public class ActivityTypeItem
 		{
 
-			[OutputField(OrderIndex = 70)]
+			[OutputField(OrderIndex = 70, Label = "Created by")]
 			public string CreatedBy { get; set; }
 
-			[OutputField(OrderIndex = 60)]
+			[OutputField(OrderIndex = 60, Label = "Created on")]
 			public DateTime CreatedOn { get; set; }
 
 			[OutputField(OrderIndex = 10)]

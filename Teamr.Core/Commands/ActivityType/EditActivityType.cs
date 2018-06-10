@@ -81,7 +81,7 @@
 
 		public class Request : RecordRequest<Response>
 		{
-			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
+			[InputField(Hidden = false, Required = true, OrderIndex = 5, Label = "Change old activity points")]
 			public bool ChangeOldActivityPoints { get; set; }
 
 			[InputField(Hidden = true)]
