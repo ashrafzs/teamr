@@ -1,6 +1,5 @@
 namespace Teamr.Users.Commands
 {
-	using System.Linq;
 	using CPermissions;
 	using MediatR;
 	using Microsoft.AspNetCore.Identity;
@@ -27,7 +26,7 @@ namespace Teamr.Users.Commands
 
 		public Response Handle(Request message)
 		{
-			var user = this.userManager.Users.SingleOrDefault(t => t.UserName == this.userContext.User.UserName);
+			var user = this.userManager.Users.SingleOrException(t => t.UserName == this.userContext.User.UserName);
 
 			return new Response
 			{

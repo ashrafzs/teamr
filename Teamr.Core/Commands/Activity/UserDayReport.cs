@@ -24,15 +24,11 @@ namespace Teamr.Core.Commands.Activity
 	public class UserDayReport : IForm<UserDayReport.Request, UserDayReport.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
-		private readonly SystemPermissionManager permissionManager;
 		private readonly UserContext userContext;
 
-		public UserDayReport(
-			SystemPermissionManager permissionManager,
-			UserContext userContext,
+		public UserDayReport(UserContext userContext,
 			CoreDbContext dbContext)
 		{
-			this.permissionManager = permissionManager;
 			this.userContext = userContext;
 			this.dbContext = dbContext;
 		}
@@ -49,9 +45,6 @@ namespace Teamr.Core.Commands.Activity
 			return new Response
 			{
 				Users = result,
-				Actions = this.permissionManager.CanDo(CoreActions.AddActivity, this.userContext)
-					? new ActionList(AddActivity.Button())
-					: null,
 				TotalPoints = query.Sum(s => s.Points)
 			};
 		}
@@ -71,9 +64,6 @@ namespace Teamr.Core.Commands.Activity
 
 		public class Response : FormResponse
 		{
-			[OutputField(OrderIndex = -10)]
-			public ActionList Actions { get; set; }
-
 			[OutputField(OrderIndex = 1, Label = "Total points")]
 			public decimal TotalPoints { get; set; }
 

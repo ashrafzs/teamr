@@ -10,6 +10,6 @@ namespace Teamr.Core.Security
 		public static readonly SystemAction ViewUserPointsByDayReport = new SystemAction(nameof(ViewUserPointsByDayReport), CoreRoles.Member);
 		public static readonly SystemAction ManageActivityTypes = new SystemAction(nameof(ManageActivityTypes), CoreRoles.SysAdmin);
 		public static readonly SystemAction AddActivity = new SystemAction(nameof(AddActivity), CoreRoles.Member);
-		public static readonly SystemAction ViewReport = new SystemAction(nameof(ViewReport), CoreRoles.Test);
+		public static readonly SystemAction ViewReport = new SystemAction(nameof(ViewReport), CoreRoles.Member);
 	}
 }
