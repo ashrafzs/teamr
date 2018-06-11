@@ -85,6 +85,8 @@
     <Build Include="nofy\Tables\NotificationAction.sql" />
     <Build Include="core\Tables\ActivityType.sql" />
     <Build Include="core\Tables\Activity.sql" />
+    <Build Include="core\Tables\LeaveType.sql" />
+    <Build Include="core\Tables\Leave.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="create-db-login-and-user.sql" />

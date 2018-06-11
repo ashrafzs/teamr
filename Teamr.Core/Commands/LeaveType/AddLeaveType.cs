@@ -1,4 +1,4 @@
-﻿namespace Teamr.Core.Commands.ActivityType
+﻿namespace Teamr.Core.Commands.LeaveType
 {
 	using System.Collections.Generic;
 	using CPermissions;
@@ -14,14 +14,14 @@
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "add-activity-type", Label = "Add activity type",
+	[MyForm(Id = "add-leave-type", Label = "Add leave type",
 		SubmitButtonLabel = "Save changes")]
-	public class AddActivityType : IMyForm<AddActivityType.Request, AddActivityType.Response>, ISecureHandler
+	public class AddLeaveType : IMyForm<AddLeaveType.Request, AddLeaveType.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext context;
 		private readonly UserContext userContext;
 
-		public AddActivityType(CoreDbContext context, UserContext userContext)
+		public AddLeaveType(CoreDbContext context, UserContext userContext)
 		{
 			this.context = context;
 			this.userContext = userContext;
@@ -29,10 +29,10 @@
 
 		public Response Handle(Request message)
 		{
-			if (message.Points != null)
+			if (message.Quantity != null)
 			{
-				var activityType = new ActivityType(message.Name, this.userContext.User.UserId, message.Unit, message.Points.Value, message.Remarks?.Value);
-				this.context.ActivityTypes.Add(activityType);
+				var leaveType = new LeaveType(message.Name, this.userContext.User.UserId, message.Quantity.Value, message.Remarks?.Value);
+				this.context.LeaveTypes.Add(leaveType);
 				this.context.SaveChanges();
 			}
 
@@ -41,7 +41,7 @@
 
 		public UserAction GetPermission()
 		{
-			return CoreActions.ManageActivityTypes;
+			return CoreActions.ManageLeaveTypes;
 		}
 
 		public static FormLink Button()
@@ -49,7 +49,7 @@
 			return new FormLink
 			{
 				Label = "Add",
-				Form = typeof(AddActivityType).GetFormId(),
+				Form = typeof(AddLeaveType).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>()
 			};
 		}
@@ -60,13 +60,10 @@
 			public string Name { get; set; }
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
-			public decimal? Points { get; set; }
+			public decimal? Quantity { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]
 			public TextareaValue Remarks { get; set; }
-
-			[InputField(Required = true, OrderIndex = 3)]
-			public string Unit { get; set; }
 		}
 
 		public class Response : FormResponse<MyFormResponseMetadata>

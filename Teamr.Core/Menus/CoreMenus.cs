@@ -9,6 +9,7 @@ namespace Teamr.Core.Menus
 		public const string Activity = "Activity";
 		public const string System = "System";
 		public const string Main = "";
+		public const string Leave = "Leave";
 
 		public IList<MenuMetadata> GetMenuMetadata()
 		{
@@ -17,6 +18,7 @@ namespace Teamr.Core.Menus
 				new MenuMetadata(Main, 2),
 				new MenuMetadata(Activity, 14),
 				new MenuMetadata(Reports, 15),
+				new MenuMetadata(Leave, 16),
 				new MenuMetadata(System, 20)
 			};
 		}

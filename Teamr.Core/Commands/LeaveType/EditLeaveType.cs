@@ -1,7 +1,6 @@
-﻿namespace Teamr.Core.Commands.ActivityType
+﻿namespace Teamr.Core.Commands.LeaveType
 {
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Threading.Tasks;
 	using CPermissions;
 	using Teamr.Core.DataAccess;
@@ -15,55 +14,46 @@
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "edit-activity-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit activity type",
+	[MyForm(Id = "edit-leave-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit leave type",
 		SubmitButtonLabel = "Save changes")]
-	public class EditActivityType : IMyAsyncForm<EditActivityType.Request, EditActivityType.Response>, ISecureHandler
+	public class EditLeaveType : IMyAsyncForm<EditLeaveType.Request, EditLeaveType.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext context;
 
-		public EditActivityType(CoreDbContext context)
+		public EditLeaveType(CoreDbContext context)
 		{
 			this.context = context;
 		}
 
 		public async Task<Response> Handle(Request message)
 		{
-			var activityType = await this.context.ActivityTypes
+			var leaveType = await this.context.LeaveTypes
 				.SingleOrExceptionAsync(s => s.Id == message.Id);
 
 			if (message.Operation?.Value == RecordRequestOperation.Post)
 			{
-				if (message.Points != null)
+				if (message.Quantity != null)
 				{
-					if (message.Points != activityType.Points && message.ChangeOldActivityPoints)
-					{
-						foreach (var activity in this.context.Activities.Where(w => w.ActivityTypeId == message.Id))
-						{
-							activity.EditPoints(message.Points.Value);
-						}
-					}
-
-					activityType.Edit(message.Name, message.Unit, message.Points.Value, message.Remarks?.Value);
+					leaveType.Edit(message.Name, message.Quantity.Value, message.Remarks?.Value);
 					this.context.SaveChanges();
 				}
 			}
 
 			return new Response
 			{
-				Name = activityType.Name,
-				Points = activityType.Points,
-				Unit = activityType.Unit,
-				Remarks = activityType.Remarks,
+				Name = leaveType.Name,
+				Points = leaveType.Quantity,
+				Remarks = leaveType.Remarks,
 				Metadata = new MyFormResponseMetadata
 				{
-					Title = activityType.Name
+					Title = leaveType.Name
 				}
 			};
 		}
 
 		public UserAction GetPermission()
 		{
-			return CoreActions.ManageActivityTypes;
+			return CoreActions.ManageLeaveTypes;
 		}
 
 		public static FormLink Button(int id)
@@ -71,7 +61,7 @@
 			return new FormLink
 			{
 				Label = UiFormConstants.EditLabel,
-				Form = typeof(EditActivityType).GetFormId(),
+				Form = typeof(EditLeaveType).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), id }
@@ -81,9 +71,6 @@
 
 		public class Request : RecordRequest<Response>
 		{
-			[InputField(Hidden = false, Required = true, OrderIndex = 5, Label = "Change old activity points")]
-			public bool ChangeOldActivityPoints { get; set; }
-
 			[InputField(Hidden = true)]
 			public int Id { get; set; }
 
@@ -93,15 +80,11 @@
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Points))]
-			public decimal? Points { get; set; }
+			public decimal? Quantity { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]
 			[BindToOutput(nameof(Response.Remarks))]
 			public TextareaValue Remarks { get; set; }
-
-			[InputField(Required = true, OrderIndex = 3)]
-			[BindToOutput(nameof(Response.Unit))]
-			public string Unit { get; set; }
 		}
 
 		public class Response : RecordResponse
@@ -114,9 +97,6 @@
 
 			[NotField]
 			public string Remarks { get; set; }
-
-			[NotField]
-			public string Unit { get; set; }
 		}
 	}
 }

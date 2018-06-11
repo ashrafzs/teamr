@@ -23,7 +23,6 @@ namespace Teamr.Core.Domain
 			this.IsDeleted = false;
 			this.ActivityType = type;
 			this.Points = type.Points * quantity;
-			this.IsDeleted = false;
 		}
 
 		public int CreatedByUserId { get; private set; }
@@ -62,10 +61,5 @@ namespace Teamr.Core.Domain
 		}
 
 		public bool IsDeleted { get; }
-	}
-
-	public interface IDeletable
-	{
-		bool IsDeleted { get; }
 	}
 }
