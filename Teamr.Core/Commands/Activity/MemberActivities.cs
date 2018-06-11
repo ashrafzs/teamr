@@ -80,6 +80,9 @@ namespace Teamr.Core.Commands.Activity
 			[InputField(OrderIndex = 0)]
 			public int? Id { get; set; }
 
+			[InputField(OrderIndex = 1)]
+			public DateTime? On { get; set; }
+
 			public Paginator Paginator { get; set; }
 		}
 

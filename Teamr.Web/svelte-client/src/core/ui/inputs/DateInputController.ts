@@ -13,6 +13,7 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	getValue(): Promise<Date> {
+		debugger;
 		var date = this.parseDate(this.valueAsText);
 		return Promise.resolve(date);
 	}
@@ -28,6 +29,7 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	private parseDate(value: string): Date {
+		debugger;
 		let dateAsNumber = Date.parse(value);
 		return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
 	}

@@ -31,13 +31,13 @@ namespace Teamr.Core.Commands.Activity
 
 		public async Task<Response> Handle(Request message)
 		{
-			if (message.ScheduledOn.Date > DateTime.Today.Date )
+			if (message.ScheduledOn?.Date > DateTime.Today.Date )
 			{
 				throw new BusinessException("It is not allowed to record activities for future dates.");
 			}
 
 			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(message.ActivityTypeId.Value);
-				var activity = new Activity(this.userContext.User.UserId, activityType, message.Quantity, message.Notes, message.ScheduledOn, message.PerformedOn);
+				var activity = new Activity(this.userContext.User.UserId, activityType, message.Quantity, message.Notes, message.ScheduledOn.Value, message.PerformedOn);
 				this.dbContext.Activities.Add(activity);
 				await this.dbContext.SaveChangesAsync();
 			
@@ -71,7 +71,7 @@ namespace Teamr.Core.Commands.Activity
 			public string Notes { get; set; }
 
 			[InputField(OrderIndex = 40)]
-			public DateTime ScheduledOn { get; set; }
+			public DateTime? ScheduledOn { get; set; }
 
 			[InputField(OrderIndex = 50)]
 			public DateTime? PerformedOn { get; set; }
