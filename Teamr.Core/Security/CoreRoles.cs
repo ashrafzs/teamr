@@ -6,6 +6,5 @@ namespace Teamr.Core.Security
 	{
 		public static readonly SystemRole SysAdmin = new SystemRole(nameof(SysAdmin));
 		public static readonly SystemRole Member = new SystemRole(nameof(Member));
-		public static readonly SystemRole ToDo = new SystemRole(nameof(ToDo));
 	}
 }
