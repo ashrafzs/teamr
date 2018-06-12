@@ -7,6 +7,7 @@
 	using Teamr.Core.Domain;
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure.Forms;
+	using Teamr.Infrastructure.Forms.CustomProperties;
 	using Teamr.Infrastructure.Security;
 	using Teamr.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
@@ -60,6 +61,7 @@
 			public string Name { get; set; }
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
+			[DecimalStep(".01")]
 			public decimal? Points { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]

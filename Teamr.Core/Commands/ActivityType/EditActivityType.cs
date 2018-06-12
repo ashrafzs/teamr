@@ -8,6 +8,7 @@
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
+	using Teamr.Infrastructure.Forms.CustomProperties;
 	using Teamr.Infrastructure.Forms.Record;
 	using Teamr.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
@@ -93,6 +94,7 @@
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Points))]
+			[DecimalStep(".01")]
 			public decimal? Points { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]

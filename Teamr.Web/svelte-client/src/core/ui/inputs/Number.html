@@ -3,4 +3,18 @@
     bind:value="field.value"
     required="{{field.metadata.required}}"
     tabindex="{{tabindex}}"
-    class="form-control">
+    class="form-control"
+    step="{{step}}">
+
+    <script>
+        export default {
+            computed: {
+                    step: (field, form) => {
+                        debugger;
+                        var step = field.metadata.customProperties != null ? field.metadata.customProperties["decimalStep"] : null;
+                        return step != null ? step :"0";
+                    }
+                }
+        }
+
+    </script>

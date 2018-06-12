@@ -19,7 +19,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[MyForm(Id = "activites", PostOnLoad = true, Label = "View activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
+	[MyForm(Id = "activites", PostOnLoad = true, Label = "Activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
 	public class MemberActivities : IForm<MemberActivities.Request, MemberActivities.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
@@ -56,7 +56,7 @@ namespace Teamr.Core.Commands.Activity
 			{
 				Users = result,
 				Actions = this.permissionManager.CanDo(CoreActions.ViewActivities, this.userContext)
-					? new ActionList(AddActivity.Button())
+					? new ActionList(AddCompletedActivity.Button())
 					: null
 			};
 		}
@@ -130,7 +130,7 @@ namespace Teamr.Core.Commands.Activity
 			[OutputField(OrderIndex = 4)]
 			public decimal Quantity { get; set; }
 
-			[OutputField(OrderIndex = 8, Label = "Scheduled on")]
+			[OutputField(OrderIndex = 3, Label = "Scheduled on")]
 			public DateTime? ScheduledOn { get; set; }
 		}
 	}

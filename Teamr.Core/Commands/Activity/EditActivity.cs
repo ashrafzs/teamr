@@ -10,6 +10,7 @@ namespace Teamr.Core.Commands.Activity
 	using Teamr.Core.Security.Activity;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
+	using Teamr.Infrastructure.Forms.CustomProperties;
 	using Teamr.Infrastructure.Forms.Record;
 	using Teamr.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
@@ -98,6 +99,7 @@ namespace Teamr.Core.Commands.Activity
 
 			[BindToOutput(nameof(Response.Quantity))]
 			[InputField(OrderIndex = 0, Required = true)]
+			[DecimalStep(".01")]
 			public decimal? Quantity { get; set; }
 
 			[NotField]
