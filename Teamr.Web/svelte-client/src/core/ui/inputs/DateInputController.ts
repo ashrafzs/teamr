@@ -13,7 +13,6 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	getValue(): Promise<Date> {
-		debugger;
 		var date = this.parseDate(this.valueAsText);
 		return Promise.resolve(date);
 	}
@@ -27,11 +26,48 @@ export class DateInputController extends umf.InputController<Date> {
 			? `${asDate.getFullYear()}-${this.format2DecimalPlaces(asDate.getMonth() + 1)}-${this.format2DecimalPlaces(asDate.getDate())}`
 			: null;
 	}
+	
 
 	private parseDate(value: string): Date {
-		debugger;
-		let dateAsNumber = Date.parse(value);
-		return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+		let selectedDate = this.asUtcTime(value, 7, 0, 0);
+		if (selectedDate)
+		{
+			let dateAsNumber = Date.parse(selectedDate.toString());
+			return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+		}
+	
+	}
+
+	private asUtcTime(date, hour, min, second) {
+		/// <summary>Returns provided date as if it was UTC date.</summary>
+		/// <param name="date">Local date/time.</param>
+		/// <returns type="Date">Date object.</returns>
+		if (date == null) {
+			return null;
+		}
+
+		// If string but not UTC.
+		if (typeof (date) === "string" && date[date.length - 1] !== "Z") {
+			// Assume UTC.
+			return new Date(date + "Z");
+		}
+
+		var datepart = new Date(new Date(date).toISOString());
+
+		var iso = datepart.getFullYear() +
+			"-" + // year
+			this.format2DecimalPlaces(datepart.getMonth() + 1) +
+			"-" + // month
+			this.format2DecimalPlaces(datepart.getDate()) + // day
+			"T" +
+			this.format2DecimalPlaces(hour) +
+			":" +
+			this.format2DecimalPlaces(min) +
+			":" +
+			this.format2DecimalPlaces(second) +
+			".000Z";
+
+		return new Date(iso);
 	}
 
 	private format2DecimalPlaces(n) {

@@ -2424,7 +2424,6 @@ var DateInputController = (function (_super) {
         });
     };
     DateInputController.prototype.getValue = function () {
-        debugger;
         var date = this.parseDate(this.valueAsText);
         return Promise.resolve(date);
     };
@@ -2437,9 +2436,38 @@ var DateInputController = (function (_super) {
             : null;
     };
     DateInputController.prototype.parseDate = function (value) {
-        debugger;
-        var dateAsNumber = Date.parse(value);
-        return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+        var selectedDate = this.asUtcTime(value, 7, 0, 0);
+        if (selectedDate) {
+            var dateAsNumber = Date.parse(selectedDate.toString());
+            return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+        }
+    };
+    DateInputController.prototype.asUtcTime = function (date, hour, min, second) {
+        /// <summary>Returns provided date as if it was UTC date.</summary>
+        /// <param name="date">Local date/time.</param>
+        /// <returns type="Date">Date object.</returns>
+        if (date == null) {
+            return null;
+        }
+        // If string but not UTC.
+        if (typeof (date) === "string" && date[date.length - 1] !== "Z") {
+            // Assume UTC.
+            return new Date(date + "Z");
+        }
+        var datepart = new Date(new Date(date).toISOString());
+        var iso = datepart.getFullYear() +
+            "-" +
+            this.format2DecimalPlaces(datepart.getMonth() + 1) +
+            "-" +
+            this.format2DecimalPlaces(datepart.getDate()) +
+            "T" +
+            this.format2DecimalPlaces(hour) +
+            ":" +
+            this.format2DecimalPlaces(min) +
+            ":" +
+            this.format2DecimalPlaces(second) +
+            ".000Z";
+        return new Date(iso);
     };
     DateInputController.prototype.format2DecimalPlaces = function (n) {
         return ("0" + n).slice(-2);
@@ -8955,6 +8983,7 @@ function oncreate() {
             {
                 field.valueAsText = date.toString();
             } 
+            
         }
      );
      
