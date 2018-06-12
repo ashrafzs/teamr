@@ -6,7 +6,7 @@ namespace Teamr.Core.Domain
 {
 	using System;
 
-	public class Activity: IDeletable
+	public class Activity
 	{
 		private Activity()
 		{
@@ -20,7 +20,6 @@ namespace Teamr.Core.Domain
 			this.Quantity = quantity;
 			this.ScheduledOn = scheduledOn;
 			this.PerformedOn = performedOn;
-			this.IsDeleted = false;
 			this.ActivityType = type;
 			this.Points = type.Points * quantity;
 		}
@@ -59,7 +58,5 @@ namespace Teamr.Core.Domain
 		{
 			this.Points = points * this.Quantity;
 		}
-
-		public bool IsDeleted { get; }
 	}
 }

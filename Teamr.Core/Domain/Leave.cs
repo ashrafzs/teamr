@@ -6,7 +6,7 @@ namespace Teamr.Core.Domain
 {
 	using System;
 
-	public class Leave : IDeletable
+	public class Leave
 	{
 		private Leave()
 		{
@@ -18,9 +18,7 @@ namespace Teamr.Core.Domain
 			this.Notes = notes;
 			this.CreatedByUserId = userId;
 			this.ScheduledOn = scheduledOn;
-			this.IsDeleted = false;
 			this.LeaveType = type;
-			this.IsDeleted = false;
 		}
 
 		public virtual RegisteredUser CreatedByUser { get; private set; }
@@ -36,8 +34,6 @@ namespace Teamr.Core.Domain
 		public string Notes { get; private set; }
 		public DateTime ScheduledOn { get; private set; }
 
-		public bool IsDeleted { get; private set; }
-
 		public void Edit(string notes, int typeId, DateTime scheduledOn)
 		{
 			this.LeaveTypeId = typeId;
@@ -45,9 +41,5 @@ namespace Teamr.Core.Domain
 			this.Notes = notes;
 		}
 
-		public void Delete()
-		{
-			this.IsDeleted = true;
-		}
 	}
 }

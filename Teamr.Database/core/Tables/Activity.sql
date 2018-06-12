@@ -9,7 +9,6 @@ CREATE TABLE [dbo].[Activity]
     [ActivityTypeId] INT NOT NULL,
     [ScheduledOn] DATETIME NOT NULL, 
     [Points] DECIMAL(18, 2) NOT NULL, 
-    [IsDeleted] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_dbo.Activity_dbo.User_ActivityTypeId] FOREIGN KEY ([ActivityTypeId]) REFERENCES [dbo].[ActivityType] ([Id]),
 	CONSTRAINT [FK_dbo.Activity_dbo.AspNetUsers_CreatedByUserId] FOREIGN KEY ([CreatedByUserId]) REFERENCES [dbo].[AspNetUsers] ([Id])
 )

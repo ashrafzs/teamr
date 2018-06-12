@@ -10,10 +10,10 @@ namespace Teamr.Core.DataAccess
 		{
 		}
 
-		public virtual DbSet<ActivityType> ActivityTypes { get; set; }
 		public virtual DbSet<Activity> Activities { get; set; }
+		public virtual DbSet<ActivityType> ActivityTypes { get; set; }
+		public virtual DbSet<Leave> Leaves { get; set; }
 		public virtual DbSet<LeaveType> LeaveTypes { get; set; }
-		public virtual DbSet<Leave> Leaves{ get; set; }
 		public virtual DbSet<RegisteredUser> Users { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)

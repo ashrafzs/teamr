@@ -68,16 +68,16 @@ namespace Teamr.Core.Commands.Activity
 
 		public class Request : IRequest<Response>
 		{
-			[InputField(OrderIndex = 0)]
-			public int? Id { get; set; }
-
 			[TypeaheadInputField(typeof(ActivityTypeTypeaheadRemoteSource), Label = "Activity Type")]
 			public MultiSelect<int> ActivityTypeId { get; set; }
 
-			[TypeaheadInputField(typeof(UserTypeaheadRemoteSource), Label = "User")]
-			public MultiSelect<int> UsersId { get; set; }
+			[InputField(OrderIndex = 0)]
+			public int? Id { get; set; }
 
 			public Paginator Paginator { get; set; }
+
+			[TypeaheadInputField(typeof(UserTypeaheadRemoteSource), Label = "User")]
+			public MultiSelect<int> UsersId { get; set; }
 		}
 
 		public class Response : FormResponse
