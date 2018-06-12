@@ -19,7 +19,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(PostOnLoad = true, Id = "add-activity", Label = "Add completed activity")]
-	public class AddCompletedActivity : IMyAsyncForm<AddCompletedActivity.Request, AddCompletedActivity.Response>,ISecureHandler
+	public class AddCompletedActivity : IMyAsyncForm<AddCompletedActivity.Request, AddCompletedActivity.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
@@ -32,16 +32,16 @@ namespace Teamr.Core.Commands.Activity
 
 		public async Task<Response> Handle(Request message)
 		{
-			if (message.PerformedOn.Date > DateTime.Today.Date )
+			if (message.PerformedOn.Date > DateTime.Today.Date)
 			{
 				throw new BusinessException("It is not allowed to record activities for future dates.");
 			}
 
 			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(message.ActivityTypeId.Value);
-				var activity = new Activity(this.userContext.User.UserId, activityType, message.Quantity, message.Notes, message.PerformedOn, message.PerformedOn);
-				this.dbContext.Activities.Add(activity);
-				await this.dbContext.SaveChangesAsync();
-			
+			var activity = new Activity(this.userContext.User.UserId, activityType, message.Quantity, message.Notes, message.PerformedOn, message.PerformedOn);
+			this.dbContext.Activities.Add(activity);
+			await this.dbContext.SaveChangesAsync();
+
 			return new Response();
 		}
 

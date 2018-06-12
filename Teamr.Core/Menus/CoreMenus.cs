@@ -17,9 +17,9 @@ namespace Teamr.Core.Menus
 			{
 				new MenuMetadata(Main, 2),
 				new MenuMetadata(Activity, 14),
-				new MenuMetadata(Reports, 15),
 				new MenuMetadata(Leave, 16),
-				new MenuMetadata(System, 20)
+				new MenuMetadata(Reports, 19),
+				new MenuMetadata(System, 20),
 			};
 		}
 	}

@@ -23,10 +23,10 @@ namespace Teamr.Core.Commands.Activity
 	[MyForm(Id = "activites", PostOnLoad = true, Label = "Activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
 	public class Activities : IForm<Activities.Request, Activities.Response>, ISecureHandler
 	{
+		private readonly ActivityPermissionManager activityPermissionManager;
 		private readonly CoreDbContext dbContext;
 		private readonly SystemPermissionManager permissionManager;
 		private readonly UserContext userContext;
-		private readonly ActivityPermissionManager activityPermissionManager;
 
 		public Activities(
 			SystemPermissionManager permissionManager,
@@ -47,11 +47,6 @@ namespace Teamr.Core.Commands.Activity
 				.Where(a => a.CreatedByUserId == this.userContext.User.UserId)
 				.AsNoTracking();
 
-			if (message.Id != null)
-			{
-				query = query.Where(u => u.Id.Equals(message.Id));
-			}
-
 			var result = query
 				.OrderBy(t => t.Id)
 				.Paginate(t => new Item(t, this.activityPermissionManager.CanDo(ActivityAction.Edit, this.userContext, t)), message.Paginator);
@@ -60,7 +55,7 @@ namespace Teamr.Core.Commands.Activity
 			{
 				Users = result,
 				Actions = this.permissionManager.CanDo(CoreActions.ViewActivities, this.userContext)
-					? new ActionList(AddPerformedActivity.Button(), AddPlanActivity.Button())
+					? new ActionList(AddCompletedActivity.Button(), AddPlanActivity.Button())
 					: null
 			};
 		}
@@ -70,12 +65,8 @@ namespace Teamr.Core.Commands.Activity
 			return CoreActions.ViewActivities;
 		}
 
-
 		public class Request : IRequest<Response>
 		{
-			[InputField(OrderIndex = 0)]
-			public int? Id { get; set; }
-
 			[InputField(OrderIndex = 1)]
 			public DateTime? On { get; set; }
 
@@ -111,7 +102,7 @@ namespace Teamr.Core.Commands.Activity
 			[OutputField(OrderIndex = 2, Label = "Activity type")]
 			public string ActivityType { get; set; }
 
-			[OutputField(OrderIndex = 1)]
+			[OutputField(OrderIndex = 1, Hidden = true)]
 			public int Id { get; set; }
 
 			[OutputField(OrderIndex = 6)]
@@ -126,7 +117,7 @@ namespace Teamr.Core.Commands.Activity
 			[OutputField(OrderIndex = 4)]
 			public decimal Quantity { get; set; }
 
-			[OutputField(OrderIndex = 8, Label = "Scheduled on")]
+			[OutputField(OrderIndex = 3, Label = "Scheduled on")]
 			public DateTime? ScheduledOn { get; set; }
 		}
 	}

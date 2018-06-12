@@ -10,6 +10,7 @@ namespace Teamr.Core.Commands.Activity
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure;
 	using Teamr.Infrastructure.Forms;
+	using Teamr.Infrastructure.Forms.CustomProperties;
 	using Teamr.Infrastructure.Security;
 	using Teamr.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input.Typeahead;
@@ -56,7 +57,7 @@ namespace Teamr.Core.Commands.Activity
 			return new FormLink
 			{
 				Form = typeof(AddPlanActivity).GetFormId(),
-				Label = "New activity plan"
+				Label = "Add plan activity"
 			};
 		}
 
@@ -76,6 +77,7 @@ namespace Teamr.Core.Commands.Activity
 			public DateTime ScheduledOn { get; set; }
 
 			[InputField(OrderIndex = 60)]
+			[DecimalStep(".01")]
 			public decimal Quantity { get; set; }
 		}
 	}
