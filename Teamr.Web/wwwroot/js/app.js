@@ -3198,7 +3198,7 @@ assign(SvelteComponent.prototype, proto);
 function step(field, form) {
     debugger;
     var step = field.metadata.customProperties != null ? field.metadata.customProperties["decimalStep"] : null;
-    return step != null ? step :"0";
+    return step != null ? step : "0";
 }
 
 function create_main_fragment$1(component, state) {
