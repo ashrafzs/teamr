@@ -1,4 +1,4 @@
-<select on:change="onChange()" class="multi-select form-control" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}"
+<select on:change="onChange()" class="multi-select form-control" id="{{id}}" tabindex="{{tabindex}}"
  ref:input multiple>
 </select>
 
@@ -95,6 +95,15 @@
 				removeItemButton: true,
 				maxItemCount: field.maxItemCount,
 				noChoicesText: "Please start typing to search..."
+			});
+
+			var formElement = this.refs.input.closest("form");  
+				var self = this;
+				formElement.addEventListener("submit", function (e) {
+					 if (typeof field.value.value == 'undefined') {
+					 	self.refs.input.parentElement.classList.add("divError");
+					 }
+					
 			});
 
 			if (typeof (source) === "string") {

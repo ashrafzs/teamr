@@ -18,7 +18,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(PostOnLoad = true, Id = "add-activity", Label = "Add completed activity")]
+	[MyForm(Id = "add-activity", Label = "Add completed activity")]
 	public class AddCompletedActivity : IMyAsyncForm<AddCompletedActivity.Request, AddCompletedActivity.Response>, ISecureHandler
 	{
 		private readonly CoreDbContext dbContext;

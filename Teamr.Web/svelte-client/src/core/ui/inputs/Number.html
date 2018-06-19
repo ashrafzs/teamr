@@ -10,7 +10,6 @@
         export default {
             computed: {
                 step: (field, form) => {
-                    debugger;
                     var step = field.metadata.customProperties != null ? field.metadata.customProperties["decimalStep"] : null;
                     return step != null ? step : "0";
                 }

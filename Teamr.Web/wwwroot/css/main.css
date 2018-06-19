@@ -358,6 +358,11 @@ input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid, inp
   box-shadow: inset 0 -10px 10px -11px #f3818c !important;
   border-bottom: 1px solid #fba8b0  !important; }
 
+.divError {
+  border: 1px solid #ced4da !important;
+  box-shadow: inset 0 -10px 10px -11px #f3818c !important;
+  border-bottom: 1px solid #fba8b0  !important; }
+
 input, textarea, select {
   margin: 0 !important; }
 
