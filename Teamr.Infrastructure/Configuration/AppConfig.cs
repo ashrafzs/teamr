@@ -9,6 +9,8 @@ namespace Teamr.Infrastructure.Configuration
 		public string SmtpUsername { get; set; }
 		public string SmtpPassword { get; set; }
 		public int SmtpPort { get; set; }
+		public string SendGridApiKey { get; set; }
+		public bool EmailsEnabled { get; set; }
 
 		public static string FileUrl(int fileId) => $"/file/download?id={fileId}";
 	}
