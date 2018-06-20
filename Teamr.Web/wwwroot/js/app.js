@@ -15718,7 +15718,7 @@ function oncreate$1() {
 	var formElement = this.refs.input.closest("form");  
 		var self = this;
 		formElement.addEventListener("submit", function (e) {
-			 if (typeof field.value.value == 'undefined') {
+			 if (typeof field.value.value == 'undefined' && field.metadata.required) {
 			 	self.refs.input.parentElement.classList.add("divError");
 			 }
 			
