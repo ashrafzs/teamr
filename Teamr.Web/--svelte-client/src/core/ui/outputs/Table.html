@@ -1,0 +1,95 @@
+{{#if field.data != null && field.data.length > 0}}
+<table class="table">
+	<thead>
+		<tr>
+			{{#each columnsOrdered as column}}
+			<th>{{column.label}}</th>
+			{{/each}}
+		</tr>
+	</thead>
+	<tbody>
+		{{#if map != null}}
+		{{#each field.data as row}}
+		<tr class="{{getRowCssClass(row)}}">
+			{{#each columnsOrdered as column}}
+			<td>
+				<FormOutput field="{{getField(row, column)}}" app="{{app}}" form="{{form}}" parent="{{parent}}" showLabel="false" />
+			</td>
+			{{/each}}
+		</tr>
+		{{/each}}
+		{{/if}}
+	</tbody>
+</table>
+{{else}}
+<div class="alert-nodata">
+	No data.
+</div>
+{{/if}}
+
+<script>
+	import FormOutput from "../Output";
+
+	export default {
+		oncreate() {
+			var data = this.get("field").data;
+
+			if (data == null) {
+				return;
+			}
+
+			var app = this.get("app");
+			var metadata = this.get("field").metadata;
+			var rowCssClass = (metadata.customProperties || {}).rowCssClass;
+
+			// Create map, with key being the lowercase version of the property name
+			// and value being the actual property name. 
+			var map = {};
+			if (data.length > 0) {
+				let firstRow = data[0];
+
+				for (let property in firstRow) {
+					if (firstRow.hasOwnProperty(property)) {
+						map[property.toLowerCase()] = property;
+					}
+				}
+			}
+
+			this.set({
+				map: map,
+				getField: function(row, column) {
+					var data = row[map[column.id.toLowerCase()]];
+					
+					return {
+						data: data,
+						metadata: column
+					};
+				},
+				getRowCssClass: function (row) {
+					var cssClass = "";
+
+					if (rowCssClass != null)
+					{
+						cssClass = rowCssClass.cssClass || "";
+
+						if (rowCssClass.suffix != null) {
+							cssClass += row[map[rowCssClass.suffix.toLowerCase()]];
+						}
+					}
+
+					return cssClass;
+				}
+			});
+		},
+		computed: {
+			columnsOrdered: (field) => {
+				return field.metadata.customProperties.columns.filter(b => !b.hidden).sort((a, b) => {
+            		return a.orderIndex - b.orderIndex;
+        		});
+			}
+		},
+        components: {
+            FormOutput
+        }
+	};
+</script>

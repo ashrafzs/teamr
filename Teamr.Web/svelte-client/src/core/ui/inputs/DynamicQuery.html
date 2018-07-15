@@ -1,0 +1,217 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Operator</th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+    </thead>
+<tbody>
+{{#if filters != null}}
+{{#each filters as row, index }}
+<tr>
+    <td>
+        <select class="form-control" on:change="fieldChanged(row)" bind:value="row.inputId">
+            {{#if inputs != null && inputs.length > 0}}
+            <option></option>
+            {{#each inputs as input}}
+            <option value="{{input.inputId}}">{{input.label}}</option>
+            {{/each}}
+            {{/if}}
+        </select>
+    </td>
+    <td>
+        {{#if row.operators != null && row.operators.length > 0}}
+        <select class="form-control" bind:value="row.operator" value="{{row.operators[0]}}">          
+                {{#each row.operators as operator}}  
+                <option value="{{operator}}">{{humanize(operator)}}</option>
+                {{/each}} 
+            
+            </select> 
+        {{else}}
+        <select class="form-control" bind:value="row.operator"></select> 
+        {{/if}}
+    </td>
+    <td> 
+        {{#if row.inputField != null}}
+        <FormInput field="{{row.inputField}}" app="{{app}}" form="{{form}}" /> 
+        {{/if}}
+    </td>
+    <td class="actions"> 
+        {{#if index != filters.length -1 }}
+        <button type="button" class="btn btn-danger btn-icon" on:click="removeRow(index)">
+            <i class="fa fa-times"></i>
+        </button> 
+        {{/if}} 
+        {{#if binaryOperators != null && binaryOperators.length > 0}} 
+        {{#each binaryOperators as binaryOperator}}
+        <button type="button" class={{ row.rhsBinaryOperator == binaryOperator ? 'btn btn-primary selected' : 'btn btn-primary'}}
+            on:click="changeBinaryOperator(binaryOperator,index)">{{binaryOperator}}</button> 
+        {{/each}} 
+        {{/if}}
+    </td>
+</tr>
+{{/each}}
+{{/if}}
+</tbody>
+</table>
+<script>
+    import * as umf from "core-framework";
+    import FormInput from "../Input";
+    var inputId = 0;
+
+    export default {
+        oncreate () {
+            let field = this.get("field");
+            let app = this.get("app");
+            if (field.value == null) {
+                return;
+            }
+           
+           this.set({
+                inputs: field.value.inputs,
+                binaryOperators: field.value.binaryOperators,
+             });
+
+            if(field.value.filters != null && field.value.filters.length > 0){
+                var self = this;
+                this.initialiseInputs(field.value.filters, app, field.value.inputs).then(() => {
+                     var filters = field.value.filters;
+                    self.set({
+                        filters: filters
+                    });
+                     field.filters = filters;
+                });
+            }else{
+                var filters = [{}];
+                this.set({
+                    filters: filters
+                });
+                field.filters = filters
+            }
+        },
+        methods: {
+             initialiseInputs: async function (fields, app, inputs) {
+                var promises = [];
+                for (let field of fields) {
+                    if(field.inputId != null && field.inputId != ""){
+                        var filter = inputs.find(t => t.inputId == field.inputId);
+                         if (filter.type == 'datetime') {
+                                filter.type = 'date-range';
+                            }
+                        var inputField = app.controlRegister.createInputControllers([filter])[0];                  
+                        if (inputField != null) {
+                            inputField.constants = {
+                                alwaysHideLabel: true
+                            }
+                           
+                            let p = inputField.init(field.operand);
+                            promises.push(p);
+                            field.inputField = inputField;
+                        }
+                    }else{
+                        field.inputField = null;
+                    }
+                }
+                await Promise.all(promises);
+            },
+            fieldChanged : function(row){
+                var selected = row.inputId;
+                var field = this.get("field");
+                var app = this.get("app");
+                var inputs = this.get("inputs");
+                 var filters = this.get("filters");
+                var input = inputs.find(t => t.inputId == selected);
+                
+                row.operators = input != null ? input.operators : null;
+                row.inputType = input != null ? input.inputType : null;
+                row.inputField = null;
+                this.set({
+                   filters: filters
+                })
+                if(input != null){
+                    if(input.type == 'datetime'){
+                        input.type = 'date-range';
+                    }
+                   var inputField = app.controlRegister.createInputControllers([input])[0];
+                   if (inputField != null) {
+                       inputField.constants = {
+                           alwaysHideLabel: true
+                       }
+                       inputField.init(null);
+                       row.inputField = inputField;
+                    }                
+               }
+              
+                 this.set({
+                        filters: filters
+                    })
+            },
+            changeBinaryOperator: function(rhsBinaryOperator, index){
+                var filters = this.get("filters");
+                 var row = filters[index];
+                    row.rhsBinaryOperator = rhsBinaryOperator;
+                if(index == filters.length - 1){
+                    filters.push({});
+                }
+                this.set({
+                    filters: filters
+                })
+            },
+            removeRow:function (index){
+                var filters = this.get("filters");
+                filters.splice(index, 1);
+                 this.set({
+                    filters: null
+                })
+                this.set({
+                    filters: filters
+                })
+            }
+        },
+        helpers: {
+              humanize(e){
+                  return e.replace(/\.[^/.]+$/, "").split(/(?=[A-Z])/).join(" "); 
+            }
+        },
+        components: {
+            FormInput
+        }
+    }
+
+</script>
+<style>
+    .btn{
+        margin: 0;
+        border-radius: inherit;
+    }
+    .btn:focus{
+        box-shadow: none;
+    }
+
+    .btn-primary.selected{
+        background-color: #3598dc !important;
+        color: #fff !important;
+        border-color: #3598dc !important;
+    }
+    .row{
+        margin: 0;
+        padding: 0;
+    }
+     .no-padding, .no-padding .col-sm-12{
+        padding-left: 0;
+    }
+    .actions{
+        text-align: right;
+    }
+    .table thead th, .table tbody tr:nth-child(even) td, .table tbody td{
+        color:#333;
+        background: #f8f8f8;
+    }
+
+    .table tbody tr:nth-child(odd) td {
+        background: #f8f8f8;
+}
+
+</style>

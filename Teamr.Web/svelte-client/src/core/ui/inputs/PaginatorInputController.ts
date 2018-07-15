@@ -39,6 +39,7 @@ class PaginationParameters {
 
 export class PaginatorInputController extends umf.InputController<PaginationParameters> {
 	serializeValue(value: PaginationParameters | string): string {
+
 		var p = typeof (value) === "string" || value == null
 			? this.parse(<string>value)
 			: value;
@@ -53,7 +54,7 @@ export class PaginatorInputController extends umf.InputController<PaginationPara
 		var result = `${p.pageIndex}-${p.pageSize}`;
 
 		if (p.orderBy != null) {
-			result += `-${p.ascending}-${p.orderBy}}`;
+			result += `-${p.orderBy}-${p.ascending}}`;
 		}
 
 		return result;
@@ -71,7 +72,7 @@ export class PaginatorInputController extends umf.InputController<PaginationPara
 	}
 
 	private parse(value: string): PaginationParameters {
-		// 1-10-asc-firstname
+		// 1-10-firstname-asc
 		// 1-10
 
 		if (value == null || value.length === 0) {

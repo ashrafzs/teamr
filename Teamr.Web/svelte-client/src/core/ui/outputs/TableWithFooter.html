@@ -1,0 +1,181 @@
+{{#if items != null && items.length > 0}}
+<table class="table">
+	<thead>
+		<tr>
+			{{#each columnsOrdered as column}}
+			<th>{{column.label}}</th>
+			{{/each}}
+		</tr>
+	</thead>
+	<tbody>
+		{{#if map != null}}
+		{{#each items as row}}
+		<tr class="{{getRowCssClass(row)}}">
+			{{#each columnsOrdered as column}}
+			<td>
+				<FormOutput field="{{getField(row, column)}}" app="{{app}}" form="{{form}}" parent="{{parent}}" showLabel="false" />
+			</td>
+			{{/each}}
+		</tr>
+		{{/each}}
+		{{/if}}
+	</tbody>
+	{{#if footer != null}}
+	<tfoot>
+		<tr>
+			{{#each footerColumns as column}}
+				<td colspan="{{column.colspan}}">
+					{{#if column.outputField != null}}
+					<FormOutput field="{{column.outputField}}" app="{{app}}" form="{{form}}" parent="{{parent}}" showLabel="false" />
+					{{else}}
+					{{column.label}}
+					{{/if}}
+				</td>
+			{{/each}}
+		</tr>
+	</tfoot>
+	{{/if}}
+</table>
+{{else}}
+<div class="alert-nodata">
+	No data.
+</div>
+{{/if}}
+
+<script>
+	import FormOutput from "../Output";
+	import * as umf from "core-framework";
+	import * as uimfcore from "uimf-core";
+
+	export default {
+		oncreate() {
+			
+			var data = this.get("field").data;
+
+			if (data == null) {
+				return;
+			}
+
+			var app = this.get("app");
+			var metadata = this.get("field").metadata;
+			var rowCssClass = (metadata.customProperties || {}).rowCssClass;
+			var items = [];
+
+			// Create map, with key being the lowercase version of the property name
+			// and value being the actual property name. 
+			var map = {};
+
+			var formMetadata = new uimfcore.FormMetadata({
+				customProperties: data.itemMetadata.customProperties,
+				outputFields: data.itemMetadata
+			});
+
+			for (let item of data.items) {
+				items.push(umf.FormInstance.getOutputFieldValues(formMetadata.outputFields, item));
+			}				
+
+			if (items.length > 0) {
+				let firstRow = items[0];
+				for (let property in firstRow) {
+					if (firstRow.hasOwnProperty(property)) {
+						map[property.toLowerCase()] = property;
+					}
+				}
+			}
+			
+			this.set({
+				map: map,
+				items : items,
+				footer: data.footer,
+				getField: function(row, column) {	
+					return row.find(a => a.metadata.id == column.id);
+				},
+				getRowCssClass: function (row) {
+					var cssClass = "";
+
+					if (rowCssClass != null)
+					{
+						cssClass = rowCssClass.cssClass || "";
+
+						if (rowCssClass.suffix != null) {
+							cssClass += row.find(a => a.metadata.id == rowCssClass.suffix);
+						}
+					}
+
+					return cssClass;
+				}
+			});
+		},
+		computed: {
+			columnsOrdered: (field) => {
+				return field.data.itemMetadata.filter(b => !b.hidden).sort((a, b) => {
+					return a.orderIndex - b.orderIndex;
+				});
+			},
+			footerColumns: (field, columnsOrdered) => {
+				var footer = field.data != null ? field.data.footer : null;
+
+				if (footer != null && 
+					footer.footerProperties != null && 
+					footer.footerProperties.length > 0) {
+					
+					var footerColumns = [];
+
+					for (var i = 0; i < columnsOrdered.length; i++){
+						var column = columnsOrdered[i];
+						var found = false;
+
+						for (let property of footer.footerProperties) {
+							if (property.labelIn != null && 
+								property.labelIn.length > 0 && 
+								property.labelIn.indexOf(column.id) > -1) {	
+								footerColumns.push({
+									label: property.label,
+									colspan: property.labelIn.length
+								});
+
+								i += (property.labelIn.length - 1);
+								found = true;
+								break;
+							} else if (
+								property.dataIn != null && 
+								property.dataIn.length > 0 &&
+								property.dataIn.indexOf(column.id) > -1) {
+								for (var p in footer.data) {
+									if (footer.data.hasOwnProperty(p) && property.id.toLowerCase() == p.toLowerCase()) {
+										var propertyMetadata = field.data.footerMetadata.find(a => a.id == property.id);
+										var outputField = {
+											data: footer.data[p],
+											metadata: propertyMetadata
+										}
+										break;
+									}
+								}
+
+								footerColumns.push({
+									outputField: outputField,
+									colspan: property.dataIn.length
+								});
+
+								i += (property.dataIn.length - 1);
+								found = true;
+								break;
+							}
+						}
+
+						if (!found) {
+							footerColumns.push({label :""});
+						}
+					}
+
+					return footerColumns;
+				}
+
+				return columnsOrdered;
+			}
+		},
+        components: {
+            FormOutput
+		}
+	};
+</script>

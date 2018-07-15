@@ -75,7 +75,7 @@ namespace Teamr.Core.Commands.Activity
 			public DateTime PerformedOn { get; set; }
 
 			[InputField(OrderIndex = 60)]
-			[DecimalStep(".01")]
+			[NumberConfig(Step = 0.01)]
 			public decimal Quantity { get; set; }
 		}
 	}

@@ -1,0 +1,183 @@
+{{#if nodes != null && nodes.length > 0}}
+<ul class="tree">
+	{{#each nodes as node}}
+	<li class="node {{parentclass(node)}}"> 
+		<input type="checkbox" id="{{node.title}}{{node.id}}" class=" tree-checkBox" checked="checked"  />
+
+		<div class="node-div {{selectedclass(form,node)}}"> 
+			
+		<label for="{{node.title}}{{node.id}}">
+			{{#if node.nodes != null && node.nodes.length > 0}}
+			<i class="folder fa fa-folder-open"></i>
+			{{else}}
+			<i class="folder fa fa-folder"></i>
+			{{/if}}
+		</label>
+		<span class="title" on:click="refreshForm(node)">
+			{{node.title}} 
+			{{#if node.counter != null}}
+				({{node.counter}}) 
+			{{/if}}
+		</span>
+		{{#if node.actions != null}}
+		<ActionList field="{{getField(node)}}" app="{{app}}" form="{{form}}" parent="{{parent}}" showLabel="false" />
+		{{/if}}
+		</div>
+
+		<:Self nodes="{{node.nodes}}" app="{{app}}" form="{{form}}" parent="{{parent}}" />
+	</li>
+	{{/each}}
+</ul>
+{{/if}}
+<script>
+	import ActionList from "./ActionList";
+	export default {
+		oncreate (){
+			var field = this.get("field");
+			var nodes = this.get("nodes");
+			if (field == null && nodes == null) {
+				return;
+			}
+			// 1: field.data = OutputFieldValue
+
+			// 2: field.data.nodes == null
+			// 2: nodes = TreeNode[]
+
+			this.set({
+				nodes : field != null ? field.data.nodes: nodes,
+			});
+		},
+		helpers: {
+			getField: function (node) {
+				var result = {
+					data: node.actions // ActionList class
+				};
+
+				//return JSON.stringify(result);
+				return result;
+			},
+			parentclass: function (node) {
+				return node.nodes != null && node.nodes.length ? "parent_li" : ""
+			},
+			selectedclass: function (form, node) {
+				var bindIdToInput = form.inputs.find(t => t.metadata.id == node.inputFieldBindToNodeId);
+
+				if (bindIdToInput != null && bindIdToInput.value == node.id) {
+					return "selected";
+				}			
+				return "";
+			}
+		},
+		methods:{
+			refreshForm(node) {
+				
+					var parent = this.get("parent");
+					var form = parent.get("form");
+					var input = node.inputFieldBindToNodeId;
+
+					var bindIdToInput = form.inputs.find(t => t.metadata.id == input);
+
+					if (bindIdToInput != null) {
+
+						var params = {};
+						for (let i of form.inputs) {
+							params[i.metadata.id] = i.value;
+						}
+						let pageParams = Object.assign({}, params);
+						pageParams[bindIdToInput.metadata.id] = Object.assign({}, pageParams[bindIdToInput.metadata.id]);
+						pageParams[bindIdToInput.metadata.id] = node.id;
+
+						form.setInputFields(pageParams);
+						parent.submit(null, false);
+					}			
+			}
+		},
+        components: {
+            ActionList
+        }
+	}
+</script>
+
+<style>
+
+.tree {
+	margin-right: 0;
+}
+
+.tree:first-child {
+	margin-left: 0;
+	padding-left: 0;
+}
+.tree li {
+    list-style-type:none;
+    margin:0;
+    padding:7px 0px 0 5px;
+    position:relative
+}
+.tree li.parent_li > div::before {
+    border-color: transparent transparent transparent #0061a2;
+    border-style: solid;
+    border-width: 4px 0 5px 5px;
+    height:0;
+    width:0;
+	margin-top: 13px;
+	content:'';
+    left:15px;
+    position:absolute;
+    right:auto
+}
+.tree li .node-div{
+	border: 1px solid #dae2ea;
+}
+.tree li .node-div.selected{
+	background-color: #f5f5f5;
+	color:#000
+}
+.tree li .node-div .title:hover{
+	color: #000
+}
+
+.tree li label {
+    display:inline-block;
+    padding:4px 26px;
+	padding-right: 7px;
+    text-decoration:none;
+	font-weight: 500;
+}
+.tree li i.folder, .tree li .title {
+    color:#0061a2
+}
+
+.tree ul.actionlist {
+    list-style: none !important;
+    display: inline-flex !important;
+	margin: 0 !important;
+	background: transparent !important;
+	float:right;
+}
+.tree li>div >label, .tree li>div > .title {
+    cursor:pointer
+}
+.tree>ul>li::before, .tree>ul>li::after {
+    border:0
+}
+
+.tree li.parent_li>label:hover, .tree li.parent_li>label:hover+ul li label {
+    color:#000
+}
+
+
+	ul.tree	li input.tree-checkBox ~ .tree > li
+	{ 
+		display: none;
+	}
+
+	ul.tree	li input.tree-checkBox:checked ~ .tree > li { 
+		display: block;
+	}
+
+	ul.tree	li.parent_li > input.tree-checkBox:checked + div:before { 
+  		border-color:  transparent transparent #0061a2 transparent ;
+	}
+
+</style>

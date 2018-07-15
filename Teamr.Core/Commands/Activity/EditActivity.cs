@@ -99,7 +99,7 @@ namespace Teamr.Core.Commands.Activity
 
 			[BindToOutput(nameof(Response.Quantity))]
 			[InputField(OrderIndex = 0, Required = true)]
-			[DecimalStep(".01")]
+			[NumberConfig(Step = 0.01)]
 			public decimal? Quantity { get; set; }
 
 			[NotField]

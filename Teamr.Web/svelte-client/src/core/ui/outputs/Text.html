@@ -1,5 +1,5 @@
 {{#if field.data != null }}
-<span class="{{cssClass}}">{{field.data}}</span>
+<span class="{{cssClass}}">{{BooleanChecker}}</span>
 {{/if}}
 
 <script>
@@ -7,7 +7,6 @@
 		computed: {
 			cssClass: (field, form) => {
 				var cssClass = "";
-
 				var dynamicCssClass = field.metadata.getCustomProperty("dynamicCssClass");
 				if (dynamicCssClass != null) {
 					cssClass = dynamicCssClass.cssClassPrefix;
@@ -16,9 +15,15 @@
 						cssClass += suffixOutputField.data;
 					}
 				}
-
 				return cssClass;
-			}
+			},
+			BooleanChecker: (field) => {
+					if (typeof(field.data) === "boolean") {
+						return field.data ? "Yes" : "No";
+					} else {
+						return field.data;
+					}
+				}
 		}
 	}
 </script>

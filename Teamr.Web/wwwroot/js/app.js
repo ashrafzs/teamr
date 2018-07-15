@@ -1,70 +1,6 @@
 (function () {
 'use strict';
 
-/**
- * Represents metadata for a single output field.
- */
-var OutputFieldMetadata = (function () {
-    function OutputFieldMetadata(metadata) {
-        for (var property in metadata) {
-            if (metadata.hasOwnProperty(property)) {
-                this[property] = metadata[property];
-            }
-        }
-        // Special case for "paginated-data", to ensure that each column is also
-        // an instance of OutputFieldMetadata class, instead of a plain javascript object.
-        if (this.customProperties != null && this.customProperties.columns != null) {
-            for (var columnPropertyName in this.customProperties.columns) {
-                // Convert column to OutputFieldMetadata instance.
-                var metadataAsJsonObject = this.customProperties.columns[columnPropertyName];
-                this.customProperties.columns[columnPropertyName] = new OutputFieldMetadata(metadataAsJsonObject);
-            }
-        }
-    }
-    /**
-     * Gets value of a custom property.
-     * @param name name of the custom property to get.
-     * @returns value of the custom property or null if the property is undefined.
-     */
-    OutputFieldMetadata.prototype.getCustomProperty = function (name) {
-        if (this.customProperties != null && this.customProperties[name]) {
-            return this.customProperties[name];
-        }
-        return null;
-    };
-    return OutputFieldMetadata;
-}());
-
-/**
- * Encapsulates all information needed to render a form.
- */
-var FormMetadata = (function () {
-    function FormMetadata(metadata) {
-        for (var property in metadata) {
-            if (metadata.hasOwnProperty(property)) {
-                this[property] = metadata[property];
-            }
-        }
-        this.outputFields = metadata.outputFields.map(function (t) { return new OutputFieldMetadata(t); });
-    }
-    /**
-     * Gets value of a custom property.
-     * @param name name of the custom property to get.
-     * @returns value of the custom property or null if the property is undefined.
-     */
-    FormMetadata.prototype.getCustomProperty = function (name) {
-        if (this.customProperties != null && this.customProperties[name]) {
-            return this.customProperties[name];
-        }
-        return null;
-    };
-    return FormMetadata;
-}());
-
-/**
- * Represents a reference to a form.
- */
-
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -91,7 +27,13 @@ function __extends(d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-
+var __assign = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+    }
+    return t;
+};
 
 
 
@@ -137,66 +79,6 @@ function __generator(thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 }
-
-/**
- * Represents response of a form.
- */
-var FormResponse = (function (_super) {
-    __extends(FormResponse, _super);
-    function FormResponse() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return FormResponse;
-}(Object));
-
-/**
- * Represents metadata for a single input field. *
- */
-
-/**
- * Represents a function.
- */
-var ClientFunctionMetadata = (function () {
-    function ClientFunctionMetadata(metadata) {
-        for (var property in metadata) {
-            if (metadata.hasOwnProperty(property)) {
-                this[property] = metadata[property];
-            }
-        }
-    }
-    /**
-     * Gets value of a custom property.
-     * @param name name of the custom property to get.
-     * @returns value of the custom property or null if the property is undefined.
-     */
-    ClientFunctionMetadata.prototype.getCustomProperty = function (name) {
-        if (this.customProperties != null && this.customProperties[name]) {
-            return this.customProperties[name];
-        }
-        return null;
-    };
-    return ClientFunctionMetadata;
-}());
-
-/**
- * Represents a function which can be run at a specific time during form's lifecycle.
- */
-var EventHandlerMetadata = (function (_super) {
-    __extends(EventHandlerMetadata, _super);
-    function EventHandlerMetadata() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return EventHandlerMetadata;
-}(ClientFunctionMetadata));
-
-/**
- * Metadata describing how to handle the response.
- */
-var FormResponseMetadata = (function () {
-    function FormResponseMetadata() {
-    }
-    return FormResponseMetadata;
-}());
 
 var bind = function bind(fn, thisArg) {
   return function wrap() {
@@ -1728,13 +1610,136 @@ axios_1.default = default_1;
 
 var index = axios_1;
 
+/**
+ * Represents metadata for a single output field.
+ */
+var OutputFieldMetadata = (function () {
+    function OutputFieldMetadata(metadata) {
+        for (var property in metadata) {
+            if (metadata.hasOwnProperty(property)) {
+                this[property] = metadata[property];
+            }
+        }
+        // Special case for "paginated-data", to ensure that each column is also
+        // an instance of OutputFieldMetadata class, instead of a plain javascript object.
+        if (this.customProperties != null && this.customProperties.columns != null) {
+            for (var columnPropertyName in this.customProperties.columns) {
+                // Convert column to OutputFieldMetadata instance.
+                var metadataAsJsonObject = this.customProperties.columns[columnPropertyName];
+                this.customProperties.columns[columnPropertyName] = new OutputFieldMetadata(metadataAsJsonObject);
+            }
+        }
+    }
+    /**
+     * Gets value of a custom property.
+     * @param name name of the custom property to get.
+     * @returns value of the custom property or null if the property is undefined.
+     */
+    OutputFieldMetadata.prototype.getCustomProperty = function (name) {
+        if (this.customProperties != null && this.customProperties[name]) {
+            return this.customProperties[name];
+        }
+        return null;
+    };
+    return OutputFieldMetadata;
+}());
+
+/**
+ * Encapsulates all information needed to render a form.
+ */
+var FormMetadata = (function () {
+    function FormMetadata(metadata) {
+        for (var property in metadata) {
+            if (metadata.hasOwnProperty(property)) {
+                this[property] = metadata[property];
+            }
+        }
+        this.outputFields = metadata.outputFields.map(function (t) { return new OutputFieldMetadata(t); });
+    }
+    /**
+     * Gets value of a custom property.
+     * @param name name of the custom property to get.
+     * @returns value of the custom property or null if the property is undefined.
+     */
+    FormMetadata.prototype.getCustomProperty = function (name) {
+        if (this.customProperties != null && this.customProperties[name]) {
+            return this.customProperties[name];
+        }
+        return null;
+    };
+    return FormMetadata;
+}());
+
+/**
+ * Represents a reference to a form.
+ */
+
+/**
+ * Represents response of a form.
+ */
+var FormResponse = (function (_super) {
+    __extends(FormResponse, _super);
+    function FormResponse() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return FormResponse;
+}(Object));
+
+/**
+ * Represents metadata for a single input field. *
+ */
+
+/**
+ * Represents a function.
+ */
+var ClientFunctionMetadata = (function () {
+    function ClientFunctionMetadata(metadata) {
+        for (var property in metadata) {
+            if (metadata.hasOwnProperty(property)) {
+                this[property] = metadata[property];
+            }
+        }
+    }
+    /**
+     * Gets value of a custom property.
+     * @param name name of the custom property to get.
+     * @returns value of the custom property or null if the property is undefined.
+     */
+    ClientFunctionMetadata.prototype.getCustomProperty = function (name) {
+        if (this.customProperties != null && this.customProperties[name]) {
+            return this.customProperties[name];
+        }
+        return null;
+    };
+    return ClientFunctionMetadata;
+}());
+
+/**
+ * Represents a function which can be run at a specific time during form's lifecycle.
+ */
+var EventHandlerMetadata = (function (_super) {
+    __extends(EventHandlerMetadata, _super);
+    function EventHandlerMetadata() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return EventHandlerMetadata;
+}(ClientFunctionMetadata));
+
+/**
+ * Metadata describing how to handle the response.
+ */
+var FormResponseMetadata = (function () {
+    function FormResponseMetadata() {
+    }
+    return FormResponseMetadata;
+}());
+
 var axios = index;
 var UmfServer = (function () {
     /**
      * Creates a new instance of UmfApp.
      */
     function UmfServer(getMetadataUrl, postFormUrl) {
-        this.loading = false;
         this.eventHandlers = {};
         this.getMetadataUrl = getMetadataUrl;
         this.postFormUrl = postFormUrl;
@@ -1759,6 +1764,7 @@ var UmfServer = (function () {
             _this.fire("request:completed");
             return response.data;
         }).catch(function (e) {
+            // tslint:disable-next-line:no-console
             console.warn("Did not find form \"" + formId + "\".");
             _this.fire("request:completed");
             return null;
@@ -1790,53 +1796,27 @@ var UmfServer = (function () {
             _this.fire("request:completed");
             return invokeFormResponses[0].data;
         }).catch(function (error) {
-            alert(error.response.data.error);
-            _this.fire("request:completed");
+            _this.fire("request:completed", error.response.data.error);
             return null;
         });
     };
     return UmfServer;
 }());
 
-var FormEventArguments = (function () {
-    function FormEventArguments(app) {
-        this.app = app;
-    }
-    return FormEventArguments;
-}());
-var FormResponseEventArguments = (function (_super) {
-    __extends(FormResponseEventArguments, _super);
-    function FormResponseEventArguments(app, response) {
-        var _this = _super.call(this, app) || this;
-        _this.response = response;
-        return _this;
-    }
-    return FormResponseEventArguments;
-}(FormEventArguments));
-var InputEventArguments = (function (_super) {
-    __extends(InputEventArguments, _super);
-    function InputEventArguments(app, input) {
-        var _this = _super.call(this, app) || this;
-        _this.input = input;
-        return _this;
-    }
-    return InputEventArguments;
-}(FormEventArguments));
-
-var FormInstance = (function () {
-    function FormInstance(metadata, controlRegister) {
+var FormInstance$$1 = (function () {
+    function FormInstance$$1(metadata, controlRegister) {
         this.outputs = [];
         this.inputs = [];
         this.metadata = metadata;
         this.inputs = controlRegister.createInputControllers(this.metadata.inputFields);
     }
-    FormInstance.prototype.enforceCanPostOnLoad = function () {
+    FormInstance$$1.prototype.enforceCanPostOnLoad = function () {
         // If user is trying to auto-submit a form which is not enabled for `PostOnLoad`.
         if (!this.metadata.postOnLoad) {
             throw new Error("Invalid invocation of form '" + this.metadata.id + "'. Form cannot be auto-posted, because *PostOnLoad* is set to false.");
         }
     };
-    FormInstance.prototype.allRequiredInputsHaveData = function (asPostOnLoad) {
+    FormInstance$$1.prototype.allRequiredInputsHaveData = function (asPostOnLoad) {
         return __awaiter(this, void 0, void 0, function () {
             var formData;
             return __generator(this, function (_a) {
@@ -1853,7 +1833,7 @@ var FormInstance = (function () {
             });
         });
     };
-    FormInstance.prototype.submit = function (app, asPostOnLoad, args) {
+    FormInstance$$1.prototype.submit = function (app, asPostOnLoad, args) {
         return __awaiter(this, void 0, void 0, function () {
             var formData, response;
             return __generator(this, function (_a) {
@@ -1895,14 +1875,14 @@ var FormInstance = (function () {
             });
         });
     };
-    FormInstance.prototype.initializeInputFields = function (data) {
+    FormInstance$$1.prototype.initializeInputFields = function (data) {
         var promises = [];
         for (var _i = 0, _a = this.inputs; _i < _a.length; _i++) {
             var fieldMetadata = _a[_i];
             var value = null;
             if (data != null) {
                 for (var prop in data) {
-                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.metadata.id.toLowerCase()) {
+                    if (data.hasOwnProperty(prop) && prop.toLowerCase() === fieldMetadata.metadata.id.toLowerCase()) {
                         value = data[prop];
                         break;
                     }
@@ -1912,33 +1892,32 @@ var FormInstance = (function () {
         }
         return Promise.all(promises);
     };
-    FormInstance.prototype.setInputFields = function (data) {
+    FormInstance$$1.prototype.setInputFields = function (data) {
         for (var _i = 0, _a = this.inputs; _i < _a.length; _i++) {
             var field = _a[_i];
             field.value = data[field.metadata.id];
         }
     };
-    FormInstance.prototype.getSerializedInputValues = function () {
+    FormInstance$$1.prototype.getSerializedInputValues = function () {
         var data = {};
         var promises = [];
         var _loop_1 = function (input) {
-            promise = input.serialize().then(function (t) {
+            var promise = input.serialize().then(function (t) {
                 // Don't include inputs without values, because we only
                 // want to serialize "non-default" values.
-                if (t.value != null && t.value != "") {
+                if (t.value != null && t.value !== "") {
                     data[input.metadata.id] = t.value;
                 }
             });
             promises.push(promise);
         };
-        var promise;
         for (var _i = 0, _a = this.inputs; _i < _a.length; _i++) {
             var input = _a[_i];
             _loop_1(input);
         }
         return Promise.all(promises).then(function () { return data; });
     };
-    FormInstance.prototype.getSerializedInputValuesFromObject = function (value) {
+    FormInstance$$1.prototype.getSerializedInputValuesFromObject = function (value) {
         var data = {};
         var normalizedObject = {};
         for (var prop in value) {
@@ -1951,15 +1930,15 @@ var FormInstance = (function () {
             var valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
             // Don't include inputs without values, because we only
             // want to serialize "non-default" values.
-            if (valueAsString != null && valueAsString != "") {
+            if (valueAsString != null && valueAsString !== "") {
                 data[input.metadata.id] = valueAsString;
             }
         }
         return data;
     };
-    FormInstance.getOutputFieldValues = function (outputFieldsMetadata, response) {
+    FormInstance$$1.getOutputFieldValues = function (outputFieldsMetadata, response) {
         var fields = Array();
-        var normalizedResponse = FormInstance.getNormalizedObject(response);
+        var normalizedResponse = FormInstance$$1.getNormalizedObject(response);
         for (var _i = 0, outputFieldsMetadata_1 = outputFieldsMetadata; _i < outputFieldsMetadata_1.length; _i++) {
             var field = outputFieldsMetadata_1[_i];
             var normalizedId = field.id.toLowerCase();
@@ -1973,13 +1952,13 @@ var FormInstance = (function () {
         });
         return fields;
     };
-    FormInstance.prototype.setOutputFieldValues = function (response) {
+    FormInstance$$1.prototype.setOutputFieldValues = function (response) {
         if (response == null) {
             this.outputs = [];
             return;
         }
         var fields = Array();
-        var normalizedResponse = FormInstance.getNormalizedObject(response);
+        var normalizedResponse = FormInstance$$1.getNormalizedObject(response);
         for (var _i = 0, _a = this.metadata.outputFields; _i < _a.length; _i++) {
             var field = _a[_i];
             fields.push({
@@ -1992,7 +1971,7 @@ var FormInstance = (function () {
         });
         this.outputs = fields;
     };
-    FormInstance.prototype.handleEvent = function (eventName, eventMetadata, parameters) {
+    FormInstance$$1.prototype.handleEvent = function (eventName, eventMetadata, parameters) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -2004,7 +1983,7 @@ var FormInstance = (function () {
             });
         });
     };
-    FormInstance.prototype.fire = function (eventName, parameters) {
+    FormInstance$$1.prototype.fire = function (eventName, parameters) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             var promises, _i, _a, input, _b, _c, eventHandlerMetadata, handler, promise, _d, _e, output, _f, _g, eventHandlerMetadata, handler, promise;
@@ -2065,9 +2044,9 @@ var FormInstance = (function () {
             });
         });
     };
-    FormInstance.prototype.getFormData = function (asPostOnLoad) {
+    FormInstance$$1.prototype.getFormData = function (asPostOnLoad) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, promises, hasRequiredMissingInput, _loop_2, promise, _i, _a, input, skipValidation;
+            var data, promises, hasRequiredMissingInput, _loop_2, _i, _a, input, skipValidation;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -2075,9 +2054,9 @@ var FormInstance = (function () {
                         promises = [];
                         hasRequiredMissingInput = false;
                         _loop_2 = function (input) {
-                            promise = input.getValue().then(function (value) {
+                            var promise = input.getValue().then(function (value) {
                                 data[input.metadata.id] = value;
-                                if (input.metadata.required && (value == null || (typeof (value) === "string" && value == ""))) {
+                                if (input.metadata.required && (value == null || (typeof (value) === "string" && value === ""))) {
                                     hasRequiredMissingInput = true;
                                 }
                             });
@@ -2104,7 +2083,7 @@ var FormInstance = (function () {
             });
         });
     };
-    FormInstance.getNormalizedObject = function (response) {
+    FormInstance$$1.getNormalizedObject = function (response) {
         var normalizedResponse = {};
         for (var field in response) {
             if (response.hasOwnProperty(field) && field !== "metadata") {
@@ -2113,18 +2092,18 @@ var FormInstance = (function () {
         }
         return normalizedResponse;
     };
-    return FormInstance;
+    return FormInstance$$1;
 }());
 
 var UmfApp = (function () {
-    function UmfApp(server, inputRegister) {
+    function UmfApp(server, controlRegister) {
         var _this = this;
         this.formsById = {};
         this.menusByName = {};
         this.eventHandlers = [];
         this.formResponseHandlers = {};
         this.server = server;
-        this.controlRegister = inputRegister;
+        this.controlRegister = controlRegister;
         var _loop_1 = function (e) {
             this_1.server.on(e, function (params) {
                 _this.fire(e, params);
@@ -2189,21 +2168,17 @@ var UmfApp = (function () {
         var metadata = this.getForm(formId);
         if (metadata == null) {
             if (throwError) {
-                var error = Error("Form " + formId + " not found.");
-                console.error(error);
-                throw error;
+                throw Error("Form " + formId + " not found.");
             }
             return null;
         }
-        return new FormInstance(metadata, this.controlRegister);
+        return new FormInstance$$1(metadata, this.controlRegister);
     };
     UmfApp.prototype.handleResponse = function (response, form, args) {
         var responseMetadata = response.metadata || new FormResponseMetadata();
         var handler = this.formResponseHandlers[responseMetadata.handler || "default"];
         if (handler == null) {
-            var error = new Error("Cannot find FormResponseHandler \"" + responseMetadata.handler + "\".");
-            console.error(error);
-            throw error;
+            throw new Error("Cannot find FormResponseHandler \"" + responseMetadata.handler + "\".");
         }
         return handler.handle(response, form, args);
     };
@@ -2242,6 +2217,7 @@ var InputController = (function () {
     };
     return InputController;
 }());
+
 var StringInputController = (function (_super) {
     __extends(StringInputController, _super);
     function StringInputController(metadata) {
@@ -2275,8 +2251,10 @@ var ControlRegister$$1 = (function () {
         for (var _i = 0, fields_1 = fields; _i < fields_1.length; _i++) {
             var field = fields_1[_i];
             // Instantiate new input controller.
-            var entry = this.inputs[field.type] || {};
-            var ctor = entry.controller || StringInputController;
+            var entry = this.inputs[field.type];
+            var ctor = entry != null && entry.controller != null
+                ? entry.controller
+                : StringInputController;
             result.push(new ctor(field));
         }
         result.sort(function (a, b) {
@@ -2286,13 +2264,13 @@ var ControlRegister$$1 = (function () {
     };
     ControlRegister$$1.prototype.getOutput = function (field) {
         return field != null
-            ? this.outputs[field.metadata.type] || this.outputs["text"]
-            : this.outputs["text"];
+            ? this.outputs[field.metadata.type] || this.outputs.text
+            : this.outputs.text;
     };
     ControlRegister$$1.prototype.getInput = function (type) {
         return type != null
-            ? this.inputs[type] || this.inputs["text"]
-            : this.inputs["text"];
+            ? this.inputs[type] || this.inputs.text
+            : this.inputs.text;
     };
     ControlRegister$$1.prototype.registerInputFieldControl = function (name, svelteComponent, controller, constants) {
         if (constants === void 0) { constants = null; }
@@ -2302,10 +2280,10 @@ var ControlRegister$$1 = (function () {
             constants: constants
         };
     };
-    ControlRegister$$1.prototype.registerOutputFieldControl = function (name, control, constants) {
+    ControlRegister$$1.prototype.registerOutputFieldControl = function (name, svelteComponent, constants) {
         if (constants === void 0) { constants = null; }
         this.outputs[name] = {
-            constructor: control,
+            constructor: svelteComponent,
             constants: constants
         };
     };
@@ -2322,6 +2300,18 @@ var ControlRegister$$1 = (function () {
         this.functions[name] = fn;
     };
     return ControlRegister$$1;
+}());
+
+var OutputControlConfiguration = (function () {
+    function OutputControlConfiguration(alwaysHideLabel, block) {
+        if (alwaysHideLabel === void 0) { alwaysHideLabel = false; }
+        if (block === void 0) { block = true; }
+        this.alwaysHideLabel = false;
+        this.block = true;
+        this.alwaysHideLabel = alwaysHideLabel;
+        this.block = block;
+    }
+    return OutputControlConfiguration;
 }());
 
 var OutputFieldValue = (function () {
@@ -2348,6 +2338,33 @@ var OutputFieldEventHandler = (function () {
     return OutputFieldEventHandler;
 }());
 
+var FormEventArguments = (function () {
+    function FormEventArguments(app) {
+        this.app = app;
+    }
+    return FormEventArguments;
+}());
+
+var FormResponseEventArguments = (function (_super) {
+    __extends(FormResponseEventArguments, _super);
+    function FormResponseEventArguments(app, response) {
+        var _this = _super.call(this, app) || this;
+        _this.response = response;
+        return _this;
+    }
+    return FormResponseEventArguments;
+}(FormEventArguments));
+
+var InputEventArguments = (function (_super) {
+    __extends(InputEventArguments, _super);
+    function InputEventArguments(app, input) {
+        var _this = _super.call(this, app) || this;
+        _this.input = input;
+        return _this;
+    }
+    return InputEventArguments;
+}(FormEventArguments));
+
 var MessageResponseHandler = (function () {
     function MessageResponseHandler() {
         this.name = "message";
@@ -2368,13 +2385,6 @@ var RedirectResponseHandler = (function () {
     };
     return RedirectResponseHandler;
 }());
-var RedirectResponse = (function (_super) {
-    __extends(RedirectResponse, _super);
-    function RedirectResponse() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return RedirectResponse;
-}(FormResponse));
 
 var ReloadResponseHandler = (function () {
     function ReloadResponseHandler(getFormUrl) {
@@ -2388,13 +2398,6 @@ var ReloadResponseHandler = (function () {
     };
     return ReloadResponseHandler;
 }());
-var ReloadResponse = (function (_super) {
-    __extends(ReloadResponse, _super);
-    function ReloadResponse() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return ReloadResponse;
-}(FormResponse));
 
 var FormComponentResponseHandler = (function () {
     function FormComponentResponseHandler() {
@@ -2408,493 +2411,3605 @@ var FormComponentResponseHandler = (function () {
     return FormComponentResponseHandler;
 }());
 
-var DateInputController = (function (_super) {
-    __extends(DateInputController, _super);
-    function DateInputController() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.valueAsText = null;
-        return _this;
-    }
-    DateInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parseDate(value);
-            _this.valueAsText = _this.serializeValue(_this.value);
-            resolve(_this);
-        });
-    };
-    DateInputController.prototype.getValue = function () {
-        var date = this.parseDate(this.valueAsText);
-        return Promise.resolve(date);
-    };
-    DateInputController.prototype.serializeValue = function (date) {
-        var asDate = typeof (date) === "string"
-            ? this.parseDate(date)
-            : date;
-        return asDate != null
-            ? asDate.getFullYear() + "-" + this.format2DecimalPlaces(asDate.getMonth() + 1) + "-" + this.format2DecimalPlaces(asDate.getDate())
-            : null;
-    };
-    DateInputController.prototype.parseDate = function (value) {
-        var selectedDate = this.asUtcTime(value, 7, 0, 0);
-        if (selectedDate) {
-            var dateAsNumber = Date.parse(selectedDate.toString());
-            return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
-        }
-    };
-    DateInputController.prototype.asUtcTime = function (date, hour, min, second) {
-        /// <summary>Returns provided date as if it was UTC date.</summary>
-        /// <param name="date">Local date/time.</param>
-        /// <returns type="Date">Date object.</returns>
-        if (date == null) {
-            return null;
-        }
-        // If string but not UTC.
-        if (typeof (date) === "string" && date[date.length - 1] !== "Z") {
-            // Assume UTC.
-            return new Date(date + "Z");
-        }
-        var datepart = new Date(new Date(date).toISOString());
-        var iso = datepart.getFullYear() +
-            "-" +
-            this.format2DecimalPlaces(datepart.getMonth() + 1) +
-            "-" +
-            this.format2DecimalPlaces(datepart.getDate()) +
-            "T" +
-            this.format2DecimalPlaces(hour) +
-            ":" +
-            this.format2DecimalPlaces(min) +
-            ":" +
-            this.format2DecimalPlaces(second) +
-            ".000Z";
-        return new Date(iso);
-    };
-    DateInputController.prototype.format2DecimalPlaces = function (n) {
-        return ("0" + n).slice(-2);
-    };
-    return DateInputController;
-}(InputController));
+var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-var NumberInputController = (function (_super) {
-    __extends(NumberInputController, _super);
-    function NumberInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NumberInputController.prototype.serializeValue = function (value) {
-        return value != null ? value.toString() : null;
-    };
-    NumberInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var v = parseFloat(value);
-            _this.value = isNaN(v) ? null : v;
-            resolve(_this);
-        });
-    };
-    NumberInputController.prototype.getValue = function () {
-        return Promise.resolve(this.value);
-    };
-    return NumberInputController;
-}(InputController));
 
-var DropdownInputController = (function (_super) {
-    __extends(DropdownInputController, _super);
-    function DropdownInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    DropdownInputController.prototype.serializeValue = function (value) {
-        if (typeof (value) === "string") {
-            return value;
-        }
-        return value != null ? value.value : null;
-    };
-    DropdownInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.selected = value;
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    DropdownInputController.prototype.getValue = function () {
-        return Promise.resolve(this.parse(this.selected));
-    };
-    DropdownInputController.prototype.parse = function (value) {
-        return value == null || value == "" ? null : { value: value };
-    };
-    return DropdownInputController;
-}(InputController));
 
-var BooleanInputController = (function (_super) {
-    __extends(BooleanInputController, _super);
-    function BooleanInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BooleanInputController.prototype.serializeValue = function (value) {
-        var parsed = this.parse(value);
-        return parsed != null ? parsed.toString() : null;
-    };
-    BooleanInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    BooleanInputController.prototype.getValue = function () {
-        return Promise.resolve(this.parse(this.value));
-    };
-    BooleanInputController.prototype.parse = function (value) {
-        return value != null
-            ? value.toString() == "true"
-            : this.metadata.required ? false : null;
-    };
-    return BooleanInputController;
-}(InputController));
+function unwrapExports (x) {
+	return x && x.__esModule ? x['default'] : x;
+}
 
-var PaginationParameters = (function () {
-    function PaginationParameters(pageIndex, pageSize, orderBy, ascending) {
-        this.pageIndex = PaginationParameters.asInt(pageIndex, 1);
-        this.pageSize = PaginationParameters.asInt(pageSize, 10);
-        this.orderBy = orderBy || null;
-        this.ascending = PaginationParameters.asBool(ascending, null);
-    }
-    PaginationParameters.asInt = function (value, defaultValue) {
-        if (typeof (value) === "string") {
-            var result = parseInt(value);
-            return isNaN(result) ? defaultValue : result;
-        }
-        if (value == null) {
-            return defaultValue;
-        }
-        return value;
-    };
-    PaginationParameters.asBool = function (value, defaultValue) {
-        if (typeof (value) === "string" || value == null) {
-            return value != null
-                ? value.toString() === "true"
-                : defaultValue;
-        }
-        return value;
-    };
-    return PaginationParameters;
-}());
-var PaginatorInputController = (function (_super) {
-    __extends(PaginatorInputController, _super);
-    function PaginatorInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PaginatorInputController.prototype.serializeValue = function (value) {
-        var p = typeof (value) === "string" || value == null
-            ? this.parse(value)
-            : value;
-        if (p.pageIndex == 1 &&
-            p.pageSize == 10 &&
-            p.ascending == null &&
-            p.orderBy == null) {
-            return "";
-        }
-        var result = p.pageIndex + "-" + p.pageSize;
-        if (p.orderBy != null) {
-            result += "-" + p.ascending + "-" + p.orderBy + "}";
-        }
-        return result;
-    };
-    PaginatorInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    PaginatorInputController.prototype.getValue = function () {
-        return Promise.resolve(this.value);
-    };
-    PaginatorInputController.prototype.parse = function (value) {
-        // 1-10-asc-firstname
-        // 1-10
-        if (value == null || value.length === 0) {
-            return new PaginationParameters();
-        }
-        var components = value.split("-");
-        return new PaginationParameters(components[0], components[1], components[2], components[3]);
-    };
-    return PaginatorInputController;
-}(InputController));
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
 
-var MultiSelectInputController = (function (_super) {
-    __extends(MultiSelectInputController, _super);
-    function MultiSelectInputController() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.maxItemCount = -1;
-        return _this;
-    }
-    MultiSelectInputController.prototype.serializeValue = function (value) {
-        if (typeof (value) === "string") {
-            return value;
+var alertify$1 = createCommonjsModule(function (module) {
+/**
+ * alertifyjs 1.11.1 http://alertifyjs.com
+ * AlertifyJS is a javascript framework for developing pretty browser dialogs and notifications.
+ * Copyright 2018 Mohammad Younes <Mohammad@alertifyjs.com> (http://alertifyjs.com) 
+ * Licensed under GPL 3 <https://opensource.org/licenses/gpl-3.0>*/
+( function ( window ) {
+    'use strict';
+    
+    /**
+     * Keys enum
+     * @type {Object}
+     */
+    var keys = {
+        ENTER: 13,
+        ESC: 27,
+        F1: 112,
+        F12: 123,
+        LEFT: 37,
+        RIGHT: 39
+    };
+    /**
+     * Default options 
+     * @type {Object}
+     */
+    var defaults = {
+        autoReset:true,
+        basic:false,
+        closable:true,
+        closableByDimmer:true,
+        frameless:false,
+        maintainFocus:true, //global default not per instance, applies to all dialogs
+        maximizable:true,
+        modal:true,
+        movable:true,
+        moveBounded:false,
+        overflow:true,
+        padding: true,
+        pinnable:true,
+        pinned:true,
+        preventBodyShift:false, //global default not per instance, applies to all dialogs
+        resizable:true,
+        startMaximized:false,
+        transition:'pulse',
+        notifier:{
+            delay:5,
+            position:'bottom-right',
+            closeButton:false
+        },
+        glossary:{
+            title:'AlertifyJS',
+            ok: 'OK',
+            cancel: 'Cancel',
+            acccpt: 'Accept',
+            deny: 'Deny',
+            confirm: 'Confirm',
+            decline: 'Decline',
+            close: 'Close',
+            maximize: 'Maximize',
+            restore: 'Restore',
+        },
+        theme:{
+            input:'ajs-input',
+            ok:'ajs-ok',
+            cancel:'ajs-cancel',
         }
-        return value != null ? (value.items || []).join(",") : null;
     };
-    MultiSelectInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    MultiSelectInputController.prototype.getValue = function () {
-        var valueToSubmit = this.value == null || this.value.items == null || this.value.items.length === 0
-            ? null
-            : this.value;
-        return Promise.resolve(valueToSubmit);
-    };
-    MultiSelectInputController.prototype.parse = function (value) {
-        return value == null || value == ""
-            ? new MultiSelectValue()
-            : new MultiSelectValue(value.split(","));
-    };
-    return MultiSelectInputController;
-}(InputController));
-var MultiSelectValue = (function () {
-    function MultiSelectValue(items) {
-        this.items = [];
-        this.items = items;
-    }
-    return MultiSelectValue;
-}());
+    
+    //holds open dialogs instances
+    var openDialogs = [];
 
-var TypeaheadInputController = (function (_super) {
-    __extends(TypeaheadInputController, _super);
-    function TypeaheadInputController() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.maxItemCount = 1;
-        return _this;
+    /**
+     * [Helper]  Adds the specified class(es) to the element.
+     *
+     * @element {node}      The element
+     * @className {string}  One or more space-separated classes to be added to the class attribute of the element.
+     * 
+     * @return {undefined}
+     */
+    function addClass(element,classNames){
+        element.className += ' ' + classNames;
     }
-    TypeaheadInputController.prototype.serializeValue = function (value) {
-        if (typeof (value) === "string") {
-            return value;
-        }
-        return value != null ? value.value : null;
-    };
-    TypeaheadInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    TypeaheadInputController.prototype.getValue = function () {
-        var valueToSubmit = this.value == null || this.value.value == null
-            ? null
-            : this.value;
-        return Promise.resolve(valueToSubmit);
-    };
-    TypeaheadInputController.prototype.parse = function (value) {
-        return value == null || value == ""
-            ? new TypeaheadValue()
-            : new TypeaheadValue(value);
-    };
-    return TypeaheadInputController;
-}(InputController));
-var TypeaheadValue = (function () {
-    function TypeaheadValue(value) {
-        this.value = value;
-    }
-    return TypeaheadValue;
-}());
-
-var PasswordInputController = (function (_super) {
-    __extends(PasswordInputController, _super);
-    function PasswordInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PasswordInputController.prototype.serializeValue = function (value) {
-        if (typeof (value) === "string") {
-            return value;
-        }
-        return value != null ? value.value : null;
-    };
-    PasswordInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.selected = value;
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    PasswordInputController.prototype.getValue = function () {
-        return Promise.resolve(this.parse(this.selected));
-    };
-    PasswordInputController.prototype.parse = function (value) {
-        return value == null || value == "" ? null : { value: value };
-    };
-    return PasswordInputController;
-}(InputController));
-
-var TextareaInputController = (function (_super) {
-    __extends(TextareaInputController, _super);
-    function TextareaInputController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TextareaInputController.prototype.serializeValue = function (value) {
-        if (typeof (value) === "string") {
-            return value;
-        }
-        return value != null ? value.value : null;
-    };
-    TextareaInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.selected = value;
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    TextareaInputController.prototype.getValue = function () {
-        return Promise.resolve(this.parse(this.selected));
-    };
-    TextareaInputController.prototype.parse = function (value) {
-        return value == null || value == "" ? null : { value: value };
-    };
-    return TextareaInputController;
-}(InputController));
-
-var axios$2 = index;
-var FileUploaderController = (function (_super) {
-    __extends(FileUploaderController, _super);
-    function FileUploaderController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    FileUploaderController.prototype.serializeValue = function (value) {
-        return value != null ? JSON.stringify(value) : null;
-    };
-    FileUploaderController.prototype.init = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            // Don't do anything. File uploader doesn't allow initialization
-            // from pre-existing value.
-            resolve(_this);
-        });
-    };
-    FileUploaderController.prototype.getValue = function () {
-        var self = this;
-        if (self.selected == null ||
-            self.selected.length === 0) {
-            return Promise.resolve(new FileUploaderValue());
-        }
-        var promises = [];
-        var result = new FileUploaderValue();
-        var _loop_1 = function (f) {
-            if (f.fileId != null) {
-                result.files.push(f.fileId);
-                if (result.files.length == self.selected.length) {
-                    self.selected = null;
-                }
-                return "continue";
+    
+    /**
+     * [Helper]  Removes the specified class(es) from the element.
+     *
+     * @element {node}      The element
+     * @className {string}  One or more space-separated classes to be removed from the class attribute of the element.
+     * 
+     * @return {undefined}
+     */
+    function removeClass(element, classNames) {
+        var original = element.className.split(' ');
+        var toBeRemoved = classNames.split(' ');
+        for (var x = 0; x < toBeRemoved.length; x += 1) {
+            var index = original.indexOf(toBeRemoved[x]);
+            if (index > -1){
+                original.splice(index,1);
             }
-            var p = new Promise(function (resolve, reject) {
-                var formData = new FormData();
-                formData.append("file", f);
-                // Make http request to upload the files.
-                axios$2.post("/file/upload", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then(function (response) {
-                    f.fileId = response.data.fileId;
-                    result.files.push(response.data.fileId);
-                    resolve();
-                }).catch(function (error) {
-                    alert(error.response.data.error);
-                    reject(error);
-                });
-            });
-            promises.push(p);
-        };
-        for (var _i = 0, _a = self.selected; _i < _a.length; _i++) {
-            var f = _a[_i];
-            _loop_1(f);
         }
-        return Promise.all(promises).then(function (t) {
-            return result;
-        });
-    };
-    FileUploaderController.prototype.parse = function (value) {
-        var parsed = typeof (value) === "string"
-            ? JSON.parse(value)
-            : value;
-        if (parsed == null || parsed.files == null || parsed.files.length < 1) {
-            return null;
-        }
-        return parsed;
-    };
-    return FileUploaderController;
-}(InputController));
-var FileUploaderValue = (function () {
-    function FileUploaderValue() {
-        this.files = [];
+        element.className = original.join(' ');
     }
-    return FileUploaderValue;
-}());
 
-var DynamicFormInputController = (function (_super) {
-    __extends(DynamicFormInputController, _super);
-    function DynamicFormInputController() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.inputs = [];
-        return _this;
+    /**
+     * [Helper]  Checks if the document is RTL
+     *
+     * @return {Boolean} True if the document is RTL, false otherwise.
+     */
+    function isRightToLeft(){
+        return window.getComputedStyle(document.body).direction === 'rtl';
     }
-    DynamicFormInputController.prototype.serializeValue = function (value) {
-        var parsed = this.parse(value);
-        return JSON.stringify(parsed);
-    };
-    DynamicFormInputController.prototype.init = function (value) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.value = _this.parse(value);
-            resolve(_this);
-        });
-    };
-    DynamicFormInputController.prototype.getValue = function () {
-        var value = this.parse(this.value);
-        var promises = [];
-        var _loop_1 = function (input) {
-            var controller = this_1.inputs.find(function (t) { return t.metadata.id == input.id; });
-            var p = controller.serialize().then(function (t) {
-                input.value = t.value;
-            });
-            promises.push(p);
+    /**
+     * [Helper]  Get the document current scrollTop
+     *
+     * @return {Number} current document scrollTop value
+     */
+    function getScrollTop(){
+        return ((document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop);
+    }
+
+    /**
+     * [Helper]  Get the document current scrollLeft
+     *
+     * @return {Number} current document scrollLeft value
+     */
+    function getScrollLeft(){
+        return ((document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft);
+    }
+
+    /**
+    * Helper: clear contents
+    *
+    */
+    function clearContents(element){
+        while (element.lastChild) {
+            element.removeChild(element.lastChild);
+        }
+    }
+    /**
+     * Extends a given prototype by merging properties from base into sub.
+     *
+     * @sub {Object} sub The prototype being overwritten.
+     * @base {Object} base The prototype being written.
+     *
+     * @return {Object} The extended prototype.
+     */
+    function copy(src) {
+        if(null === src){
+            return src;
+        }
+        var cpy;
+        if(Array.isArray(src)){
+            cpy = [];
+            for(var x=0;x<src.length;x+=1){
+                cpy.push(copy(src[x]));
+            }
+            return cpy;
+        }
+      
+        if(src instanceof Date){
+            return new Date(src.getTime());
+        }
+      
+        if(src instanceof RegExp){
+            cpy = new RegExp(src.source);
+            cpy.global = src.global;
+            cpy.ignoreCase = src.ignoreCase;
+            cpy.multiline = src.multiline;
+            cpy.lastIndex = src.lastIndex;
+            return cpy;
+        }
+        
+        if(typeof src === 'object'){
+            cpy = {};
+            // copy dialog pototype over definition.
+            for (var prop in src) {
+                if (src.hasOwnProperty(prop)) {
+                    cpy[prop] = copy(src[prop]);
+                }
+            }
+            return cpy;
+        }
+        return src;
+    }
+    /**
+      * Helper: destruct the dialog
+      *
+      */
+    function destruct(instance, initialize){
+        //delete the dom and it's references.
+        var root = instance.elements.root;
+        root.parentNode.removeChild(root);
+        delete instance.elements;
+        //copy back initial settings.
+        instance.settings = copy(instance.__settings);
+        //re-reference init function.
+        instance.__init = initialize;
+        //delete __internal variable to allow re-initialization.
+        delete instance.__internal;
+    }
+
+    /**
+     * Use a closure to return proper event listener method. Try to use
+     * `addEventListener` by default but fallback to `attachEvent` for
+     * unsupported browser. The closure simply ensures that the test doesn't
+     * happen every time the method is called.
+     *
+     * @param    {Node}     el    Node element
+     * @param    {String}   event Event type
+     * @param    {Function} fn    Callback of event
+     * @return   {Function}
+     */
+    var on = (function () {
+        if (document.addEventListener) {
+            return function (el, event, fn, useCapture) {
+                el.addEventListener(event, fn, useCapture === true);
+            };
+        } else if (document.attachEvent) {
+            return function (el, event, fn) {
+                el.attachEvent('on' + event, fn);
+            };
+        }
+    }());
+
+    /**
+     * Use a closure to return proper event listener method. Try to use
+     * `removeEventListener` by default but fallback to `detachEvent` for
+     * unsupported browser. The closure simply ensures that the test doesn't
+     * happen every time the method is called.
+     *
+     * @param    {Node}     el    Node element
+     * @param    {String}   event Event type
+     * @param    {Function} fn    Callback of event
+     * @return   {Function}
+     */
+    var off = (function () {
+        if (document.removeEventListener) {
+            return function (el, event, fn, useCapture) {
+                el.removeEventListener(event, fn, useCapture === true);
+            };
+        } else if (document.detachEvent) {
+            return function (el, event, fn) {
+                el.detachEvent('on' + event, fn);
+            };
+        }
+    }());
+
+    /**
+     * Prevent default event from firing
+     *
+     * @param  {Event} event Event object
+     * @return {undefined}
+
+    function prevent ( event ) {
+        if ( event ) {
+            if ( event.preventDefault ) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+        }
+    }
+    */
+    var transition = (function () {
+        var t, type;
+        var supported = false;
+        var transitions = {
+            'animation'        : 'animationend',
+            'OAnimation'       : 'oAnimationEnd oanimationend',
+            'msAnimation'      : 'MSAnimationEnd',
+            'MozAnimation'     : 'animationend',
+            'WebkitAnimation'  : 'webkitAnimationEnd'
         };
-        var this_1 = this;
-        for (var _i = 0, _a = value.inputs; _i < _a.length; _i++) {
-            var input = _a[_i];
-            _loop_1(input);
+
+        for (t in transitions) {
+            if (document.documentElement.style[t] !== undefined) {
+                type = transitions[t];
+                supported = true;
+                break;
+            }
         }
-        return Promise.all(promises).then(function () {
-            return value;
-        });
-    };
-    DynamicFormInputController.prototype.parse = function (value) {
-        if (value == null) {
-            return new DynamicFormValue();
-        }
-        var parsed = typeof (value) === "string"
-            ? JSON.parse(value)
-            : parsed = value;
-        return parsed == null || typeof (parsed.inputs) === "undefined"
-            ? new DynamicFormValue()
-            : parsed;
-    };
-    return DynamicFormInputController;
-}(InputController));
-var DynamicFormValue = (function () {
-    function DynamicFormValue(inputs) {
-        if (inputs === void 0) { inputs = []; }
-        this.inputs = [];
-        this.inputs = inputs;
+
+        return {
+            type: type,
+            supported: supported
+        };
+    }());
+
+    /**
+    * Creates event handler delegate that sends the instance as last argument.
+    * 
+    * @return {Function}    a function wrapper which sends the instance as last argument.
+    */
+    function delegate(context, method) {
+        return function () {
+            if (arguments.length > 0) {
+                var args = [];
+                for (var x = 0; x < arguments.length; x += 1) {
+                    args.push(arguments[x]);
+                }
+                args.push(context);
+                return method.apply(context, args);
+            }
+            return method.apply(context, [null, context]);
+        };
     }
-    return DynamicFormValue;
-}());
+    /**
+    * Helper for creating a dialog close event.
+    * 
+    * @return {object}
+    */
+    function createCloseEvent(index, button) {
+        return {
+            index: index,
+            button: button,
+            cancel: false
+        };
+    }
+    /**
+    * Helper for dispatching events.
+    *
+    * @param  {string} evenType The type of the event to disptach.
+    * @param  {object} instance The dialog instance disptaching the event.
+    *
+    * @return   {any}   The result of the invoked function.
+    */
+    function dispatchEvent(eventType, instance) {
+        if ( typeof instance.get(eventType) === 'function' ) {
+            return instance.get(eventType).call(instance);
+        }
+    }
+
+
+    /**
+     * Super class for all dialogs
+     *
+     * @return {Object}		base dialog prototype
+     */
+    var dialog = (function () {
+        var //holds the list of used keys.
+            usedKeys = [],
+            //dummy variable, used to trigger dom reflow.
+            reflow = null,
+            //holds body tab index in case it has any.
+            tabindex = false,
+            //condition for detecting safari
+            isSafari = window.navigator.userAgent.indexOf('Safari') > -1 && window.navigator.userAgent.indexOf('Chrome') < 0,
+            //dialog building blocks
+            templates = {
+                dimmer:'<div class="ajs-dimmer"></div>',
+                /*tab index required to fire click event before body focus*/
+                modal: '<div class="ajs-modal" tabindex="0"></div>',
+                dialog: '<div class="ajs-dialog" tabindex="0"></div>',
+                reset: '<button class="ajs-reset"></button>',
+                commands: '<div class="ajs-commands"><button class="ajs-pin"></button><button class="ajs-maximize"></button><button class="ajs-close"></button></div>',
+                header: '<div class="ajs-header"></div>',
+                body: '<div class="ajs-body"></div>',
+                content: '<div class="ajs-content"></div>',
+                footer: '<div class="ajs-footer"></div>',
+                buttons: { primary: '<div class="ajs-primary ajs-buttons"></div>', auxiliary: '<div class="ajs-auxiliary ajs-buttons"></div>' },
+                button: '<button class="ajs-button"></button>',
+                resizeHandle: '<div class="ajs-handle"></div>',
+            },
+            //common class names
+            classes = {
+                animationIn: 'ajs-in',
+                animationOut: 'ajs-out',
+                base: 'alertify',
+                basic:'ajs-basic',
+                capture: 'ajs-capture',
+                closable:'ajs-closable',
+                fixed: 'ajs-fixed',
+                frameless:'ajs-frameless',
+                hidden: 'ajs-hidden',
+                maximize: 'ajs-maximize',
+                maximized: 'ajs-maximized',
+                maximizable:'ajs-maximizable',
+                modeless: 'ajs-modeless',
+                movable: 'ajs-movable',
+                noSelection: 'ajs-no-selection',
+                noOverflow: 'ajs-no-overflow',
+                noPadding:'ajs-no-padding',
+                pin:'ajs-pin',
+                pinnable:'ajs-pinnable',
+                prefix: 'ajs-',
+                resizable: 'ajs-resizable',
+                restore: 'ajs-restore',
+                shake:'ajs-shake',
+                unpinned:'ajs-unpinned',
+            };
+
+        /**
+         * Helper: initializes the dialog instance
+         * 
+         * @return	{Number}	The total count of currently open modals.
+         */
+        function initialize(instance){
+            
+            if(!instance.__internal){
+
+                //no need to expose init after this.
+                delete instance.__init;
+              
+                //keep a copy of initial dialog settings
+                if(!instance.__settings){
+                    instance.__settings = copy(instance.settings);
+                }
+                
+                //get dialog buttons/focus setup
+                var setup;
+                if(typeof instance.setup === 'function'){
+                    setup = instance.setup();
+                    setup.options = setup.options  || {};
+                    setup.focus = setup.focus  || {};
+                }else{
+                    setup = {
+                        buttons:[],
+                        focus:{
+                            element:null,
+                            select:false
+                        },
+                        options:{
+                        }
+                    };
+                }
+                
+                //initialize hooks object.
+                if(typeof instance.hooks !== 'object'){
+                    instance.hooks = {};
+                }
+
+                //copy buttons defintion
+                var buttonsDefinition = [];
+                if(Array.isArray(setup.buttons)){
+                    for(var b=0;b<setup.buttons.length;b+=1){
+                        var ref  = setup.buttons[b],
+                            cpy = {};
+                        for (var i in ref) {
+                            if (ref.hasOwnProperty(i)) {
+                                cpy[i] = ref[i];
+                            }
+                        }
+                        buttonsDefinition.push(cpy);
+                    }
+                }
+
+                var internal = instance.__internal = {
+                    /**
+                     * Flag holding the open state of the dialog
+                     * 
+                     * @type {Boolean}
+                     */
+                    isOpen:false,
+                    /**
+                     * Active element is the element that will receive focus after
+                     * closing the dialog. It defaults as the body tag, but gets updated
+                     * to the last focused element before the dialog was opened.
+                     *
+                     * @type {Node}
+                     */
+                    activeElement:document.body,
+                    timerIn:undefined,
+                    timerOut:undefined,
+                    buttons: buttonsDefinition,
+                    focus: setup.focus,
+                    options: {
+                        title: undefined,
+                        modal: undefined,
+                        basic:undefined,
+                        frameless:undefined,
+                        pinned: undefined,
+                        movable: undefined,
+                        moveBounded:undefined,
+                        resizable: undefined,
+                        autoReset: undefined,
+                        closable: undefined,
+                        closableByDimmer: undefined,
+                        maximizable: undefined,
+                        startMaximized: undefined,
+                        pinnable: undefined,
+                        transition: undefined,
+                        padding:undefined,
+                        overflow:undefined,
+                        onshow:undefined,
+                        onclosing:undefined,
+                        onclose:undefined,
+                        onfocus:undefined,
+                        onmove:undefined,
+                        onmoved:undefined,
+                        onresize:undefined,
+                        onresized:undefined,
+                        onmaximize:undefined,
+                        onmaximized:undefined,
+                        onrestore:undefined,
+                        onrestored:undefined
+                    },
+                    resetHandler:undefined,
+                    beginMoveHandler:undefined,
+                    beginResizeHandler:undefined,
+                    bringToFrontHandler:undefined,
+                    modalClickHandler:undefined,
+                    buttonsClickHandler:undefined,
+                    commandsClickHandler:undefined,
+                    transitionInHandler:undefined,
+                    transitionOutHandler:undefined,
+                    destroy:undefined
+                };
+
+                var elements = {};
+                //root node
+                elements.root = document.createElement('div');
+                
+                elements.root.className = classes.base + ' ' + classes.hidden + ' ';
+
+                elements.root.innerHTML = templates.dimmer + templates.modal;
+                
+                //dimmer
+                elements.dimmer = elements.root.firstChild;
+
+                //dialog
+                elements.modal = elements.root.lastChild;
+                elements.modal.innerHTML = templates.dialog;
+                elements.dialog = elements.modal.firstChild;
+                elements.dialog.innerHTML = templates.reset + templates.commands + templates.header + templates.body + templates.footer + templates.resizeHandle + templates.reset;
+
+                //reset links
+                elements.reset = [];
+                elements.reset.push(elements.dialog.firstChild);
+                elements.reset.push(elements.dialog.lastChild);
+                
+                //commands
+                elements.commands = {};
+                elements.commands.container = elements.reset[0].nextSibling;
+                elements.commands.pin = elements.commands.container.firstChild;
+                elements.commands.maximize = elements.commands.pin.nextSibling;
+                elements.commands.close = elements.commands.maximize.nextSibling;
+                
+                //header
+                elements.header = elements.commands.container.nextSibling;
+
+                //body
+                elements.body = elements.header.nextSibling;
+                elements.body.innerHTML = templates.content;
+                elements.content = elements.body.firstChild;
+
+                //footer
+                elements.footer = elements.body.nextSibling;
+                elements.footer.innerHTML = templates.buttons.auxiliary + templates.buttons.primary;
+                
+                //resize handle
+                elements.resizeHandle = elements.footer.nextSibling;
+
+                //buttons
+                elements.buttons = {};
+                elements.buttons.auxiliary = elements.footer.firstChild;
+                elements.buttons.primary = elements.buttons.auxiliary.nextSibling;
+                elements.buttons.primary.innerHTML = templates.button;
+                elements.buttonTemplate = elements.buttons.primary.firstChild;
+                //remove button template
+                elements.buttons.primary.removeChild(elements.buttonTemplate);
+                               
+                for(var x=0; x < instance.__internal.buttons.length; x+=1) {
+                    var button = instance.__internal.buttons[x];
+                    
+                    // add to the list of used keys.
+                    if(usedKeys.indexOf(button.key) < 0){
+                        usedKeys.push(button.key);
+                    }
+
+                    button.element = elements.buttonTemplate.cloneNode();
+                    button.element.innerHTML = button.text;
+                    if(typeof button.className === 'string' &&  button.className !== ''){
+                        addClass(button.element, button.className);
+                    }
+                    for(var key in button.attrs){
+                        if(key !== 'className' && button.attrs.hasOwnProperty(key)){
+                            button.element.setAttribute(key, button.attrs[key]);
+                        }
+                    }
+                    if(button.scope === 'auxiliary'){
+                        elements.buttons.auxiliary.appendChild(button.element);
+                    }else{
+                        elements.buttons.primary.appendChild(button.element);
+                    }
+                }
+                //make elements pubic
+                instance.elements = elements;
+                
+                //save event handlers delegates
+                internal.resetHandler = delegate(instance, onReset);
+                internal.beginMoveHandler = delegate(instance, beginMove);
+                internal.beginResizeHandler = delegate(instance, beginResize);
+                internal.bringToFrontHandler = delegate(instance, bringToFront);
+                internal.modalClickHandler = delegate(instance, modalClickHandler);
+                internal.buttonsClickHandler = delegate(instance, buttonsClickHandler);
+                internal.commandsClickHandler = delegate(instance, commandsClickHandler);
+                internal.transitionInHandler = delegate(instance, handleTransitionInEvent);
+                internal.transitionOutHandler = delegate(instance, handleTransitionOutEvent);
+
+                //settings
+                for(var opKey in internal.options){
+                    if(setup.options[opKey] !== undefined){
+                        // if found in user options
+                        instance.set(opKey, setup.options[opKey]);
+                    }else if(alertify.defaults.hasOwnProperty(opKey)) {
+                        // else if found in defaults options
+                        instance.set(opKey, alertify.defaults[opKey]);
+                    }else if(opKey === 'title' ) {
+                        // else if title key, use alertify.defaults.glossary
+                        instance.set(opKey, alertify.defaults.glossary[opKey]);
+                    }
+                }
+
+                // allow dom customization
+                if(typeof instance.build === 'function'){
+                    instance.build();
+                }
+            }
+            
+            //add to the end of the DOM tree.
+            document.body.appendChild(instance.elements.root);
+        }
+
+        /**
+         * Helper: maintains scroll position
+         *
+         */
+        var scrollX, scrollY;
+        function saveScrollPosition(){
+            scrollX = getScrollLeft();
+            scrollY = getScrollTop();
+        }
+        function restoreScrollPosition(){
+            window.scrollTo(scrollX, scrollY);
+        }
+
+        /**
+         * Helper: adds/removes no-overflow class from body
+         *
+         */
+        function ensureNoOverflow(){
+            var requiresNoOverflow = 0;
+            for(var x=0;x<openDialogs.length;x+=1){
+                var instance = openDialogs[x];
+                if(instance.isModal() || instance.isMaximized()){
+                    requiresNoOverflow+=1;
+                }
+            }
+            if(requiresNoOverflow === 0 && document.body.className.indexOf(classes.noOverflow) >= 0){
+                //last open modal or last maximized one
+                removeClass(document.body, classes.noOverflow);
+                preventBodyShift(false);
+            }else if(requiresNoOverflow > 0 && document.body.className.indexOf(classes.noOverflow) < 0){
+                //first open modal or first maximized one
+                preventBodyShift(true);
+                addClass(document.body, classes.noOverflow);
+            }
+        }
+        var top = '', topScroll = 0;
+        /**
+         * Helper: prevents body shift.
+         *
+         */
+        function preventBodyShift(add){
+            if(alertify.defaults.preventBodyShift && document.documentElement.scrollHeight > document.documentElement.clientHeight){
+                if(add ){//&& openDialogs[openDialogs.length-1].elements.dialog.clientHeight <= document.documentElement.clientHeight){
+                    topScroll = scrollY;
+                    top = window.getComputedStyle(document.body).top;
+                    addClass(document.body, classes.fixed);
+                    document.body.style.top = -scrollY + 'px';
+                } else {
+                    scrollY = topScroll;
+                    document.body.style.top = top;
+                    removeClass(document.body, classes.fixed);
+                    restoreScrollPosition();
+                }
+            }
+        }
+		
+        /**
+         * Sets the name of the transition used to show/hide the dialog
+         * 
+         * @param {Object} instance The dilog instance.
+         *
+         */
+        function updateTransition(instance, value, oldValue){
+            if(typeof oldValue === 'string'){
+                removeClass(instance.elements.root,classes.prefix +  oldValue);
+            }
+            addClass(instance.elements.root, classes.prefix + value);
+            reflow = instance.elements.root.offsetWidth;
+        }
+		
+        /**
+         * Toggles the dialog display mode
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function updateDisplayMode(instance){
+            if(instance.get('modal')){
+
+                //make modal
+                removeClass(instance.elements.root, classes.modeless);
+
+                //only if open
+                if(instance.isOpen()){
+                    unbindModelessEvents(instance);
+
+                    //in case a pinned modless dialog was made modal while open.
+                    updateAbsPositionFix(instance);
+
+                    ensureNoOverflow();
+                }
+            }else{
+                //make modelss
+                addClass(instance.elements.root, classes.modeless);
+
+                //only if open
+                if(instance.isOpen()){
+                    bindModelessEvents(instance);
+
+                    //in case pin/unpin was called while a modal is open
+                    updateAbsPositionFix(instance);
+
+                    ensureNoOverflow();
+                }
+            }
+        }
+
+        /**
+         * Toggles the dialog basic view mode 
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function updateBasicMode(instance){
+            if (instance.get('basic')) {
+                // add class
+                addClass(instance.elements.root, classes.basic);
+            } else {
+                // remove class
+                removeClass(instance.elements.root, classes.basic);
+            }
+        }
+
+        /**
+         * Toggles the dialog frameless view mode 
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function updateFramelessMode(instance){
+            if (instance.get('frameless')) {
+                // add class
+                addClass(instance.elements.root, classes.frameless);
+            } else {
+                // remove class
+                removeClass(instance.elements.root, classes.frameless);
+            }
+        }
+		
+        /**
+         * Helper: Brings the modeless dialog to front, attached to modeless dialogs.
+         *
+         * @param {Event} event Focus event
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bringToFront(event, instance){
+            
+            // Do not bring to front if preceeded by an open modal
+            var index = openDialogs.indexOf(instance);
+            for(var x=index+1;x<openDialogs.length;x+=1){
+                if(openDialogs[x].isModal()){
+                    return;
+                }
+            }
+			
+            // Bring to front by making it the last child.
+            if(document.body.lastChild !== instance.elements.root){
+                document.body.appendChild(instance.elements.root);
+                //also make sure its at the end of the list
+                openDialogs.splice(openDialogs.indexOf(instance),1);
+                openDialogs.push(instance);
+                setFocus(instance);
+            }
+			
+            return false;
+        }
+		
+        /**
+         * Helper: reflects dialogs options updates
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {String} option The updated option name.
+         *
+         * @return	{undefined}	
+         */
+        function optionUpdated(instance, option, oldValue, newValue){
+            switch(option){
+            case 'title':
+                instance.setHeader(newValue);
+                break;
+            case 'modal':
+                updateDisplayMode(instance);
+                break;
+            case 'basic':
+                updateBasicMode(instance);
+                break;
+            case 'frameless':
+                updateFramelessMode(instance);
+                break;
+            case 'pinned':
+                updatePinned(instance);
+                break;
+            case 'closable':
+                updateClosable(instance);
+                break;
+            case 'maximizable':
+                updateMaximizable(instance);
+                break;
+            case 'pinnable':
+                updatePinnable(instance);
+                break;
+            case 'movable':
+                updateMovable(instance);
+                break;
+            case 'resizable':
+                updateResizable(instance);
+                break;
+            case 'padding':
+                if(newValue){
+                    removeClass(instance.elements.root, classes.noPadding);
+                }else if(instance.elements.root.className.indexOf(classes.noPadding) < 0){
+                    addClass(instance.elements.root, classes.noPadding);
+                }
+                break;
+            case 'overflow':
+                if(newValue){
+                    removeClass(instance.elements.root, classes.noOverflow);
+                }else if(instance.elements.root.className.indexOf(classes.noOverflow) < 0){
+                    addClass(instance.elements.root, classes.noOverflow);
+                }
+                break;
+            case 'transition':
+                updateTransition(instance,newValue, oldValue);
+                break;
+            }
+
+            // internal on option updated event
+            if(typeof instance.hooks.onupdate === 'function'){
+                instance.hooks.onupdate.call(instance, option, oldValue, newValue);
+            }
+        }
+		
+        /**
+         * Helper: reflects dialogs options updates
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Object} obj The object to set/get a value on/from.
+         * @param {Function} callback The callback function to call if the key was found.
+         * @param {String|Object} key A string specifying a propery name or a collection of key value pairs.
+         * @param {Object} value Optional, the value associated with the key (in case it was a string).
+         * @param {String} option The updated option name.
+         *
+         * @return	{Object} result object 
+         *	The result objects has an 'op' property, indicating of this is a SET or GET operation.
+         *		GET: 
+         *		- found: a flag indicating if the key was found or not.
+         *		- value: the property value.
+         *		SET:
+         *		- items: a list of key value pairs of the properties being set.
+         *				each contains:
+         *					- found: a flag indicating if the key was found or not.
+         *					- key: the property key.
+         *					- value: the property value.
+         */
+        function update(instance, obj, callback, key, value){
+            var result = {op:undefined, items: [] };
+            if(typeof value === 'undefined' && typeof key === 'string') {
+                //get
+                result.op = 'get';
+                if(obj.hasOwnProperty(key)){
+                    result.found = true;
+                    result.value = obj[key];
+                }else{
+                    result.found = false;
+                    result.value = undefined;
+                }
+            }
+            else
+            {
+                var old;
+                //set
+                result.op = 'set';
+                if(typeof key === 'object'){
+                    //set multiple
+                    var args = key;
+                    for (var prop in args) {
+                        if (obj.hasOwnProperty(prop)) {
+                            if(obj[prop] !== args[prop]){
+                                old = obj[prop];
+                                obj[prop] = args[prop];
+                                callback.call(instance,prop, old, args[prop]);
+                            }
+                            result.items.push({ 'key': prop, 'value': args[prop], 'found':true});
+                        }else{
+                            result.items.push({ 'key': prop, 'value': args[prop], 'found':false});
+                        }
+                    }
+                } else if (typeof key === 'string'){
+                    //set single
+                    if (obj.hasOwnProperty(key)) {
+                        if(obj[key] !== value){
+                            old  = obj[key];
+                            obj[key] = value;
+                            callback.call(instance,key, old, value);
+                        }
+                        result.items.push({'key': key, 'value': value , 'found':true});
+
+                    }else{
+                        result.items.push({'key': key, 'value': value , 'found':false});
+                    }
+                } else {
+                    //invalid params
+                    throw new Error('args must be a string or object');
+                }
+            }
+            return result;
+        }
+
+
+        /**
+         * Triggers a close event.
+         *
+         * @param {Object} instance	The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function triggerClose(instance) {
+            var found;
+            triggerCallback(instance, function (button) {
+                return found = (button.invokeOnClose === true);
+            });
+            //none of the buttons registered as onclose callback
+            //close the dialog
+            if (!found && instance.isOpen()) {
+                instance.close();
+            }
+        }
+
+        /**
+         * Dialogs commands event handler, attached to the dialog commands element.
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Object} instance	The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function commandsClickHandler(event, instance) {
+            var target = event.srcElement || event.target;
+            switch (target) {
+            case instance.elements.commands.pin:
+                if (!instance.isPinned()) {
+                    pin(instance);
+                } else {
+                    unpin(instance);
+                }
+                break;
+            case instance.elements.commands.maximize:
+                if (!instance.isMaximized()) {
+                    maximize(instance);
+                } else {
+                    restore(instance);
+                }
+                break;
+            case instance.elements.commands.close:
+                triggerClose(instance);
+                break;
+            }
+            return false;
+        }
+
+        /**
+         * Helper: pins the modeless dialog.
+         *
+         * @param {Object} instance	The dialog instance.
+         * 
+         * @return {undefined}
+         */
+        function pin(instance) {
+            //pin the dialog
+            instance.set('pinned', true);
+        }
+
+        /**
+         * Helper: unpins the modeless dialog.
+         *
+         * @param {Object} instance	The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function unpin(instance) {
+            //unpin the dialog 
+            instance.set('pinned', false);
+        }
+
+
+        /**
+         * Helper: enlarges the dialog to fill the entire screen.
+         *
+         * @param {Object} instance	The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function maximize(instance) {
+            // allow custom `onmaximize` method
+            dispatchEvent('onmaximize', instance);
+            //maximize the dialog 
+            addClass(instance.elements.root, classes.maximized);
+            if (instance.isOpen()) {
+                ensureNoOverflow();
+            }
+            // allow custom `onmaximized` method
+            dispatchEvent('onmaximized', instance);
+        }
+
+        /**
+         * Helper: returns the dialog to its former size.
+         *
+         * @param {Object} instance	The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function restore(instance) {
+            // allow custom `onrestore` method
+            dispatchEvent('onrestore', instance);
+            //maximize the dialog 
+            removeClass(instance.elements.root, classes.maximized);
+            if (instance.isOpen()) {
+                ensureNoOverflow();
+            }
+            // allow custom `onrestored` method
+            dispatchEvent('onrestored', instance);
+        }
+
+        /**
+         * Show or hide the maximize box.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to add the behavior, removes it otherwise.
+         *
+         * @return {undefined}
+         */
+        function updatePinnable(instance) {
+            if (instance.get('pinnable')) {
+                // add class
+                addClass(instance.elements.root, classes.pinnable);
+            } else {
+                // remove class
+                removeClass(instance.elements.root, classes.pinnable);
+            }
+        }
+
+        /**
+         * Helper: Fixes the absolutly positioned modal div position.
+         *
+         * @param {Object} instance The dialog instance.
+         *
+         * @return {undefined}
+         */
+        function addAbsPositionFix(instance) {
+            var scrollLeft = getScrollLeft();
+            instance.elements.modal.style.marginTop = getScrollTop() + 'px';
+            instance.elements.modal.style.marginLeft = scrollLeft + 'px';
+            instance.elements.modal.style.marginRight = (-scrollLeft) + 'px';
+        }
+
+        /**
+         * Helper: Removes the absolutly positioned modal div position fix.
+         *
+         * @param {Object} instance The dialog instance.
+         *
+         * @return {undefined}
+         */
+        function removeAbsPositionFix(instance) {
+            var marginTop = parseInt(instance.elements.modal.style.marginTop, 10);
+            var marginLeft = parseInt(instance.elements.modal.style.marginLeft, 10);
+            instance.elements.modal.style.marginTop = '';
+            instance.elements.modal.style.marginLeft = '';
+            instance.elements.modal.style.marginRight = '';
+
+            if (instance.isOpen()) {
+                var top = 0,
+                    left = 0;
+                if (instance.elements.dialog.style.top !== '') {
+                    top = parseInt(instance.elements.dialog.style.top, 10);
+                }
+                instance.elements.dialog.style.top = (top + (marginTop - getScrollTop())) + 'px';
+
+                if (instance.elements.dialog.style.left !== '') {
+                    left = parseInt(instance.elements.dialog.style.left, 10);
+                }
+                instance.elements.dialog.style.left = (left + (marginLeft - getScrollLeft())) + 'px';
+            }
+        }
+        /**
+         * Helper: Adds/Removes the absolutly positioned modal div position fix based on its pinned setting.
+         *
+         * @param {Object} instance The dialog instance.
+         *
+         * @return {undefined}
+         */
+        function updateAbsPositionFix(instance) {
+            // if modeless and unpinned add fix
+            if (!instance.get('modal') && !instance.get('pinned')) {
+                addAbsPositionFix(instance);
+            } else {
+                removeAbsPositionFix(instance);
+            }
+        }
+        /**
+         * Toggles the dialog position lock | modeless only.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to make it modal, false otherwise.
+         *
+         * @return {undefined}
+         */
+        function updatePinned(instance) {
+            if (instance.get('pinned')) {
+                removeClass(instance.elements.root, classes.unpinned);
+                if (instance.isOpen()) {
+                    removeAbsPositionFix(instance);
+                }
+            } else {
+                addClass(instance.elements.root, classes.unpinned);
+                if (instance.isOpen() && !instance.isModal()) {
+                    addAbsPositionFix(instance);
+                }
+            }
+        }
+
+        /**
+         * Show or hide the maximize box.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to add the behavior, removes it otherwise.
+         *
+         * @return {undefined}
+         */
+        function updateMaximizable(instance) {
+            if (instance.get('maximizable')) {
+                // add class
+                addClass(instance.elements.root, classes.maximizable);
+            } else {
+                // remove class
+                removeClass(instance.elements.root, classes.maximizable);
+            }
+        }
+
+        /**
+         * Show or hide the close box.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to add the behavior, removes it otherwise.
+         *
+         * @return {undefined}
+         */
+        function updateClosable(instance) {
+            if (instance.get('closable')) {
+                // add class
+                addClass(instance.elements.root, classes.closable);
+                bindClosableEvents(instance);
+            } else {
+                // remove class
+                removeClass(instance.elements.root, classes.closable);
+                unbindClosableEvents(instance);
+            }
+        }
+
+        // flag to cancel click event if already handled by end resize event (the mousedown, mousemove, mouseup sequence fires a click event.).
+        var cancelClick = false;
+
+        /**
+         * Helper: closes the modal dialog when clicking the modal
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function modalClickHandler(event, instance) {
+            var target = event.srcElement || event.target;
+            if (!cancelClick && target === instance.elements.modal && instance.get('closableByDimmer') === true) {
+                triggerClose(instance);
+            }
+            cancelClick = false;
+            return false;
+        }
+
+        // flag to cancel keyup event if already handled by click event (pressing Enter on a focusted button).
+        var cancelKeyup = false;
+        /** 
+         * Helper: triggers a button callback
+         *
+         * @param {Object}		The dilog instance.
+         * @param {Function}	Callback to check which button triggered the event.
+         *
+         * @return {undefined}
+         */
+        function triggerCallback(instance, check) {
+            for (var idx = 0; idx < instance.__internal.buttons.length; idx += 1) {
+                var button = instance.__internal.buttons[idx];
+                if (!button.element.disabled && check(button)) {
+                    var closeEvent = createCloseEvent(idx, button);
+                    if (typeof instance.callback === 'function') {
+                        instance.callback.apply(instance, [closeEvent]);
+                    }
+                    //close the dialog only if not canceled.
+                    if (closeEvent.cancel === false) {
+                        instance.close();
+                    }
+                    break;
+                }
+            }
+        }
+
+        /**
+         * Clicks event handler, attached to the dialog footer.
+         *
+         * @param {Event}		DOM event object.
+         * @param {Object}		The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function buttonsClickHandler(event, instance) {
+            var target = event.srcElement || event.target;
+            triggerCallback(instance, function (button) {
+                // if this button caused the click, cancel keyup event
+                return button.element === target && (cancelKeyup = true);
+            });
+        }
+
+        /**
+         * Keyup event handler, attached to the document.body
+         *
+         * @param {Event}		DOM event object.
+         * @param {Object}		The dilog instance.
+         * 
+         * @return {undefined}
+         */
+        function keyupHandler(event) {
+            //hitting enter while button has focus will trigger keyup too.
+            //ignore if handled by clickHandler
+            if (cancelKeyup) {
+                cancelKeyup = false;
+                return;
+            }
+            var instance = openDialogs[openDialogs.length - 1];
+            var keyCode = event.keyCode;
+            if (instance.__internal.buttons.length === 0 && keyCode === keys.ESC && instance.get('closable') === true) {
+                triggerClose(instance);
+                return false;
+            }else if (usedKeys.indexOf(keyCode) > -1) {
+                triggerCallback(instance, function (button) {
+                    return button.key === keyCode;
+                });
+                return false;
+            }
+        }
+        /**
+        * Keydown event handler, attached to the document.body
+        *
+        * @param {Event}		DOM event object.
+        * @param {Object}		The dilog instance.
+        * 
+        * @return {undefined}
+        */
+        function keydownHandler(event) {
+            var instance = openDialogs[openDialogs.length - 1];
+            var keyCode = event.keyCode;
+            if (keyCode === keys.LEFT || keyCode === keys.RIGHT) {
+                var buttons = instance.__internal.buttons;
+                for (var x = 0; x < buttons.length; x += 1) {
+                    if (document.activeElement === buttons[x].element) {
+                        switch (keyCode) {
+                        case keys.LEFT:
+                            buttons[(x || buttons.length) - 1].element.focus();
+                            return;
+                        case keys.RIGHT:
+                            buttons[(x + 1) % buttons.length].element.focus();
+                            return;
+                        }
+                    }
+                }
+            }else if (keyCode < keys.F12 + 1 && keyCode > keys.F1 - 1 && usedKeys.indexOf(keyCode) > -1) {
+                event.preventDefault();
+                event.stopPropagation();
+                triggerCallback(instance, function (button) {
+                    return button.key === keyCode;
+                });
+                return false;
+            }
+        }
+
+
+        /**
+         * Sets focus to proper dialog element
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Node} [resetTarget=undefined] DOM element to reset focus to.
+         *
+         * @return {undefined}
+         */
+        function setFocus(instance, resetTarget) {
+            // reset target has already been determined.
+            if (resetTarget) {
+                resetTarget.focus();
+            } else {
+                // current instance focus settings
+                var focus = instance.__internal.focus;
+                // the focus element.
+                var element = focus.element;
+
+                switch (typeof focus.element) {
+                // a number means a button index
+                case 'number':
+                    if (instance.__internal.buttons.length > focus.element) {
+                        //in basic view, skip focusing the buttons.
+                        if (instance.get('basic') === true) {
+                            element = instance.elements.reset[0];
+                        } else {
+                            element = instance.__internal.buttons[focus.element].element;
+                        }
+                    }
+                    break;
+                // a string means querySelector to select from dialog body contents.
+                case 'string':
+                    element = instance.elements.body.querySelector(focus.element);
+                    break;
+                // a function should return the focus element.
+                case 'function':
+                    element = focus.element.call(instance);
+                    break;
+                }
+                
+                // if no focus element, default to first reset element.
+                if ((typeof element === 'undefined' || element === null) && instance.__internal.buttons.length === 0) {
+                    element = instance.elements.reset[0];
+                }
+                // focus
+                if (element && element.focus) {
+                    element.focus();
+                    // if selectable
+                    if (focus.select && element.select) {
+                        element.select();
+                    }
+                }
+            }
+        }
+
+        /**
+         * Focus event handler, attached to document.body and dialogs own reset links.
+         * handles the focus for modal dialogs only.
+         *
+         * @param {Event} event DOM focus event object.
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function onReset(event, instance) {
+
+            // should work on last modal if triggered from document.body 
+            if (!instance) {
+                for (var x = openDialogs.length - 1; x > -1; x -= 1) {
+                    if (openDialogs[x].isModal()) {
+                        instance = openDialogs[x];
+                        break;
+                    }
+                }
+            }
+            // if modal
+            if (instance && instance.isModal()) {
+                // determine reset target to enable forward/backward tab cycle.
+                var resetTarget, target = event.srcElement || event.target;
+                var lastResetElement = target === instance.elements.reset[1] || (instance.__internal.buttons.length === 0 && target === document.body);
+
+                // if last reset link, then go to maximize or close
+                if (lastResetElement) {
+                    if (instance.get('maximizable')) {
+                        resetTarget = instance.elements.commands.maximize;
+                    } else if (instance.get('closable')) {
+                        resetTarget = instance.elements.commands.close;
+                    }
+                }
+                // if no reset target found, try finding the best button
+                if (resetTarget === undefined) {
+                    if (typeof instance.__internal.focus.element === 'number') {
+                        // button focus element, go to first available button
+                        if (target === instance.elements.reset[0]) {
+                            resetTarget = instance.elements.buttons.auxiliary.firstChild || instance.elements.buttons.primary.firstChild;
+                        } else if (lastResetElement) {
+                            //restart the cycle by going to first reset link
+                            resetTarget = instance.elements.reset[0];
+                        }
+                    } else {
+                        // will reach here when tapping backwards, so go to last child
+                        // The focus element SHOULD NOT be a button (logically!).
+                        if (target === instance.elements.reset[0]) {
+                            resetTarget = instance.elements.buttons.primary.lastChild || instance.elements.buttons.auxiliary.lastChild;
+                        }
+                    }
+                }
+                // focus
+                setFocus(instance, resetTarget);
+            }
+        }
+        /**
+         * Transition in transitionend event handler. 
+         *
+         * @param {Event}		TransitionEnd event object.
+         * @param {Object}		The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function handleTransitionInEvent(event, instance) {
+            // clear the timer
+            clearTimeout(instance.__internal.timerIn);
+
+            // once transition is complete, set focus
+            setFocus(instance);
+
+            //restore scroll to prevent document jump
+            restoreScrollPosition();
+
+            // allow handling key up after transition ended.
+            cancelKeyup = false;
+
+            // allow custom `onfocus` method
+            dispatchEvent('onfocus', instance);
+
+            // unbind the event
+            off(instance.elements.dialog, transition.type, instance.__internal.transitionInHandler);
+
+            removeClass(instance.elements.root, classes.animationIn);
+        }
+
+        /**
+         * Transition out transitionend event handler. 
+         *
+         * @param {Event}		TransitionEnd event object.
+         * @param {Object}		The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function handleTransitionOutEvent(event, instance) {
+            // clear the timer
+            clearTimeout(instance.__internal.timerOut);
+            // unbind the event
+            off(instance.elements.dialog, transition.type, instance.__internal.transitionOutHandler);
+
+            // reset move updates
+            resetMove(instance);
+            // reset resize updates
+            resetResize(instance);
+
+            // restore if maximized
+            if (instance.isMaximized() && !instance.get('startMaximized')) {
+                restore(instance);
+            }
+
+            // return focus to the last active element
+            if (alertify.defaults.maintainFocus && instance.__internal.activeElement) {
+                instance.__internal.activeElement.focus();
+                instance.__internal.activeElement = null;
+            }
+            
+            //destory the instance
+            if (typeof instance.__internal.destroy === 'function') {
+                instance.__internal.destroy.apply(instance);
+            }
+        }
+        /* Controls moving a dialog around */
+        //holde the current moving instance
+        var movable = null,
+            //holds the current X offset when move starts
+            offsetX = 0,
+            //holds the current Y offset when move starts
+            offsetY = 0,
+            xProp = 'pageX',
+            yProp = 'pageY',
+            bounds = null,
+            refreshTop = false,
+            moveDelegate = null;
+
+        /**
+         * Helper: sets the element top/left coordinates
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Node} element The element being moved.
+         * 
+         * @return {undefined}
+         */
+        function moveElement(event, element) {
+            var left = (event[xProp] - offsetX),
+                top  = (event[yProp] - offsetY);
+
+            if(refreshTop){
+                top -= document.body.scrollTop;
+            }
+           
+            element.style.left = left + 'px';
+            element.style.top = top + 'px';
+           
+        }
+        /**
+         * Helper: sets the element top/left coordinates within screen bounds
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Node} element The element being moved.
+         * 
+         * @return {undefined}
+         */
+        function moveElementBounded(event, element) {
+            var left = (event[xProp] - offsetX),
+                top  = (event[yProp] - offsetY);
+
+            if(refreshTop){
+                top -= document.body.scrollTop;
+            }
+            
+            element.style.left = Math.min(bounds.maxLeft, Math.max(bounds.minLeft, left)) + 'px';
+            if(refreshTop){
+                element.style.top = Math.min(bounds.maxTop, Math.max(bounds.minTop, top)) + 'px';
+            }else{
+                element.style.top = Math.max(bounds.minTop, top) + 'px';
+            }
+        }
+            
+
+        /**
+         * Triggers the start of a move event, attached to the header element mouse down event.
+         * Adds no-selection class to the body, disabling selection while moving.
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Object} instance The dilog instance.
+         * 
+         * @return {Boolean} false
+         */
+        function beginMove(event, instance) {
+            if (resizable === null && !instance.isMaximized() && instance.get('movable')) {
+                var eventSrc, left=0, top=0;
+                if (event.type === 'touchstart') {
+                    event.preventDefault();
+                    eventSrc = event.targetTouches[0];
+                    xProp = 'clientX';
+                    yProp = 'clientY';
+                } else if (event.button === 0) {
+                    eventSrc = event;
+                }
+
+                if (eventSrc) {
+
+                    var element = instance.elements.dialog;
+                    addClass(element, classes.capture);
+
+                    if (element.style.left) {
+                        left = parseInt(element.style.left, 10);
+                    }
+
+                    if (element.style.top) {
+                        top = parseInt(element.style.top, 10);
+                    }
+                    
+                    offsetX = eventSrc[xProp] - left;
+                    offsetY = eventSrc[yProp] - top;
+
+                    if(instance.isModal()){
+                        offsetY += instance.elements.modal.scrollTop;
+                    }else if(instance.isPinned()){
+                        offsetY -= document.body.scrollTop;
+                    }
+                    
+                    if(instance.get('moveBounded')){
+                        var current = element,
+                            offsetLeft = -left,
+                            offsetTop = -top;
+                        
+                        //calc offset
+                        do {
+                            offsetLeft += current.offsetLeft;
+                            offsetTop += current.offsetTop;
+                        } while (current = current.offsetParent);
+                        
+                        bounds = {
+                            maxLeft : offsetLeft,
+                            minLeft : -offsetLeft,
+                            maxTop  : document.documentElement.clientHeight - element.clientHeight - offsetTop,
+                            minTop  : -offsetTop
+                        };
+                        moveDelegate = moveElementBounded;
+                    }else{
+                        bounds = null;
+                        moveDelegate = moveElement;
+                    }
+                    
+                    // allow custom `onmove` method
+                    dispatchEvent('onmove', instance);
+
+                    refreshTop = !instance.isModal() && instance.isPinned();
+                    movable = instance;
+                    moveDelegate(eventSrc, element);
+                    addClass(document.body, classes.noSelection);
+                    return false;
+                }
+            }
+        }
+
+        /**
+         * The actual move handler,  attached to document.body mousemove event.
+         *
+         * @param {Event} event	DOM event object.
+         * 
+         * @return {undefined}
+         */
+        function move(event) {
+            if (movable) {
+                var eventSrc;
+                if (event.type === 'touchmove') {
+                    event.preventDefault();
+                    eventSrc = event.targetTouches[0];
+                } else if (event.button === 0) {
+                    eventSrc = event;
+                }
+                if (eventSrc) {
+                    moveDelegate(eventSrc, movable.elements.dialog);
+                }
+            }
+        }
+
+        /**
+         * Triggers the end of a move event,  attached to document.body mouseup event.
+         * Removes no-selection class from document.body, allowing selection.
+         *
+         * @return {undefined}
+         */
+        function endMove() {
+            if (movable) {
+                var instance = movable;
+                movable = bounds = null;
+                removeClass(document.body, classes.noSelection);
+                removeClass(instance.elements.dialog, classes.capture);
+                // allow custom `onmoved` method
+                dispatchEvent('onmoved', instance);
+            }
+        }
+
+        /**
+         * Resets any changes made by moving the element to its original state,
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function resetMove(instance) {
+            movable = null;
+            var element = instance.elements.dialog;
+            element.style.left = element.style.top = '';
+        }
+
+        /**
+         * Updates the dialog move behavior.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to add the behavior, removes it otherwise.
+         *
+         * @return {undefined}
+         */
+        function updateMovable(instance) {
+            if (instance.get('movable')) {
+                // add class
+                addClass(instance.elements.root, classes.movable);
+                if (instance.isOpen()) {
+                    bindMovableEvents(instance);
+                }
+            } else {
+
+                //reset
+                resetMove(instance);
+                // remove class
+                removeClass(instance.elements.root, classes.movable);
+                if (instance.isOpen()) {
+                    unbindMovableEvents(instance);
+                }
+            }
+        }
+
+        /* Controls moving a dialog around */
+        //holde the current instance being resized		
+        var resizable = null,
+            //holds the staring left offset when resize starts.
+            startingLeft = Number.Nan,
+            //holds the staring width when resize starts.
+            startingWidth = 0,
+            //holds the initial width when resized for the first time.
+            minWidth = 0,
+            //holds the offset of the resize handle.
+            handleOffset = 0;
+
+        /**
+         * Helper: sets the element width/height and updates left coordinate if neccessary.
+         *
+         * @param {Event} event	DOM mousemove event object.
+         * @param {Node} element The element being moved.
+         * @param {Boolean} pinned A flag indicating if the element being resized is pinned to the screen.
+         * 
+         * @return {undefined}
+         */
+        function resizeElement(event, element, pageRelative) {
+
+            //calculate offsets from 0,0
+            var current = element;
+            var offsetLeft = 0;
+            var offsetTop = 0;
+            do {
+                offsetLeft += current.offsetLeft;
+                offsetTop += current.offsetTop;
+            } while (current = current.offsetParent);
+
+            // determine X,Y coordinates.
+            var X, Y;
+            if (pageRelative === true) {
+                X = event.pageX;
+                Y = event.pageY;
+            } else {
+                X = event.clientX;
+                Y = event.clientY;
+            }
+            // rtl handling
+            var isRTL = isRightToLeft();
+            if (isRTL) {
+                // reverse X 
+                X = document.body.offsetWidth - X;
+                // if has a starting left, calculate offsetRight
+                if (!isNaN(startingLeft)) {
+                    offsetLeft = document.body.offsetWidth - offsetLeft - element.offsetWidth;
+                }
+            }
+
+            // set width/height
+            element.style.height = (Y - offsetTop + handleOffset) + 'px';
+            element.style.width = (X - offsetLeft + handleOffset) + 'px';
+
+            // if the element being resized has a starting left, maintain it.
+            // the dialog is centered, divide by half the offset to maintain the margins.
+            if (!isNaN(startingLeft)) {
+                var diff = Math.abs(element.offsetWidth - startingWidth) * 0.5;
+                if (isRTL) {
+                    //negate the diff, why?
+                    //when growing it should decrease left
+                    //when shrinking it should increase left
+                    diff *= -1;
+                }
+                if (element.offsetWidth > startingWidth) {
+                    //growing
+                    element.style.left = (startingLeft + diff) + 'px';
+                } else if (element.offsetWidth >= minWidth) {
+                    //shrinking
+                    element.style.left = (startingLeft - diff) + 'px';
+                }
+            }
+        }
+
+        /**
+         * Triggers the start of a resize event, attached to the resize handle element mouse down event.
+         * Adds no-selection class to the body, disabling selection while moving.
+         *
+         * @param {Event} event	DOM event object.
+         * @param {Object} instance The dilog instance.
+         * 
+         * @return {Boolean} false
+         */
+        function beginResize(event, instance) {
+            if (!instance.isMaximized()) {
+                var eventSrc;
+                if (event.type === 'touchstart') {
+                    event.preventDefault();
+                    eventSrc = event.targetTouches[0];
+                } else if (event.button === 0) {
+                    eventSrc = event;
+                }
+                if (eventSrc) {
+                    // allow custom `onresize` method
+                    dispatchEvent('onresize', instance);
+                    
+                    resizable = instance;
+                    handleOffset = instance.elements.resizeHandle.offsetHeight / 2;
+                    var element = instance.elements.dialog;
+                    addClass(element, classes.capture);
+                    startingLeft = parseInt(element.style.left, 10);
+                    element.style.height = element.offsetHeight + 'px';
+                    element.style.minHeight = instance.elements.header.offsetHeight + instance.elements.footer.offsetHeight + 'px';
+                    element.style.width = (startingWidth = element.offsetWidth) + 'px';
+
+                    if (element.style.maxWidth !== 'none') {
+                        element.style.minWidth = (minWidth = element.offsetWidth) + 'px';
+                    }
+                    element.style.maxWidth = 'none';
+                    addClass(document.body, classes.noSelection);
+                    return false;
+                }
+            }
+        }
+
+        /**
+         * The actual resize handler,  attached to document.body mousemove event.
+         *
+         * @param {Event} event	DOM event object.
+         * 
+         * @return {undefined}
+         */
+        function resize(event) {
+            if (resizable) {
+                var eventSrc;
+                if (event.type === 'touchmove') {
+                    event.preventDefault();
+                    eventSrc = event.targetTouches[0];
+                } else if (event.button === 0) {
+                    eventSrc = event;
+                }
+                if (eventSrc) {
+                    resizeElement(eventSrc, resizable.elements.dialog, !resizable.get('modal') && !resizable.get('pinned'));
+                }
+            }
+        }
+
+        /**
+         * Triggers the end of a resize event,  attached to document.body mouseup event.
+         * Removes no-selection class from document.body, allowing selection.
+         *
+         * @return {undefined}
+         */
+        function endResize() {
+            if (resizable) {
+                var instance = resizable;
+                resizable = null;
+                removeClass(document.body, classes.noSelection);
+                removeClass(instance.elements.dialog, classes.capture);
+                cancelClick = true;
+                // allow custom `onresized` method
+                dispatchEvent('onresized', instance);
+            }
+        }
+
+        /**
+         * Resets any changes made by resizing the element to its original state.
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function resetResize(instance) {
+            resizable = null;
+            var element = instance.elements.dialog;
+            if (element.style.maxWidth === 'none') {
+                //clear inline styles.
+                element.style.maxWidth = element.style.minWidth = element.style.width = element.style.height = element.style.minHeight = element.style.left = '';
+                //reset variables.
+                startingLeft = Number.Nan;
+                startingWidth = minWidth = handleOffset = 0;
+            }
+        }
+
+
+        /**
+         * Updates the dialog move behavior.
+         *
+         * @param {Object} instance The dilog instance.
+         * @param {Boolean} on True to add the behavior, removes it otherwise.
+         *
+         * @return {undefined}
+         */
+        function updateResizable(instance) {
+            if (instance.get('resizable')) {
+                // add class
+                addClass(instance.elements.root, classes.resizable);
+                if (instance.isOpen()) {
+                    bindResizableEvents(instance);
+                }
+            } else {
+                //reset
+                resetResize(instance);
+                // remove class
+                removeClass(instance.elements.root, classes.resizable);
+                if (instance.isOpen()) {
+                    unbindResizableEvents(instance);
+                }
+            }
+        }
+
+        /**
+         * Reset move/resize on window resize.
+         *
+         * @param {Event} event	window resize event object.
+         *
+         * @return {undefined}
+         */
+        function windowResize(/*event*/) {
+            for (var x = 0; x < openDialogs.length; x += 1) {
+                var instance = openDialogs[x];
+                if (instance.get('autoReset')) {
+                    resetMove(instance);
+                    resetResize(instance);
+                }
+            }
+        }
+        /**
+         * Bind dialogs events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bindEvents(instance) {
+            // if first dialog, hook global handlers
+            if (openDialogs.length === 1) {
+                //global
+                on(window, 'resize', windowResize);
+                on(document.body, 'keyup', keyupHandler);
+                on(document.body, 'keydown', keydownHandler);
+                on(document.body, 'focus', onReset);
+
+                //move
+                on(document.documentElement, 'mousemove', move);
+                on(document.documentElement, 'touchmove', move);
+                on(document.documentElement, 'mouseup', endMove);
+                on(document.documentElement, 'touchend', endMove);
+                //resize
+                on(document.documentElement, 'mousemove', resize);
+                on(document.documentElement, 'touchmove', resize);
+                on(document.documentElement, 'mouseup', endResize);
+                on(document.documentElement, 'touchend', endResize);
+            }
+
+            // common events
+            on(instance.elements.commands.container, 'click', instance.__internal.commandsClickHandler);
+            on(instance.elements.footer, 'click', instance.__internal.buttonsClickHandler);
+            on(instance.elements.reset[0], 'focus', instance.__internal.resetHandler);
+            on(instance.elements.reset[1], 'focus', instance.__internal.resetHandler);
+
+            //prevent handling key up when dialog is being opened by a key stroke.
+            cancelKeyup = true;
+            // hook in transition handler
+            on(instance.elements.dialog, transition.type, instance.__internal.transitionInHandler);
+
+            // modelss only events
+            if (!instance.get('modal')) {
+                bindModelessEvents(instance);
+            }
+
+            // resizable
+            if (instance.get('resizable')) {
+                bindResizableEvents(instance);
+            }
+
+            // movable
+            if (instance.get('movable')) {
+                bindMovableEvents(instance);
+            }
+        }
+
+        /**
+         * Unbind dialogs events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function unbindEvents(instance) {
+            // if last dialog, remove global handlers
+            if (openDialogs.length === 1) {
+                //global
+                off(window, 'resize', windowResize);
+                off(document.body, 'keyup', keyupHandler);
+                off(document.body, 'keydown', keydownHandler);
+                off(document.body, 'focus', onReset);
+                //move
+                off(document.documentElement, 'mousemove', move);
+                off(document.documentElement, 'mouseup', endMove);
+                //resize
+                off(document.documentElement, 'mousemove', resize);
+                off(document.documentElement, 'mouseup', endResize);
+            }
+
+            // common events
+            off(instance.elements.commands.container, 'click', instance.__internal.commandsClickHandler);
+            off(instance.elements.footer, 'click', instance.__internal.buttonsClickHandler);
+            off(instance.elements.reset[0], 'focus', instance.__internal.resetHandler);
+            off(instance.elements.reset[1], 'focus', instance.__internal.resetHandler);
+
+            // hook out transition handler
+            on(instance.elements.dialog, transition.type, instance.__internal.transitionOutHandler);
+
+            // modelss only events
+            if (!instance.get('modal')) {
+                unbindModelessEvents(instance);
+            }
+
+            // movable
+            if (instance.get('movable')) {
+                unbindMovableEvents(instance);
+            }
+
+            // resizable
+            if (instance.get('resizable')) {
+                unbindResizableEvents(instance);
+            }
+
+        }
+
+        /**
+         * Bind modeless specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bindModelessEvents(instance) {
+            on(instance.elements.dialog, 'focus', instance.__internal.bringToFrontHandler, true);
+        }
+
+        /**
+         * Unbind modeless specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function unbindModelessEvents(instance) {
+            off(instance.elements.dialog, 'focus', instance.__internal.bringToFrontHandler, true);
+        }
+
+
+
+        /**
+         * Bind movable specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bindMovableEvents(instance) {
+            on(instance.elements.header, 'mousedown', instance.__internal.beginMoveHandler);
+            on(instance.elements.header, 'touchstart', instance.__internal.beginMoveHandler);
+        }
+
+        /**
+         * Unbind movable specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function unbindMovableEvents(instance) {
+            off(instance.elements.header, 'mousedown', instance.__internal.beginMoveHandler);
+            off(instance.elements.header, 'touchstart', instance.__internal.beginMoveHandler);
+        }
+
+
+
+        /**
+         * Bind resizable specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bindResizableEvents(instance) {
+            on(instance.elements.resizeHandle, 'mousedown', instance.__internal.beginResizeHandler);
+            on(instance.elements.resizeHandle, 'touchstart', instance.__internal.beginResizeHandler);
+        }
+
+        /**
+         * Unbind resizable specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function unbindResizableEvents(instance) {
+            off(instance.elements.resizeHandle, 'mousedown', instance.__internal.beginResizeHandler);
+            off(instance.elements.resizeHandle, 'touchstart', instance.__internal.beginResizeHandler);
+        }
+
+        /**
+         * Bind closable events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function bindClosableEvents(instance) {
+            on(instance.elements.modal, 'click', instance.__internal.modalClickHandler);
+        }
+
+        /**
+         * Unbind closable specific events
+         *
+         * @param {Object} instance The dilog instance.
+         *
+         * @return {undefined}
+         */
+        function unbindClosableEvents(instance) {
+            off(instance.elements.modal, 'click', instance.__internal.modalClickHandler);
+        }
+        // dialog API
+        return {
+            __init:initialize,
+            /**
+             * Check if dialog is currently open
+             *
+             * @return {Boolean}
+             */
+            isOpen: function () {
+                return this.__internal.isOpen;
+            },
+            isModal: function (){
+                return this.elements.root.className.indexOf(classes.modeless) < 0;
+            },
+            isMaximized:function(){
+                return this.elements.root.className.indexOf(classes.maximized) > -1;
+            },
+            isPinned:function(){
+                return this.elements.root.className.indexOf(classes.unpinned) < 0;
+            },
+            maximize:function(){
+                if(!this.isMaximized()){
+                    maximize(this);
+                }
+                return this;
+            },
+            restore:function(){
+                if(this.isMaximized()){
+                    restore(this);
+                }
+                return this;
+            },
+            pin:function(){
+                if(!this.isPinned()){
+                    pin(this);
+                }
+                return this;
+            },
+            unpin:function(){
+                if(this.isPinned()){
+                    unpin(this);
+                }
+                return this;
+            },
+            bringToFront:function(){
+                bringToFront(null, this);
+                return this;
+            },
+            /**
+             * Move the dialog to a specific x/y coordinates
+             *
+             * @param {Number} x    The new dialog x coordinate in pixels.
+             * @param {Number} y    The new dialog y coordinate in pixels.
+             *
+             * @return {Object} The dialog instance.
+             */
+            moveTo:function(x,y){
+                if(!isNaN(x) && !isNaN(y)){
+                    // allow custom `onmove` method
+                    dispatchEvent('onmove', this);
+                    
+                    var element = this.elements.dialog,
+                        current = element,
+                        offsetLeft = 0,
+                        offsetTop = 0;
+                    
+                    //subtract existing left,top
+                    if (element.style.left) {
+                        offsetLeft -= parseInt(element.style.left, 10);
+                    }
+                    if (element.style.top) {
+                        offsetTop -= parseInt(element.style.top, 10);
+                    }
+                    //calc offset
+                    do {
+                        offsetLeft += current.offsetLeft;
+                        offsetTop += current.offsetTop;
+                    } while (current = current.offsetParent);
+
+                    //calc left, top
+                    var left = (x - offsetLeft);
+                    var top  = (y - offsetTop);
+
+                    //// rtl handling
+                    if (isRightToLeft()) {
+                        left *= -1;
+                    }
+
+                    element.style.left = left + 'px';
+                    element.style.top = top + 'px';
+                    
+                    // allow custom `onmoved` method
+                    dispatchEvent('onmoved', this);
+                }
+                return this;
+            },
+            /**
+             * Resize the dialog to a specific width/height (the dialog must be 'resizable').
+             * The dialog can be resized to:
+             *  A minimum width equal to the initial display width
+             *  A minimum height equal to the sum of header/footer heights.
+             *
+             *
+             * @param {Number or String} width    The new dialog width in pixels or in percent.
+             * @param {Number or String} height   The new dialog height in pixels or in percent.
+             *
+             * @return {Object} The dialog instance.
+             */
+            resizeTo:function(width,height){
+                var w = parseFloat(width),
+                    h = parseFloat(height),
+                    regex = /(\d*\.\d+|\d+)%/;
+
+                if(!isNaN(w) && !isNaN(h) && this.get('resizable') === true){
+                    
+                    // allow custom `onresize` method
+                    dispatchEvent('onresize', this);
+                    
+                    if(('' + width).match(regex)){
+                        w = w / 100 * document.documentElement.clientWidth ;
+                    }
+
+                    if(('' + height).match(regex)){
+                        h = h / 100 * document.documentElement.clientHeight;
+                    }
+
+                    var element = this.elements.dialog;
+                    if (element.style.maxWidth !== 'none') {
+                        element.style.minWidth = (minWidth = element.offsetWidth) + 'px';
+                    }
+                    element.style.maxWidth = 'none';
+                    element.style.minHeight = this.elements.header.offsetHeight + this.elements.footer.offsetHeight + 'px';
+                    element.style.width = w + 'px';
+                    element.style.height = h + 'px';
+                    
+                    // allow custom `onresized` method
+                    dispatchEvent('onresized', this);
+                }
+                return this;
+            },
+            /**
+             * Gets or Sets dialog settings/options 
+             *
+             * @param {String|Object} key A string specifying a propery name or a collection of key/value pairs.
+             * @param {Object} value Optional, the value associated with the key (in case it was a string).
+             *
+             * @return {undefined}
+             */
+            setting : function (key, value) {
+                var self = this;
+                var result = update(this, this.__internal.options, function(k,o,n){ optionUpdated(self,k,o,n); }, key, value);
+                if(result.op === 'get'){
+                    if(result.found){
+                        return result.value;
+                    }else if(typeof this.settings !== 'undefined'){
+                        return update(this, this.settings, this.settingUpdated || function(){}, key, value).value;
+                    }else{
+                        return undefined;
+                    }
+                }else if(result.op === 'set'){
+                    if(result.items.length > 0){
+                        var callback = this.settingUpdated || function(){};
+                        for(var x=0;x<result.items.length;x+=1){
+                            var item = result.items[x];
+                            if(!item.found && typeof this.settings !== 'undefined'){
+                                update(this, this.settings, callback, item.key, item.value);
+                            }
+                        }
+                    }
+                    return this;
+                }
+            },
+            /**
+             * [Alias] Sets dialog settings/options 
+             */
+            set:function(key, value){
+                this.setting(key,value);
+                return this;
+            },
+            /**
+             * [Alias] Gets dialog settings/options 
+             */
+            get:function(key){
+                return this.setting(key);
+            },
+            /**
+            * Sets dialog header
+            * @content {string or element}
+            *
+            * @return {undefined}
+            */
+            setHeader:function(content){
+                if(typeof content === 'string'){
+                    clearContents(this.elements.header);
+                    this.elements.header.innerHTML = content;
+                }else if (content instanceof window.HTMLElement && this.elements.header.firstChild !== content){
+                    clearContents(this.elements.header);
+                    this.elements.header.appendChild(content);
+                }
+                return this;
+            },
+            /**
+            * Sets dialog contents
+            * @content {string or element}
+            *
+            * @return {undefined}
+            */
+            setContent:function(content){
+                if(typeof content === 'string'){
+                    clearContents(this.elements.content);
+                    this.elements.content.innerHTML = content;
+                }else if (content instanceof window.HTMLElement && this.elements.content.firstChild !== content){
+                    clearContents(this.elements.content);
+                    this.elements.content.appendChild(content);
+                }
+                return this;
+            },
+            /**
+             * Show the dialog as modal
+             *
+             * @return {Object} the dialog instance.
+             */
+            showModal: function(className){
+                return this.show(true, className);
+            },
+            /**
+             * Show the dialog
+             *
+             * @return {Object} the dialog instance.
+             */
+            show: function (modal, className) {
+                
+                // ensure initialization
+                initialize(this);
+
+                if ( !this.__internal.isOpen ) {
+
+                    // add to open dialogs
+                    this.__internal.isOpen = true;
+                    openDialogs.push(this);
+
+                    // save last focused element
+                    if(alertify.defaults.maintainFocus){
+                        this.__internal.activeElement = document.activeElement;
+                    }
+
+                    // set tabindex attribute on body element this allows script to give it focusable
+                    if(!document.body.hasAttribute('tabindex')) {
+                        document.body.setAttribute( 'tabindex', tabindex = '0');
+                    }
+
+                    //allow custom dom manipulation updates before showing the dialog.
+                    if(typeof this.prepare === 'function'){
+                        this.prepare();
+                    }
+
+                    bindEvents(this);
+
+                    if(modal !== undefined){
+                        this.set('modal', modal);
+                    }
+
+                    //save scroll to prevent document jump
+                    saveScrollPosition();
+
+                    ensureNoOverflow();
+
+                    // allow custom dialog class on show
+                    if(typeof className === 'string' && className !== ''){
+                        this.__internal.className = className;
+                        addClass(this.elements.root, className);
+                    }
+
+                    // maximize if start maximized
+                    if ( this.get('startMaximized')) {
+                        this.maximize();
+                    }else if(this.isMaximized()){
+                        restore(this);
+                    }
+
+                    updateAbsPositionFix(this);
+
+                    removeClass(this.elements.root, classes.animationOut);
+                    addClass(this.elements.root, classes.animationIn);
+
+                    // set 1s fallback in case transition event doesn't fire
+                    clearTimeout( this.__internal.timerIn);
+                    this.__internal.timerIn = setTimeout( this.__internal.transitionInHandler, transition.supported ? 1000 : 100 );
+
+                    if(isSafari){
+                        // force desktop safari reflow
+                        var root = this.elements.root;
+                        root.style.display  = 'none';
+                        setTimeout(function(){root.style.display  = 'block';}, 0);
+                    }
+
+                    //reflow
+                    reflow = this.elements.root.offsetWidth;
+                  
+                    // show dialog
+                    removeClass(this.elements.root, classes.hidden);
+
+                    // internal on show event
+                    if(typeof this.hooks.onshow === 'function'){
+                        this.hooks.onshow.call(this);
+                    }
+
+                    // allow custom `onshow` method
+                    dispatchEvent('onshow', this);
+
+                }else{
+                    // reset move updates
+                    resetMove(this);
+                    // reset resize updates
+                    resetResize(this);
+                    // shake the dialog to indicate its already open
+                    addClass(this.elements.dialog, classes.shake);
+                    var self = this;
+                    setTimeout(function(){
+                        removeClass(self.elements.dialog, classes.shake);
+                    },200);
+                }
+                return this;
+            },
+            /**
+             * Close the dialog
+             *
+             * @return {Object} The dialog instance
+             */
+            close: function () {
+                if (this.__internal.isOpen ) {
+                    // custom `onclosing` event
+                    if(dispatchEvent('onclosing', this) !== false){
+
+                        unbindEvents(this);
+
+                        removeClass(this.elements.root, classes.animationIn);
+                        addClass(this.elements.root, classes.animationOut);
+
+                        // set 1s fallback in case transition event doesn't fire
+                        clearTimeout( this.__internal.timerOut );
+                        this.__internal.timerOut = setTimeout( this.__internal.transitionOutHandler, transition.supported ? 1000 : 100 );
+                        // hide dialog
+                        addClass(this.elements.root, classes.hidden);
+                        //reflow
+                        reflow = this.elements.modal.offsetWidth;
+
+                        // remove custom dialog class on hide
+                        if (typeof this.__internal.className !== 'undefined' && this.__internal.className !== '') {
+                            removeClass(this.elements.root, this.__internal.className);
+                        }
+
+                        // internal on close event
+                        if(typeof this.hooks.onclose === 'function'){
+                            this.hooks.onclose.call(this);
+                        }
+
+                        // allow custom `onclose` method
+                        dispatchEvent('onclose', this);
+
+                        //remove from open dialogs
+                        openDialogs.splice(openDialogs.indexOf(this),1);
+                        this.__internal.isOpen = false;
+
+                        ensureNoOverflow();
+                    }
+
+                }
+                // last dialog and tab index was set by us, remove it.
+                if(!openDialogs.length && tabindex === '0'){
+                    document.body.removeAttribute('tabindex');
+                }
+                return this;
+            },
+            /**
+             * Close all open dialogs except this.
+             *
+             * @return {undefined}
+             */
+            closeOthers:function(){
+                alertify.closeAll(this);
+                return this;
+            },
+            /**
+             * Destroys this dialog instance
+             *
+             * @return {undefined}
+             */
+            destroy:function(){
+                if (this.__internal.isOpen ) {
+                    //mark dialog for destruction, this will be called on tranistionOut event.
+                    this.__internal.destroy = function(){
+                        destruct(this, initialize);
+                    };
+                    //close the dialog to unbind all events.
+                    this.close();
+                }else{
+                    destruct(this, initialize);
+                }
+                return this;
+            },
+        };
+	} () );
+    var notifier = (function () {
+        var reflow,
+            element,
+            openInstances = [],
+            classes = {
+                base: 'alertify-notifier',
+                message: 'ajs-message',
+                top: 'ajs-top',
+                right: 'ajs-right',
+                bottom: 'ajs-bottom',
+                left: 'ajs-left',
+                center: 'ajs-center',
+                visible: 'ajs-visible',
+                hidden: 'ajs-hidden',
+                close: 'ajs-close'
+            };
+        /**
+         * Helper: initializes the notifier instance
+         *
+         */
+        function initialize(instance) {
+
+            if (!instance.__internal) {
+                instance.__internal = {
+                    position: alertify.defaults.notifier.position,
+                    delay: alertify.defaults.notifier.delay,
+                };
+
+                element = document.createElement('DIV');
+
+                updatePosition(instance);
+            }
+
+            //add to DOM tree.
+            if (element.parentNode !== document.body) {
+                document.body.appendChild(element);
+            }
+        }
+
+        function pushInstance(instance) {
+            instance.__internal.pushed = true;
+            openInstances.push(instance);
+        }
+        function popInstance(instance) {
+            openInstances.splice(openInstances.indexOf(instance), 1);
+            instance.__internal.pushed = false;
+        }
+        /**
+         * Helper: update the notifier instance position
+         *
+         */
+        function updatePosition(instance) {
+            element.className = classes.base;
+            switch (instance.__internal.position) {
+            case 'top-right':
+                addClass(element, classes.top + ' ' + classes.right);
+                break;
+            case 'top-left':
+                addClass(element, classes.top + ' ' + classes.left);
+                break;
+            case 'top-center':
+                addClass(element, classes.top + ' ' + classes.center);
+                break;
+            case 'bottom-left':
+                addClass(element, classes.bottom + ' ' + classes.left);
+                break;
+            case 'bottom-center':
+                addClass(element, classes.bottom + ' ' + classes.center);
+                break;
+
+            default:
+            case 'bottom-right':
+                addClass(element, classes.bottom + ' ' + classes.right);
+                break;
+            }
+        }
+
+        /**
+        * creates a new notification message
+        *
+        * @param  {DOMElement} message	The notifier message element
+        * @param  {Number} wait   Time (in ms) to wait before the message is dismissed, a value of 0 means keep open till clicked.
+        * @param  {Function} callback A callback function to be invoked when the message is dismissed.
+        *
+        * @return {undefined}
+        */
+        function create(div, callback) {
+
+            function clickDelegate(event, instance) {
+                if(!instance.__internal.closeButton || event.target.getAttribute('data-close') === 'true'){
+                    instance.dismiss(true);
+                }
+            }
+
+            function transitionDone(event, instance) {
+                // unbind event
+                off(instance.element, transition.type, transitionDone);
+                // remove the message
+                element.removeChild(instance.element);
+            }
+
+            function initialize(instance) {
+                if (!instance.__internal) {
+                    instance.__internal = {
+                        pushed: false,
+                        delay : undefined,
+                        timer: undefined,
+                        clickHandler: undefined,
+                        transitionEndHandler: undefined,
+                        transitionTimeout: undefined
+                    };
+                    instance.__internal.clickHandler = delegate(instance, clickDelegate);
+                    instance.__internal.transitionEndHandler = delegate(instance, transitionDone);
+                }
+                return instance;
+            }
+            function clearTimers(instance) {
+                clearTimeout(instance.__internal.timer);
+                clearTimeout(instance.__internal.transitionTimeout);
+            }
+            return initialize({
+                /* notification DOM element*/
+                element: div,
+                /*
+                 * Pushes a notification message
+                 * @param {string or DOMElement} content The notification message content
+                 * @param {Number} wait The time (in seconds) to wait before the message is dismissed, a value of 0 means keep open till clicked.
+                 *
+                 */
+                push: function (_content, _wait) {
+                    if (!this.__internal.pushed) {
+
+                        pushInstance(this);
+                        clearTimers(this);
+
+                        var content, wait;
+                        switch (arguments.length) {
+                        case 0:
+                            wait = this.__internal.delay;
+                            break;
+                        case 1:
+                            if (typeof (_content) === 'number') {
+                                wait = _content;
+                            } else {
+                                content = _content;
+                                wait = this.__internal.delay;
+                            }
+                            break;
+                        case 2:
+                            content = _content;
+                            wait = _wait;
+                            break;
+                        }
+                        this.__internal.closeButton = alertify.defaults.notifier.closeButton;
+                        // set contents
+                        if (typeof content !== 'undefined') {
+                            this.setContent(content);
+                        }
+                        // append or insert
+                        if (notifier.__internal.position.indexOf('top') < 0) {
+                            element.appendChild(this.element);
+                        } else {
+                            element.insertBefore(this.element, element.firstChild);
+                        }
+                        reflow = this.element.offsetWidth;
+                        addClass(this.element, classes.visible);
+                        // attach click event
+                        on(this.element, 'click', this.__internal.clickHandler);
+                        return this.delay(wait);
+                    }
+                    return this;
+                },
+                /*
+                 * {Function} callback function to be invoked before dismissing the notification message.
+                 * Remarks: A return value === 'false' will cancel the dismissal
+                 *
+                 */
+                ondismiss: function () { },
+                /*
+                 * {Function} callback function to be invoked when the message is dismissed.
+                 *
+                 */
+                callback: callback,
+                /*
+                 * Dismisses the notification message
+                 * @param {Boolean} clicked A flag indicating if the dismissal was caused by a click.
+                 *
+                 */
+                dismiss: function (clicked) {
+                    if (this.__internal.pushed) {
+                        clearTimers(this);
+                        if (!(typeof this.ondismiss === 'function' && this.ondismiss.call(this) === false)) {
+                            //detach click event
+                            off(this.element, 'click', this.__internal.clickHandler);
+                            // ensure element exists
+                            if (typeof this.element !== 'undefined' && this.element.parentNode === element) {
+                                //transition end or fallback
+                                this.__internal.transitionTimeout = setTimeout(this.__internal.transitionEndHandler, transition.supported ? 1000 : 100);
+                                removeClass(this.element, classes.visible);
+
+                                // custom callback on dismiss
+                                if (typeof this.callback === 'function') {
+                                    this.callback.call(this, clicked);
+                                }
+                            }
+                            popInstance(this);
+                        }
+                    }
+                    return this;
+                },
+                /*
+                 * Delays the notification message dismissal
+                 * @param {Number} wait The time (in seconds) to wait before the message is dismissed, a value of 0 means keep open till clicked.
+                 *
+                 */
+                delay: function (wait) {
+                    clearTimers(this);
+                    this.__internal.delay = typeof wait !== 'undefined' && !isNaN(+wait) ? +wait : notifier.__internal.delay;
+                    if (this.__internal.delay > 0) {
+                        var  self = this;
+                        this.__internal.timer = setTimeout(function () { self.dismiss(); }, this.__internal.delay * 1000);
+                    }
+                    return this;
+                },
+                /*
+                 * Sets the notification message contents
+                 * @param {string or DOMElement} content The notification message content
+                 *
+                 */
+                setContent: function (content) {
+                    if (typeof content === 'string') {
+                        clearContents(this.element);
+                        this.element.innerHTML = content;
+                    } else if (content instanceof window.HTMLElement && this.element.firstChild !== content) {
+                        clearContents(this.element);
+                        this.element.appendChild(content);
+                    }
+                    if(this.__internal.closeButton){
+                        var close = document.createElement('span');
+                        addClass(close, classes.close);
+                        close.setAttribute('data-close', true);
+                        this.element.appendChild(close);
+                    }
+                    return this;
+                },
+                /*
+                 * Dismisses all open notifications except this.
+                 *
+                 */
+                dismissOthers: function () {
+                    notifier.dismissAll(this);
+                    return this;
+                }
+            });
+        }
+
+        //notifier api
+        return {
+            /**
+             * Gets or Sets notifier settings.
+             *
+             * @param {string} key The setting name
+             * @param {Variant} value The setting value.
+             *
+             * @return {Object}	if the called as a setter, return the notifier instance.
+             */
+            setting: function (key, value) {
+                //ensure init
+                initialize(this);
+
+                if (typeof value === 'undefined') {
+                    //get
+                    return this.__internal[key];
+                } else {
+                    //set
+                    switch (key) {
+                    case 'position':
+                        this.__internal.position = value;
+                        updatePosition(this);
+                        break;
+                    case 'delay':
+                        this.__internal.delay = value;
+                        break;
+                    }
+                }
+                return this;
+            },
+            /**
+             * [Alias] Sets dialog settings/options
+             */
+            set:function(key,value){
+                this.setting(key,value);
+                return this;
+            },
+            /**
+             * [Alias] Gets dialog settings/options
+             */
+            get:function(key){
+                return this.setting(key);
+            },
+            /**
+             * Creates a new notification message
+             *
+             * @param {string} type The type of notification message (simply a CSS class name 'ajs-{type}' to be added).
+             * @param {Function} callback  A callback function to be invoked when the message is dismissed.
+             *
+             * @return {undefined}
+             */
+            create: function (type, callback) {
+                //ensure notifier init
+                initialize(this);
+                //create new notification message
+                var div = document.createElement('div');
+                div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
+                return create(div, callback);
+            },
+            /**
+             * Dismisses all open notifications.
+             *
+             * @param {Object} excpet [optional] The notification object to exclude from dismissal.
+             *
+             */
+            dismissAll: function (except) {
+                var clone = openInstances.slice(0);
+                for (var x = 0; x < clone.length; x += 1) {
+                    var  instance = clone[x];
+                    if (except === undefined || except !== instance) {
+                        instance.dismiss();
+                    }
+                }
+            }
+        };
+    })();
+
+    /**
+     * Alertify public API
+     * This contains everything that is exposed through the alertify object.
+     *
+     * @return {Object}
+     */
+    function Alertify() {
+
+        // holds a references of created dialogs
+        var dialogs = {};
+
+        /**
+         * Extends a given prototype by merging properties from base into sub.
+         *
+         * @sub {Object} sub The prototype being overwritten.
+         * @base {Object} base The prototype being written.
+         *
+         * @return {Object} The extended prototype.
+         */
+        function extend(sub, base) {
+            // copy dialog pototype over definition.
+            for (var prop in base) {
+                if (base.hasOwnProperty(prop)) {
+                    sub[prop] = base[prop];
+                }
+            }
+            return sub;
+        }
+
+
+        /**
+        * Helper: returns a dialog instance from saved dialogs.
+        * and initializes the dialog if its not already initialized.
+        *
+        * @name {String} name The dialog name.
+        *
+        * @return {Object} The dialog instance.
+        */
+        function get_dialog(name) {
+            var dialog = dialogs[name].dialog;
+            //initialize the dialog if its not already initialized.
+            if (dialog && typeof dialog.__init === 'function') {
+                dialog.__init(dialog);
+            }
+            return dialog;
+        }
+
+        /**
+         * Helper:  registers a new dialog definition.
+         *
+         * @name {String} name The dialog name.
+         * @Factory {Function} Factory a function resposible for creating dialog prototype.
+         * @transient {Boolean} transient True to create a new dialog instance each time the dialog is invoked, false otherwise.
+         * @base {String} base the name of another dialog to inherit from.
+         *
+         * @return {Object} The dialog definition.
+         */
+        function register(name, Factory, transient, base) {
+            var definition = {
+                dialog: null,
+                factory: Factory
+            };
+
+            //if this is based on an existing dialog, create a new definition
+            //by applying the new protoype over the existing one.
+            if (base !== undefined) {
+                definition.factory = function () {
+                    return extend(new dialogs[base].factory(), new Factory());
+                };
+            }
+
+            if (!transient) {
+                //create a new definition based on dialog
+                definition.dialog = extend(new definition.factory(), dialog);
+            }
+            return dialogs[name] = definition;
+        }
+
+        return {
+            /**
+             * Alertify defaults
+             * 
+             * @type {Object}
+             */
+            defaults: defaults,
+            /**
+             * Dialogs factory 
+             *
+             * @param {string}      Dialog name.
+             * @param {Function}    A Dialog factory function.
+             * @param {Boolean}     Indicates whether to create a singleton or transient dialog.
+             * @param {String}      The name of the base type to inherit from.
+             */
+            dialog: function (name, Factory, transient, base) {
+
+                // get request, create a new instance and return it.
+                if (typeof Factory !== 'function') {
+                    return get_dialog(name);
+                }
+
+                if (this.hasOwnProperty(name)) {
+                    throw new Error('alertify.dialog: name already exists');
+                }
+
+                // register the dialog
+                var definition = register(name, Factory, transient, base);
+
+                if (transient) {
+
+                    // make it public
+                    this[name] = function () {
+                        //if passed with no params, consider it a get request
+                        if (arguments.length === 0) {
+                            return definition.dialog;
+                        } else {
+                            var instance = extend(new definition.factory(), dialog);
+                            //ensure init
+                            if (instance && typeof instance.__init === 'function') {
+                                instance.__init(instance);
+                            }
+                            instance['main'].apply(instance, arguments);
+                            return instance['show'].apply(instance);
+                        }
+                    };
+                } else {
+                    // make it public
+                    this[name] = function () {
+                        //ensure init
+                        if (definition.dialog && typeof definition.dialog.__init === 'function') {
+                            definition.dialog.__init(definition.dialog);
+                        }
+                        //if passed with no params, consider it a get request
+                        if (arguments.length === 0) {
+                            return definition.dialog;
+                        } else {
+                            var dialog = definition.dialog;
+                            dialog['main'].apply(definition.dialog, arguments);
+                            return dialog['show'].apply(definition.dialog);
+                        }
+                    };
+                }
+            },
+            /**
+             * Close all open dialogs.
+             *
+             * @param {Object} excpet [optional] The dialog object to exclude from closing.
+             *
+             * @return {undefined}
+             */
+            closeAll: function (except) {
+                var clone = openDialogs.slice(0);
+                for (var x = 0; x < clone.length; x += 1) {
+                    var instance = clone[x];
+                    if (except === undefined || except !== instance) {
+                        instance.close();
+                    }
+                }
+            },
+            /**
+             * Gets or Sets dialog settings/options. if the dialog is transient, this call does nothing.
+             *
+             * @param {string} name The dialog name.
+             * @param {String|Object} key A string specifying a propery name or a collection of key/value pairs.
+             * @param {Variant} value Optional, the value associated with the key (in case it was a string).
+             *
+             * @return {undefined}
+             */
+            setting: function (name, key, value) {
+
+                if (name === 'notifier') {
+                    return notifier.setting(key, value);
+                }
+
+                var dialog = get_dialog(name);
+                if (dialog) {
+                    return dialog.setting(key, value);
+                }
+            },
+            /**
+             * [Alias] Sets dialog settings/options 
+             */
+            set: function(name,key,value){
+                return this.setting(name, key,value);
+            },
+            /**
+             * [Alias] Gets dialog settings/options 
+             */
+            get: function(name, key){
+                return this.setting(name, key);
+            },
+            /**
+             * Creates a new notification message.
+             * If a type is passed, a class name "ajs-{type}" will be added.
+             * This allows for custom look and feel for various types of notifications.
+             *
+             * @param  {String | DOMElement}    [message=undefined]		Message text
+             * @param  {String}                 [type='']				Type of log message
+             * @param  {String}                 [wait='']				Time (in seconds) to wait before auto-close
+             * @param  {Function}               [callback=undefined]	A callback function to be invoked when the log is closed.
+             *
+             * @return {Object} Notification object.
+             */
+            notify: function (message, type, wait, callback) {
+                return notifier.create(type, callback).push(message, wait);
+            },
+            /**
+             * Creates a new notification message.
+             *
+             * @param  {String}		[message=undefined]		Message text
+             * @param  {String}     [wait='']				Time (in seconds) to wait before auto-close
+             * @param  {Function}	[callback=undefined]	A callback function to be invoked when the log is closed.
+             *
+             * @return {Object} Notification object.
+             */
+            message: function (message, wait, callback) {
+                return notifier.create(null, callback).push(message, wait);
+            },
+            /**
+             * Creates a new notification message of type 'success'.
+             *
+             * @param  {String}		[message=undefined]		Message text
+             * @param  {String}     [wait='']				Time (in seconds) to wait before auto-close
+             * @param  {Function}	[callback=undefined]	A callback function to be invoked when the log is closed.
+             *
+             * @return {Object} Notification object.
+             */
+            success: function (message, wait, callback) {
+                return notifier.create('success', callback).push(message, wait);
+            },
+            /**
+             * Creates a new notification message of type 'error'.
+             *
+             * @param  {String}		[message=undefined]		Message text
+             * @param  {String}     [wait='']				Time (in seconds) to wait before auto-close
+             * @param  {Function}	[callback=undefined]	A callback function to be invoked when the log is closed.
+             *
+             * @return {Object} Notification object.
+             */
+            error: function (message, wait, callback) {
+                return notifier.create('error', callback).push(message, wait);
+            },
+            /**
+             * Creates a new notification message of type 'warning'.
+             *
+             * @param  {String}		[message=undefined]		Message text
+             * @param  {String}     [wait='']				Time (in seconds) to wait before auto-close
+             * @param  {Function}	[callback=undefined]	A callback function to be invoked when the log is closed.
+             *
+             * @return {Object} Notification object.
+             */
+            warning: function (message, wait, callback) {
+                return notifier.create('warning', callback).push(message, wait);
+            },
+            /**
+             * Dismisses all open notifications
+             *
+             * @return {undefined}
+             */
+            dismissAll: function () {
+                notifier.dismissAll();
+            }
+        };
+    }
+    var alertify = new Alertify();
+
+    /**
+    * Alert dialog definition
+    *
+    * invoked by:
+    *	alertify.alert(message);
+    *	alertify.alert(title, message);
+    *	alertify.alert(message, onok);
+    *	alertify.alert(title, message, onok);
+     */
+    alertify.dialog('alert', function () {
+        return {
+            main: function (_title, _message, _onok) {
+                var title, message, onok;
+                switch (arguments.length) {
+                case 1:
+                    message = _title;
+                    break;
+                case 2:
+                    if (typeof _message === 'function') {
+                        message = _title;
+                        onok = _message;
+                    } else {
+                        title = _title;
+                        message = _message;
+                    }
+                    break;
+                case 3:
+                    title = _title;
+                    message = _message;
+                    onok = _onok;
+                    break;
+                }
+                this.set('title', title);
+                this.set('message', message);
+                this.set('onok', onok);
+                return this;
+            },
+            setup: function () {
+                return {
+                    buttons: [
+                        {
+                            text: alertify.defaults.glossary.ok,
+                            key: keys.ESC,
+                            invokeOnClose: true,
+                            className: alertify.defaults.theme.ok,
+                        }
+                    ],
+                    focus: {
+                        element: 0,
+                        select: false
+                    },
+                    options: {
+                        maximizable: false,
+                        resizable: false
+                    }
+                };
+            },
+            build: function () {
+                // nothing
+            },
+            prepare: function () {
+                //nothing
+            },
+            setMessage: function (message) {
+                this.setContent(message);
+            },
+            settings: {
+                message: undefined,
+                onok: undefined,
+                label: undefined,
+            },
+            settingUpdated: function (key, oldValue, newValue) {
+                switch (key) {
+                case 'message':
+                    this.setMessage(newValue);
+                    break;
+                case 'label':
+                    if (this.__internal.buttons[0].element) {
+                        this.__internal.buttons[0].element.innerHTML = newValue;
+                    }
+                    break;
+                }
+            },
+            callback: function (closeEvent) {
+                if (typeof this.get('onok') === 'function') {
+                    var returnValue = this.get('onok').call(this, closeEvent);
+                    if (typeof returnValue !== 'undefined') {
+                        closeEvent.cancel = !returnValue;
+                    }
+                }
+            }
+        };
+    });
+    /**
+     * Confirm dialog object
+     *
+     *	alertify.confirm(message);
+     *	alertify.confirm(message, onok);
+     *	alertify.confirm(message, onok, oncancel);
+     *	alertify.confirm(title, message, onok, oncancel);
+     */
+    alertify.dialog('confirm', function () {
+
+        var autoConfirm = {
+            timer: null,
+            index: null,
+            text: null,
+            duration: null,
+            task: function (event, self) {
+                if (self.isOpen()) {
+                    self.__internal.buttons[autoConfirm.index].element.innerHTML = autoConfirm.text + ' (&#8207;' + autoConfirm.duration + '&#8207;) ';
+                    autoConfirm.duration -= 1;
+                    if (autoConfirm.duration === -1) {
+                        clearAutoConfirm(self);
+                        var button = self.__internal.buttons[autoConfirm.index];
+                        var closeEvent = createCloseEvent(autoConfirm.index, button);
+
+                        if (typeof self.callback === 'function') {
+                            self.callback.apply(self, [closeEvent]);
+                        }
+                        //close the dialog.
+                        if (closeEvent.close !== false) {
+                            self.close();
+                        }
+                    }
+                } else {
+                    clearAutoConfirm(self);
+                }
+            }
+        };
+
+        function clearAutoConfirm(self) {
+            if (autoConfirm.timer !== null) {
+                clearInterval(autoConfirm.timer);
+                autoConfirm.timer = null;
+                self.__internal.buttons[autoConfirm.index].element.innerHTML = autoConfirm.text;
+            }
+        }
+
+        function startAutoConfirm(self, index, duration) {
+            clearAutoConfirm(self);
+            autoConfirm.duration = duration;
+            autoConfirm.index = index;
+            autoConfirm.text = self.__internal.buttons[index].element.innerHTML;
+            autoConfirm.timer = setInterval(delegate(self, autoConfirm.task), 1000);
+            autoConfirm.task(null, self);
+        }
+
+
+        return {
+            main: function (_title, _message, _onok, _oncancel) {
+                var title, message, onok, oncancel;
+                switch (arguments.length) {
+                case 1:
+                    message = _title;
+                    break;
+                case 2:
+                    message = _title;
+                    onok = _message;
+                    break;
+                case 3:
+                    message = _title;
+                    onok = _message;
+                    oncancel = _onok;
+                    break;
+                case 4:
+                    title = _title;
+                    message = _message;
+                    onok = _onok;
+                    oncancel = _oncancel;
+                    break;
+                }
+                this.set('title', title);
+                this.set('message', message);
+                this.set('onok', onok);
+                this.set('oncancel', oncancel);
+                return this;
+            },
+            setup: function () {
+                return {
+                    buttons: [
+                        {
+                            text: alertify.defaults.glossary.ok,
+                            key: keys.ENTER,
+                            className: alertify.defaults.theme.ok,
+                        },
+                        {
+                            text: alertify.defaults.glossary.cancel,
+                            key: keys.ESC,
+                            invokeOnClose: true,
+                            className: alertify.defaults.theme.cancel,
+                        }
+                    ],
+                    focus: {
+                        element: 0,
+                        select: false
+                    },
+                    options: {
+                        maximizable: false,
+                        resizable: false
+                    }
+                };
+            },
+            build: function () {
+                //nothing
+            },
+            prepare: function () {
+                //nothing
+            },
+            setMessage: function (message) {
+                this.setContent(message);
+            },
+            settings: {
+                message: null,
+                labels: null,
+                onok: null,
+                oncancel: null,
+                defaultFocus: null,
+                reverseButtons: null,
+            },
+            settingUpdated: function (key, oldValue, newValue) {
+                switch (key) {
+                case 'message':
+                    this.setMessage(newValue);
+                    break;
+                case 'labels':
+                    if ('ok' in newValue && this.__internal.buttons[0].element) {
+                        this.__internal.buttons[0].text = newValue.ok;
+                        this.__internal.buttons[0].element.innerHTML = newValue.ok;
+                    }
+                    if ('cancel' in newValue && this.__internal.buttons[1].element) {
+                        this.__internal.buttons[1].text = newValue.cancel;
+                        this.__internal.buttons[1].element.innerHTML = newValue.cancel;
+                    }
+                    break;
+                case 'reverseButtons':
+                    if (newValue === true) {
+                        this.elements.buttons.primary.appendChild(this.__internal.buttons[0].element);
+                    } else {
+                        this.elements.buttons.primary.appendChild(this.__internal.buttons[1].element);
+                    }
+                    break;
+                case 'defaultFocus':
+                    this.__internal.focus.element = newValue === 'ok' ? 0 : 1;
+                    break;
+                }
+            },
+            callback: function (closeEvent) {
+                clearAutoConfirm(this);
+                var returnValue;
+                switch (closeEvent.index) {
+                case 0:
+                    if (typeof this.get('onok') === 'function') {
+                        returnValue = this.get('onok').call(this, closeEvent);
+                        if (typeof returnValue !== 'undefined') {
+                            closeEvent.cancel = !returnValue;
+                        }
+                    }
+                    break;
+                case 1:
+                    if (typeof this.get('oncancel') === 'function') {
+                        returnValue = this.get('oncancel').call(this, closeEvent);
+                        if (typeof returnValue !== 'undefined') {
+                            closeEvent.cancel = !returnValue;
+                        }
+                    }
+                    break;
+                }
+            },
+            autoOk: function (duration) {
+                startAutoConfirm(this, 0, duration);
+                return this;
+            },
+            autoCancel: function (duration) {
+                startAutoConfirm(this, 1, duration);
+                return this;
+            }
+        };
+    });
+    /**
+     * Prompt dialog object
+     *
+     * invoked by:
+     *	alertify.prompt(message);
+     *	alertify.prompt(message, value);
+     *	alertify.prompt(message, value, onok);
+     *	alertify.prompt(message, value, onok, oncancel);
+     *	alertify.prompt(title, message, value, onok, oncancel);
+     */
+    alertify.dialog('prompt', function () {
+        var input = document.createElement('INPUT');
+        var p = document.createElement('P');
+        return {
+            main: function (_title, _message, _value, _onok, _oncancel) {
+                var title, message, value, onok, oncancel;
+                switch (arguments.length) {
+                case 1:
+                    message = _title;
+                    break;
+                case 2:
+                    message = _title;
+                    value = _message;
+                    break;
+                case 3:
+                    message = _title;
+                    value = _message;
+                    onok = _value;
+                    break;
+                case 4:
+                    message = _title;
+                    value = _message;
+                    onok = _value;
+                    oncancel = _onok;
+                    break;
+                case 5:
+                    title = _title;
+                    message = _message;
+                    value = _value;
+                    onok = _onok;
+                    oncancel = _oncancel;
+                    break;
+                }
+                this.set('title', title);
+                this.set('message', message);
+                this.set('value', value);
+                this.set('onok', onok);
+                this.set('oncancel', oncancel);
+                return this;
+            },
+            setup: function () {
+                return {
+                    buttons: [
+                        {
+                            text: alertify.defaults.glossary.ok,
+                            key: keys.ENTER,
+                            className: alertify.defaults.theme.ok,
+                        },
+                        {
+                            text: alertify.defaults.glossary.cancel,
+                            key: keys.ESC,
+                            invokeOnClose: true,
+                            className: alertify.defaults.theme.cancel,
+                        }
+                    ],
+                    focus: {
+                        element: input,
+                        select: true
+                    },
+                    options: {
+                        maximizable: false,
+                        resizable: false
+                    }
+                };
+            },
+            build: function () {
+                input.className = alertify.defaults.theme.input;
+                input.setAttribute('type', 'text');
+                input.value = this.get('value');
+                this.elements.content.appendChild(p);
+                this.elements.content.appendChild(input);
+            },
+            prepare: function () {
+                //nothing
+            },
+            setMessage: function (message) {
+                if (typeof message === 'string') {
+                    clearContents(p);
+                    p.innerHTML = message;
+                } else if (message instanceof window.HTMLElement && p.firstChild !== message) {
+                    clearContents(p);
+                    p.appendChild(message);
+                }
+            },
+            settings: {
+                message: undefined,
+                labels: undefined,
+                onok: undefined,
+                oncancel: undefined,
+                value: '',
+                type:'text',
+                reverseButtons: undefined,
+            },
+            settingUpdated: function (key, oldValue, newValue) {
+                switch (key) {
+                case 'message':
+                    this.setMessage(newValue);
+                    break;
+                case 'value':
+                    input.value = newValue;
+                    break;
+                case 'type':
+                    switch (newValue) {
+                    case 'text':
+                    case 'color':
+                    case 'date':
+                    case 'datetime-local':
+                    case 'email':
+                    case 'month':
+                    case 'number':
+                    case 'password':
+                    case 'search':
+                    case 'tel':
+                    case 'time':
+                    case 'week':
+                        input.type = newValue;
+                        break;
+                    default:
+                        input.type = 'text';
+                        break;
+                    }
+                    break;
+                case 'labels':
+                    if (newValue.ok && this.__internal.buttons[0].element) {
+                        this.__internal.buttons[0].element.innerHTML = newValue.ok;
+                    }
+                    if (newValue.cancel && this.__internal.buttons[1].element) {
+                        this.__internal.buttons[1].element.innerHTML = newValue.cancel;
+                    }
+                    break;
+                case 'reverseButtons':
+                    if (newValue === true) {
+                        this.elements.buttons.primary.appendChild(this.__internal.buttons[0].element);
+                    } else {
+                        this.elements.buttons.primary.appendChild(this.__internal.buttons[1].element);
+                    }
+                    break;
+                }
+            },
+            callback: function (closeEvent) {
+                var returnValue;
+                switch (closeEvent.index) {
+                case 0:
+                    this.settings.value = input.value;
+                    if (typeof this.get('onok') === 'function') {
+                        returnValue = this.get('onok').call(this, closeEvent, this.settings.value);
+                        if (typeof returnValue !== 'undefined') {
+                            closeEvent.cancel = !returnValue;
+                        }
+                    }
+                    break;
+                case 1:
+                    if (typeof this.get('oncancel') === 'function') {
+                        returnValue = this.get('oncancel').call(this, closeEvent);
+                        if (typeof returnValue !== 'undefined') {
+                            closeEvent.cancel = !returnValue;
+                        }
+                    }
+                    if(!closeEvent.cancel){
+                        input.value = this.settings.value;
+                    }
+                    break;
+                }
+            }
+        };
+    });
+
+    // CommonJS
+    {
+        module.exports = alertify;
+    // AMD
+    }
+
+} ( typeof window !== 'undefined' ? window : commonjsGlobal ) );
+});
 
 function noop$1() {}
 
@@ -3128,60 +6243,634 @@ var proto = {
 	_differs: _differs
 };
 
-/* src\core\ui\inputs\Text.html generated by Svelte v1.64.1 */
-function create_main_fragment(component, state) {
-	var input, input_updating = false, input_required_value;
+/* src\components\MenuItem.html generated by Svelte v1.64.1 */
+let id = 0;
+function data() {
+	id += 1;
+	return {
+		id
+	};
+}
 
-	function input_input_handler() {
-		var state = component.get();
-		input_updating = true;
-		state.field.value = input.value;
-		component.set({ field: state.field });
-		input_updating = false;
+function create_main_fragment$1(component, state) {
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (state.menu.url != null) return create_if_block$1;
+		return create_if_block_1;
 	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
 
 	return {
 		c: function create() {
-			input = createElement("input");
-			this.h();
-		},
-
-		h: function hydrate() {
-			addListener$1(input, "input", input_input_handler);
-			setAttribute(input, "type", "text");
-			input.id = state.id;
-			input.required = input_required_value = state.field.metadata.required;
-			input.tabIndex = state.tabindex;
-			input.className = "form-control";
+			if_block.c();
+			if_block_anchor = createComment();
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(input, target, anchor);
-
-			input.value = state.field.value;
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
 		},
 
 		p: function update(changed, state) {
-			if (!input_updating) input.value = state.field.value;
-			if (changed.id) {
-				input.id = state.id;
-			}
-
-			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
-				input.required = input_required_value;
-			}
-
-			if (changed.tabindex) {
-				input.tabIndex = state.tabindex;
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
 			}
 		},
 
 		u: function unmount() {
-			detachNode(input);
+			if_block.u();
+			detachNode(if_block_anchor);
 		},
 
 		d: function destroy$$1() {
-			removeListener$1(input, "input", input_input_handler);
+			if_block.d();
+		}
+	};
+}
+
+// (5:1) {{#if menu.items.length > 1}}
+function create_if_block_2(component, state) {
+	var label, text_value = state.menu.id, text, label_for_value;
+
+	return {
+		c: function create() {
+			label = createElement("label");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			label.htmlFor = label_for_value = "menu" + state.id;
+			label.className = "toggle-sub";
+			setAttribute(label, "onclick", "");
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(label, target, anchor);
+			appendNode(text, label);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.menu) && text_value !== (text_value = state.menu.id)) {
+				text.data = text_value;
+			}
+
+			if ((changed.id) && label_for_value !== (label_for_value = "menu" + state.id)) {
+				label.htmlFor = label_for_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(label);
+		},
+
+		d: noop$1
+	};
+}
+
+// (7:1) {{else}}
+function create_if_block_3(component, state) {
+	var a, raw_value = state.menu.items[0].label, a_href_value;
+
+	return {
+		c: function create() {
+			a = createElement("a");
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.menu.items[0].url;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(a, target, anchor);
+			a.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.menu) && raw_value !== (raw_value = state.menu.items[0].label)) {
+				a.innerHTML = raw_value;
+			}
+
+			if ((changed.menu) && a_href_value !== (a_href_value = state.menu.items[0].url)) {
+				a.href = a_href_value;
+			}
+		},
+
+		u: function unmount() {
+			a.innerHTML = '';
+
+			detachNode(a);
+		},
+
+		d: noop$1
+	};
+}
+
+// (14:1) {{#each menu.items as submenu}}
+function create_each_block$1(component, state) {
+	var submenu = state.submenu, each_value = state.each_value, submenu_index = state.submenu_index;
+	var li;
+
+	var sveltecomponent_initial_data = { menu: submenu };
+	var sveltecomponent = new SvelteComponent$1({
+		root: component.root,
+		data: sveltecomponent_initial_data
+	});
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			sveltecomponent._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			sveltecomponent._mount(li, null);
+		},
+
+		p: function update(changed, state) {
+			submenu = state.submenu;
+			each_value = state.each_value;
+			submenu_index = state.submenu_index;
+			var sveltecomponent_changes = {};
+			if (changed.menu) sveltecomponent_changes.menu = submenu;
+			sveltecomponent._set(sveltecomponent_changes);
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: function destroy$$1() {
+			sveltecomponent.destroy(false);
+		}
+	};
+}
+
+// (12:64) {{#if menu.items.length > 1}}
+function create_if_block_4(component, state) {
+	var ul;
+
+	var each_value = state.menu.items;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$1(component, assign(assign({}, state), {
+			each_value: each_value,
+			submenu: each_value[i],
+			submenu_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "sub-nav";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.menu.items;
+
+			if (changed.menu) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						submenu: each_value[i],
+						submenu_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$1(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (1:0) {{#if menu.url != null}}
+function create_if_block$1(component, state) {
+	var a, raw_value = state.menu.label, a_href_value;
+
+	return {
+		c: function create() {
+			a = createElement("a");
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.menu.url;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(a, target, anchor);
+			a.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.menu) && raw_value !== (raw_value = state.menu.label)) {
+				a.innerHTML = raw_value;
+			}
+
+			if ((changed.menu) && a_href_value !== (a_href_value = state.menu.url)) {
+				a.href = a_href_value;
+			}
+		},
+
+		u: function unmount() {
+			a.innerHTML = '';
+
+			detachNode(a);
+		},
+
+		d: noop$1
+	};
+}
+
+// (3:0) {{else}}
+function create_if_block_1(component, state) {
+	var div, text_1, input, input_id_value, text_2, if_block_1_anchor;
+
+	function select_block_type(state) {
+		if (state.menu.items.length > 1) return create_if_block_2;
+		return create_if_block_3;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	var if_block_1 = (state.menu.items.length > 1) && create_if_block_4(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if_block.c();
+			text_1 = createText("\r\n\r\n");
+			input = createElement("input");
+			text_2 = createText(" ");
+			if (if_block_1) if_block_1.c();
+			if_block_1_anchor = createComment();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "menu top-menu-div";
+			setAttribute(input, "type", "checkbox");
+			input.id = input_id_value = "menu" + state.id;
+			input.className = "sub-nav-check";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			if_block.m(div, null);
+			insertNode(text_1, target, anchor);
+			insertNode(input, target, anchor);
+			insertNode(text_2, target, anchor);
+			if (if_block_1) if_block_1.m(target, anchor);
+			insertNode(if_block_1_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(div, null);
+			}
+
+			if ((changed.id) && input_id_value !== (input_id_value = "menu" + state.id)) {
+				input.id = input_id_value;
+			}
+
+			if (state.menu.items.length > 1) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_4(component, state);
+					if_block_1.c();
+					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if_block.u();
+			detachNode(text_1);
+			detachNode(input);
+			detachNode(text_2);
+			if (if_block_1) if_block_1.u();
+			detachNode(if_block_1_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+function SvelteComponent$1(options) {
+	init(this, options);
+	this._state = assign(data(), options.data);
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$1(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$1.prototype, proto);
+
+/* src\components\Menu.html generated by Svelte v1.64.1 */
+function nestedSort(array, comparison) {
+	array.sort(comparison);
+
+	for (const item of array) {
+		if (item.items != null) {
+			nestedSort(item.items, comparison);
+		}
+	}
+}
+
+function oncreate() {
+	const forms = this.get("forms"),
+		getMenu = this.get("getMenu"),
+		makeUrl = this.get("makeUrl"),
+		tree = [];
+
+	for (const form of forms) {
+		const formMenu = getMenu(form);
+		if (formMenu != null) {
+			let currentFolder = {
+				items: tree
+			};
+
+			// If it's a "folder" menu.
+			if (formMenu.name !== "") {
+				const path = formMenu.name.split("/");
+
+				for (const folder of path) {
+					let subfolder = currentFolder.items.find(t => t.id == folder);
+
+					if (subfolder == null) {
+						subfolder = {
+							id: folder,
+							orderIndex: formMenu.orderIndex,
+							items: []
+						};
+
+						currentFolder.items.push(subfolder);
+						currentFolder = subfolder;
+					} else {
+						currentFolder = subfolder;
+					}
+				}
+			}
+			currentFolder.items.push({
+				label: form.label,
+				url: makeUrl(form.id),
+				// Make sure we respect both parent menu sorting order and then leaf-level menu sorting order.
+				orderIndex: (formMenu.orderIndex * 100000) + form.customProperties.menuOrderIndex
+			});
+		}
+	}
+	nestedSort(tree, (a, b) => a.orderIndex - b.orderIndex);
+
+	this.set({ menus: tree });
+}
+
+function create_main_fragment(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.menus != null) && create_if_block(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.menus != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (3:1) {{#each menus as menu}}
+function create_each_block(component, state) {
+	var menu = state.menu, each_value = state.each_value, menu_index = state.menu_index;
+	var li;
+
+	var menuitem_initial_data = { menu: menu };
+	var menuitem = new SvelteComponent$1({
+		root: component.root,
+		slots: { default: createFragment() },
+		data: menuitem_initial_data
+	});
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			menuitem._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			menuitem._mount(li, null);
+		},
+
+		p: function update(changed, state) {
+			menu = state.menu;
+			each_value = state.each_value;
+			menu_index = state.menu_index;
+			var menuitem_changes = {};
+			if (changed.menus) menuitem_changes.menu = menu;
+			menuitem._set(menuitem_changes);
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: function destroy$$1() {
+			menuitem.destroy(false);
+		}
+	};
+}
+
+// (1:0) {{#if menus != null}}
+function create_if_block(component, state) {
+	var ul;
+
+	var each_value = state.menus;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block(component, assign(assign({}, state), {
+			each_value: each_value,
+			menu: each_value[i],
+			menu_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "menu";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.menus;
+
+			if (changed.menus) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						menu: each_value[i],
+						menu_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
 		}
 	};
 }
@@ -3190,7 +6879,2155 @@ function SvelteComponent(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
+	var self = this;
+	var _oncreate = function() {
+		var changed = { menus: 1 };
+		oncreate.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
 	this._fragment = create_main_fragment(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent.prototype, proto);
+
+var RouteParameterBuilder = (function () {
+    function RouteParameterBuilder(parameterName, app) {
+        this.defaultParameters = {};
+        this.getFormInstance = function (formId, throwError) { return app.getFormInstance(formId, null); };
+        this.parameterName = parameterName;
+        this.defaultParameters[parameterName] = "";
+    }
+    RouteParameterBuilder.prototype.buildFormRouteParameters = function (form, values) {
+        var formInstance = this.getFormInstance(form, true);
+        var base = formInstance.getSerializedInputValuesFromObject(values);
+        if (form === this.currentForm) {
+            var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
+            var dAsNumber = parseInt(d, 10);
+            base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
+        }
+        return __assign({}, base, { _id: form });
+    };
+    RouteParameterBuilder.parseQueryStringParameters = function (url) {
+        var queryStartsAt = url.indexOf("?");
+        var result = {};
+        // If there is a query string.
+        if (queryStartsAt !== -1 && url.length > queryStartsAt) {
+            url.substr(queryStartsAt + 1).split("&").filter(function (t) {
+                var value = t.split("=");
+                result[value[0]] = value[1];
+            });
+        }
+        return result;
+    };
+    return RouteParameterBuilder;
+}());
+
+var stateStringParser = function(stateString) {
+	return stateString.split('.').reduce(function(stateNames, latestNameChunk) {
+		if (stateNames.length) {
+			latestNameChunk = stateNames[stateNames.length - 1] + '.' + latestNameChunk;
+		}
+		stateNames.push(latestNameChunk);
+		return stateNames
+	}, [])
+};
+
+var parse = stateStringParser;
+
+var stateState = function StateState() {
+	var states = {};
+
+	function getHierarchy(name) {
+		var names = stateStringParser(name);
+
+		return names.map(function(name) {
+			if (!states[name]) {
+				throw new Error('State ' + name + ' not found')
+			}
+			return states[name]
+		})
+	}
+
+	function getParent(name) {
+		var parentName = getParentName(name);
+
+		return parentName && states[parentName]
+	}
+
+	function getParentName(name) {
+		var names = stateStringParser(name);
+
+		if (names.length > 1) {
+			var secondToLast = names.length - 2;
+
+			return names[secondToLast]
+		} else {
+			return null
+		}
+	}
+
+	function guaranteeAllStatesExist(newStateName) {
+		var stateNames = parse(newStateName);
+		var statesThatDontExist = stateNames.filter(function(name) {
+			return !states[name]
+		});
+
+		if (statesThatDontExist.length > 0) {
+			throw new Error('State ' + statesThatDontExist[statesThatDontExist.length - 1] + ' does not exist')
+		}
+	}
+
+	function buildFullStateRoute(stateName) {
+		return getHierarchy(stateName).map(function(state) {
+			return '/' + (state.route || '')
+		}).join('').replace(/\/{2,}/g, '/')
+	}
+
+	function applyDefaultChildStates(stateName) {
+		var state = states[stateName];
+
+		function getDefaultChildStateName() {
+			return state && (typeof state.defaultChild === 'function'
+				? state.defaultChild()
+				: state.defaultChild)
+		}
+
+		var defaultChildStateName = getDefaultChildStateName();
+
+		if (!defaultChildStateName) {
+			return stateName
+		}
+
+		var fullStateName = stateName + '.' + defaultChildStateName;
+
+		return applyDefaultChildStates(fullStateName)
+	}
+
+
+	return {
+		add: function(name, state) {
+			states[name] = state;
+		},
+		get: function(name) {
+			return name && states[name]
+		},
+		getHierarchy: getHierarchy,
+		getParent: getParent,
+		getParentName: getParentName,
+		guaranteeAllStatesExist: guaranteeAllStatesExist,
+		buildFullStateRoute: buildFullStateRoute,
+		applyDefaultChildStates: applyDefaultChildStates
+	}
+};
+
+var index$6 = function(obj) {
+	var keys = Object.keys(obj);
+
+	keys.forEach(function(key) {
+		if (!Array.isArray(obj[key])) {
+			throw new Error(key + ' is not an array')
+		}
+	});
+
+	var maxIndex = keys.reduce(function(maxSoFar, key) {
+		var len = obj[key].length;
+		return maxSoFar > len ? maxSoFar : len
+	}, 0);
+
+	var output = [];
+
+	function getObject(index) {
+		var o = {};
+		keys.forEach(function(key) {
+			o[key] = obj[key][index];
+		});
+		return o
+	}
+
+	for (var i = 0; i < maxIndex; ++i) {
+		output.push(getObject(i));
+	}
+
+	return output
+};
+
+var index$10 = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+/**
+ * Expose `pathToRegexp`.
+ */
+var index$8 = pathToRegexp;
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?"]
+  // "/route(\\d+)" => [undefined, undefined, undefined, "\d+", undefined]
+  '([\\/.])?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^)])*)\\))?|\\(((?:\\\\.|[^)])*)\\))([+*?])?',
+  // Match regexp special characters that are always escaped.
+  '([.+*?=^!:${}()[\\]|\\/])'
+].join('|'), 'g');
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {String} group
+ * @return {String}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1');
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {RegExp} re
+ * @param  {Array}  keys
+ * @return {RegExp}
+ */
+function attachKeys (re, keys, allTokens) {
+  re.keys = keys;
+  re.allTokens = allTokens;
+  return re;
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {String}
+ */
+function flags (options) {
+  return options.sensitive ? '' : 'i';
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {RegExp} path
+ * @param  {Array}  keys
+ * @return {RegExp}
+ */
+function regexpToRegexp (path, keys, allTokens) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g);
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name:      i,
+        delimiter: null,
+        optional:  false,
+        repeat:    false
+      });
+    }
+  }
+
+  return attachKeys(path, keys, allTokens);
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {Array}  path
+ * @param  {Array}  keys
+ * @param  {Object} options
+ * @return {RegExp}
+ */
+function arrayToRegexp (path, keys, options, allTokens) {
+  var parts = [];
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options, allTokens).source);
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
+  return attachKeys(regexp, keys, allTokens);
+}
+
+/**
+ * Replace the specific tags with regexp strings.
+ *
+ * @param  {String} path
+ * @param  {Array}  keys
+ * @return {String}
+ */
+function replacePath (path, keys, allTokens) {
+  var index = 0;
+  var lastEndIndex = 0;
+
+  function addLastToken(lastToken) {
+    if (lastEndIndex === 0 && lastToken[0] !== '/') {
+      lastToken = '/' + lastToken;
+    }
+    allTokens.push({
+      string: lastToken
+    });
+  }
+
+
+  function replace (match, escaped, prefix, key, capture, group, suffix, escape, offset) {
+    if (escaped) {
+      return escaped;
+    }
+
+    if (escape) {
+      return '\\' + escape;
+    }
+
+    var repeat   = suffix === '+' || suffix === '*';
+    var optional = suffix === '?' || suffix === '*';
+
+    if (offset > lastEndIndex) {
+      addLastToken(path.substring(lastEndIndex, offset));
+    }
+
+    lastEndIndex = offset + match.length;
+
+    var newKey = {
+      name:      key || index++,
+      delimiter: prefix || '/',
+      optional:  optional,
+      repeat:    repeat
+    };
+
+    keys.push(newKey);
+    allTokens.push(newKey);
+
+    prefix = prefix ? ('\\' + prefix) : '';
+    capture = escapeGroup(capture || group || '[^' + (prefix || '\\/') + ']+?');
+
+    if (repeat) {
+      capture = capture + '(?:' + prefix + capture + ')*';
+    }
+
+    if (optional) {
+      return '(?:' + prefix + '(' + capture + '))?';
+    }
+
+    // Basic parameter support.
+    return prefix + '(' + capture + ')';
+  }
+
+  var newPath = path.replace(PATH_REGEXP, replace);
+
+  if (lastEndIndex < path.length) {
+    addLastToken(path.substring(lastEndIndex));
+  }
+
+  return newPath;
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(String|RegExp|Array)} path
+ * @param  {Array}                 [keys]
+ * @param  {Object}                [options]
+ * @return {RegExp}
+ */
+function pathToRegexp (path, keys, options, allTokens) {
+  keys = keys || [];
+  allTokens = allTokens || [];
+
+  if (!index$10(keys)) {
+    options = keys;
+    keys = [];
+  } else if (!options) {
+    options = {};
+  }
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, keys, options, allTokens);
+  }
+
+  if (index$10(path)) {
+    return arrayToRegexp(path, keys, options, allTokens);
+  }
+
+  var strict = options.strict;
+  var end = options.end !== false;
+  var route = replacePath(path, keys, allTokens);
+  var endsWithSlash = path.charAt(path.length - 1) === '/';
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
+  }
+
+  if (end) {
+    route += '$';
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithSlash ? '' : '(?=\\/|$)';
+  }
+
+  return attachKeys(new RegExp('^' + route, flags(options)), keys, allTokens);
+}
+
+var stateComparison_1 = function StateComparison(stateState) {
+	var getPathParameters = pathParameters();
+
+	var parametersChanged = parametersThatMatterWereChanged.bind(null, stateState, getPathParameters);
+
+	return stateComparison.bind(null, parametersChanged)
+};
+
+function pathParameters() {
+	var parameters = {};
+
+	return function getPathParameters(path) {
+		if (!path) {
+			return []
+		}
+
+		if (!parameters[path]) {
+			parameters[path] = index$8(path).keys.map(function(key) {
+				return key.name
+			});
+		}
+
+		return parameters[path]
+	}
+}
+
+function parametersThatMatterWereChanged(stateState, getPathParameters, stateName, fromParameters, toParameters) {
+	var state = stateState.get(stateName);
+	var querystringParameters = state.querystringParameters || [];
+	var parameters = getPathParameters(state.route).concat(querystringParameters);
+
+	return Array.isArray(parameters) && parameters.some(function(key) {
+		return fromParameters[key] !== toParameters[key]
+	})
+}
+
+function stateComparison(parametersChanged, originalState, originalParameters, newState, newParameters) {
+	var states = index$6({
+		start: stateStringParser(originalState),
+		end: stateStringParser(newState)
+	});
+
+	return states.map(function(states) {
+		return {
+			nameBefore: states.start,
+			nameAfter: states.end,
+			stateNameChanged: states.start !== states.end,
+			stateParametersChanged: states.start === states.end && parametersChanged(states.start, originalParameters, newParameters)
+		}
+	})
+}
+
+var currentState = function CurrentState() {
+	var current = {
+		name: '',
+		parameters: {}
+	};
+
+	return {
+		get: function() {
+			return current
+		},
+		set: function(name, parameters) {
+			current = {
+				name: name,
+				parameters: parameters
+			};
+		}
+	}
+};
+
+var stateChangeLogic = function stateChangeLogic(stateComparisonResults) {
+	var hitChangingState = false;
+	var hitDestroyedState = false;
+
+	var output = {
+		destroy: [],
+		change: [],
+		create: []
+	};
+
+	stateComparisonResults.forEach(function(state) {
+		hitChangingState = hitChangingState || state.stateParametersChanged;
+		hitDestroyedState = hitDestroyedState || state.stateNameChanged;
+
+		if (state.nameBefore) {
+			if (hitDestroyedState) {
+				output.destroy.push(state.nameBefore);
+			} else if (hitChangingState) {
+				output.change.push(state.nameBefore);
+			}
+		}
+
+		if (state.nameAfter && hitDestroyedState) {
+			output.create.push(state.nameAfter);
+		}
+	});
+
+	return output
+};
+
+var stateTransitionManager = function (emitter) {
+	var currentTransitionAttempt = null;
+	var nextTransition = null;
+
+	function doneTransitioning() {
+		currentTransitionAttempt = null;
+		if (nextTransition) {
+			beginNextTransitionAttempt();
+		}
+	}
+
+	function isTransitioning() {
+		return !!currentTransitionAttempt
+	}
+
+	function beginNextTransitionAttempt() {
+		currentTransitionAttempt = nextTransition;
+		nextTransition = null;
+		currentTransitionAttempt.beginStateChange();
+	}
+
+	function cancelCurrentTransition() {
+		currentTransitionAttempt.transition.cancelled = true;
+		var err = new Error('State transition cancelled by the state transition manager');
+		err.wasCancelledBySomeoneElse = true;
+		emitter.emit('stateChangeCancelled', err);
+	}
+
+	emitter.on('stateChangeAttempt', function(beginStateChange) {
+		nextTransition = createStateTransitionAttempt(beginStateChange);
+
+		if (isTransitioning() && currentTransitionAttempt.transition.cancellable) {
+			cancelCurrentTransition();
+		} else if (!isTransitioning()) {
+			beginNextTransitionAttempt();
+		}
+	});
+
+	emitter.on('stateChangeError', doneTransitioning);
+	emitter.on('stateChangeCancelled', doneTransitioning);
+	emitter.on('stateChangeEnd', doneTransitioning);
+
+	function createStateTransitionAttempt(beginStateChange) {
+		var transition = {
+			cancelled: false,
+			cancellable: true
+		};
+		return {
+			transition: transition,
+			beginStateChange: beginStateChange.bind(null, transition)
+		}
+	}
+};
+
+var defaultRouterOptions = { reverse: false };
+
+var npo = createCommonjsModule(function (module) {
+/*! Native Promise Only
+    v0.8.1 (c) Kyle Simpson
+    MIT License: http://getify.mit-license.org
+*/
+!function(t,n,e){n[t]=n[t]||e(),"undefined"!='object'&&module.exports?module.exports=n[t]:"function"==typeof undefined&&undefined.amd&&undefined(function(){return n[t]});}("Promise","undefined"!=typeof commonjsGlobal?commonjsGlobal:commonjsGlobal,function(){"use strict";function t(t,n){l.add(t,n),h||(h=y(l.drain));}function n(t){var n,e=typeof t;return null==t||"object"!=e&&"function"!=e||(n=t.then),"function"==typeof n?n:!1}function e(){for(var t=0;t<this.chain.length;t++)o(this,1===this.state?this.chain[t].success:this.chain[t].failure,this.chain[t]);this.chain.length=0;}function o(t,e,o){var r,i;try{e===!1?o.reject(t.msg):(r=e===!0?t.msg:e.call(void 0,t.msg),r===o.promise?o.reject(TypeError("Promise-chain cycle")):(i=n(r))?i.call(r,o.resolve,o.reject):o.resolve(r));}catch(c){o.reject(c);}}function r(o){var c,u=this;if(!u.triggered){u.triggered=!0,u.def&&(u=u.def);try{(c=n(o))?t(function(){var t=new f(u);try{c.call(o,function(){r.apply(t,arguments);},function(){i.apply(t,arguments);});}catch(n){i.call(t,n);}}):(u.msg=o,u.state=1,u.chain.length>0&&t(e,u));}catch(a){i.call(new f(u),a);}}}function i(n){var o=this;o.triggered||(o.triggered=!0,o.def&&(o=o.def),o.msg=n,o.state=2,o.chain.length>0&&t(e,o));}function c(t,n,e,o){for(var r=0;r<n.length;r++)!function(r){t.resolve(n[r]).then(function(t){e(r,t);},o);}(r);}function f(t){this.def=t,this.triggered=!1;}function u(t){this.promise=t,this.state=0,this.triggered=!1,this.chain=[],this.msg=void 0;}function a(n){if("function"!=typeof n)throw TypeError("Not a function");if(0!==this.__NPO__)throw TypeError("Not a promise");this.__NPO__=1;var o=new u(this);this.then=function(n,r){var i={success:"function"==typeof n?n:!0,failure:"function"==typeof r?r:!1};return i.promise=new this.constructor(function(t,n){if("function"!=typeof t||"function"!=typeof n)throw TypeError("Not a function");i.resolve=t,i.reject=n;}),o.chain.push(i),0!==o.state&&t(e,o),i.promise},this["catch"]=function(t){return this.then(void 0,t)};try{n.call(void 0,function(t){r.call(o,t);},function(t){i.call(o,t);});}catch(c){i.call(o,c);}}var s,h,l,p=Object.prototype.toString,y="undefined"!=typeof setImmediate?function(t){return setImmediate(t)}:setTimeout;try{Object.defineProperty({},"x",{}),s=function(t,n,e,o){return Object.defineProperty(t,n,{value:e,writable:!0,configurable:o!==!1})};}catch(d){s=function(t,n,e){return t[n]=e,t};}l=function(){function t(t,n){this.fn=t,this.self=n,this.next=void 0;}var n,e,o;return{add:function(r,i){o=new t(r,i),e?e.next=o:n=o,e=o,o=void 0;},drain:function(){var t=n;for(n=e=h=void 0;t;)t.fn.call(t.self),t=t.next;}}}();var g=s({},"constructor",a,!1);return a.prototype=g,s(g,"__NPO__",0,!1),s(a,"resolve",function(t){var n=this;return t&&"object"==typeof t&&1===t.__NPO__?t:new n(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");n(t);})}),s(a,"reject",function(t){return new this(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");e(t);})}),s(a,"all",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):0===t.length?n.resolve([]):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");var r=t.length,i=Array(r),f=0;c(n,t,function(t,n){i[t]=n,++f===r&&e(i);},o);})}),s(a,"race",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");c(n,t,function(t,n){e(n);},o);})}),a});
+});
+
+// Pulled from https://github.com/joliss/promise-map-series and prettied up a bit
+
+
+
+var promiseMapSeries = function sequence(array, iterator, thisArg) {
+	var current = npo.resolve();
+	var cb = arguments.length > 2 ? iterator.bind(thisArg) : iterator;
+
+	var results = array.map(function(value, i) {
+		return current = current.then(function(j) {
+			return cb(value, j, array)
+		}.bind(null, i))
+	});
+
+	return npo.all(results)
+};
+
+var index$12 = function denodeify(fn) {
+	return function() {
+		var self = this;
+		var args = Array.prototype.slice.call(arguments);
+		return new Promise(function(resolve, reject) {
+			args.push(function(err, res) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			});
+
+			var res = fn.apply(self, args);
+
+			var isPromise = res
+				&& (typeof res === 'object' || typeof res === 'function')
+				&& typeof res.then === 'function';
+
+			if (isPromise) {
+				resolve(res);
+			}
+		})
+	}
+};
+
+var index$14 = createCommonjsModule(function (module) {
+'use strict';
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @api private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {Mixed} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @api private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @api public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @api public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Boolean} exists Only check if there are listeners.
+ * @returns {Array|Boolean}
+ * @api public
+ */
+EventEmitter.prototype.listeners = function listeners(event, exists) {
+  var evt = prefix ? prefix + event : event
+    , available = this._events[evt];
+
+  if (exists) return !!available;
+  if (!available) return [];
+  if (available.fn) return [available.fn];
+
+  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+    ee[i] = available[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @api public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {Mixed} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  var listener = new EE(fn, context || this)
+    , evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+  else if (!this._events[evt].fn) this._events[evt].push(listener);
+  else this._events[evt] = [this._events[evt], listener];
+
+  return this;
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {Mixed} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  var listener = new EE(fn, context || this, true)
+    , evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+  else if (!this._events[evt].fn) this._events[evt].push(listener);
+  else this._events[evt] = [this._events[evt], listener];
+
+  return this;
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {Mixed} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    if (--this._eventsCount === 0) this._events = new Events();
+    else delete this._events[evt];
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+         listeners.fn === fn
+      && (!once || listeners.once)
+      && (!context || listeners.context === context)
+    ) {
+      if (--this._eventsCount === 0) this._events = new Events();
+      else delete this._events[evt];
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+           listeners[i].fn !== fn
+        || (once && !listeners[i].once)
+        || (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else if (--this._eventsCount === 0) this._events = new Events();
+    else delete this._events[evt];
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {String|Symbol} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) {
+      if (--this._eventsCount === 0) this._events = new Events();
+      else delete this._events[evt];
+    }
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// This function doesn't apply anymore.
+//
+EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+  return this;
+};
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+{
+  module.exports = EventEmitter;
+}
+});
+
+var immutable = extend$1;
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend$1() {
+    var target = {};
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+
+    return target
+}
+
+var index$20 = function (str) {
+	return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+		return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+	});
+};
+
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var index$22 = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty$1.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+function encoderForArrayFormat(opts) {
+	switch (opts.arrayFormat) {
+		case 'index':
+			return function (key, value, index) {
+				return value === null ? [
+					encode$1(key, opts),
+					'[',
+					index,
+					']'
+				].join('') : [
+					encode$1(key, opts),
+					'[',
+					encode$1(index, opts),
+					']=',
+					encode$1(value, opts)
+				].join('');
+			};
+
+		case 'bracket':
+			return function (key, value) {
+				return value === null ? encode$1(key, opts) : [
+					encode$1(key, opts),
+					'[]=',
+					encode$1(value, opts)
+				].join('');
+			};
+
+		default:
+			return function (key, value) {
+				return value === null ? encode$1(key, opts) : [
+					encode$1(key, opts),
+					'=',
+					encode$1(value, opts)
+				].join('');
+			};
+	}
+}
+
+function parserForArrayFormat(opts) {
+	var result;
+
+	switch (opts.arrayFormat) {
+		case 'index':
+			return function (key, value, accumulator) {
+				result = /\[(\d*)\]$/.exec(key);
+
+				key = key.replace(/\[\d*\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
+
+				if (accumulator[key] === undefined) {
+					accumulator[key] = {};
+				}
+
+				accumulator[key][result[1]] = value;
+			};
+
+		case 'bracket':
+			return function (key, value, accumulator) {
+				result = /(\[\])$/.exec(key);
+				key = key.replace(/\[\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				} else if (accumulator[key] === undefined) {
+					accumulator[key] = [value];
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+
+		default:
+			return function (key, value, accumulator) {
+				if (accumulator[key] === undefined) {
+					accumulator[key] = value;
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+	}
+}
+
+function encode$1(value, opts) {
+	if (opts.encode) {
+		return opts.strict ? index$20(value) : encodeURIComponent(value);
+	}
+
+	return value;
+}
+
+function keysSorter(input) {
+	if (Array.isArray(input)) {
+		return input.sort();
+	} else if (typeof input === 'object') {
+		return keysSorter(Object.keys(input)).sort(function (a, b) {
+			return Number(a) - Number(b);
+		}).map(function (key) {
+			return input[key];
+		});
+	}
+
+	return input;
+}
+
+var extract = function (str) {
+	return str.split('?')[1] || '';
+};
+
+var parse$1 = function (str, opts) {
+	opts = index$22({arrayFormat: 'none'}, opts);
+
+	var formatter = parserForArrayFormat(opts);
+
+	// Create an object with no prototype
+	// https://github.com/sindresorhus/query-string/issues/47
+	var ret = Object.create(null);
+
+	if (typeof str !== 'string') {
+		return ret;
+	}
+
+	str = str.trim().replace(/^(\?|#|&)/, '');
+
+	if (!str) {
+		return ret;
+	}
+
+	str.split('&').forEach(function (param) {
+		var parts = param.replace(/\+/g, ' ').split('=');
+		// Firefox (pre 40) decodes `%3D` to `=`
+		// https://github.com/sindresorhus/query-string/pull/37
+		var key = parts.shift();
+		var val = parts.length > 0 ? parts.join('=') : undefined;
+
+		// missing `=` should be `null`:
+		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+		val = val === undefined ? null : decodeURIComponent(val);
+
+		formatter(decodeURIComponent(key), val, ret);
+	});
+
+	return Object.keys(ret).sort().reduce(function (result, key) {
+		var val = ret[key];
+		if (Boolean(val) && typeof val === 'object' && !Array.isArray(val)) {
+			// Sort object keys, not values
+			result[key] = keysSorter(val);
+		} else {
+			result[key] = val;
+		}
+
+		return result;
+	}, Object.create(null));
+};
+
+var stringify = function (obj, opts) {
+	var defaults = {
+		encode: true,
+		strict: true,
+		arrayFormat: 'none'
+	};
+
+	opts = index$22(defaults, opts);
+
+	var formatter = encoderForArrayFormat(opts);
+
+	return obj ? Object.keys(obj).sort().map(function (key) {
+		var val = obj[key];
+
+		if (val === undefined) {
+			return '';
+		}
+
+		if (val === null) {
+			return encode$1(key, opts);
+		}
+
+		if (Array.isArray(val)) {
+			var result = [];
+
+			val.slice().forEach(function (val2) {
+				if (val2 === undefined) {
+					return;
+				}
+
+				result.push(formatter(key, val2, result.length));
+			});
+
+			return result.join('&');
+		}
+
+		return encode$1(key, opts) + '=' + encode$1(val, opts);
+	}).filter(function (x) {
+		return x.length > 0;
+	}).join('&') : '';
+};
+
+var index$18 = {
+	extract: extract,
+	parse: parse$1,
+	stringify: stringify
+};
+
+var hashLocation = function HashLocation(window) {
+	var emitter = new index$14();
+	var last = '';
+	var needToDecode = getNeedToDecode();
+
+	window.addEventListener('hashchange', function() {
+		if (last !== emitter.get()) {
+			last = emitter.get();
+			emitter.emit('hashchange');
+		}
+	});
+
+	emitter.go = go.bind(null, window);
+	emitter.replace = replace.bind(null, window);
+	emitter.get = get$1.bind(null, window, needToDecode);
+
+	return emitter
+};
+
+function replace(window, newPath) {
+	window.location.replace(everythingBeforeTheSlash(window.location.href) + '#' + newPath);
+}
+
+function everythingBeforeTheSlash(url) {
+	var hashIndex = url.indexOf('#');
+	return hashIndex === -1 ? url : url.substring(0, hashIndex)
+}
+
+function go(window, newPath) {
+	window.location.hash = newPath;
+}
+
+function get$1(window, needToDecode) {
+	var hash = removeHashFromPath(window.location.hash);
+	return needToDecode ? decodeURI(hash) : hash
+}
+
+function removeHashFromPath(path) {
+	return (path && path[0] === '#') ? path.substr(1) : path
+}
+
+function getNeedToDecode() {
+	var a = document.createElement('a');
+	a.href = '#x x';
+	return !/x x/.test(a.hash)
+}
+
+var index$16 = function Router(opts, hashLocation$$1) {
+	var emitter = new index$14();
+	if (isHashLocation(opts)) {
+		hashLocation$$1 = opts;
+		opts = null;
+	}
+
+	opts = opts || {};
+
+	if (!hashLocation$$1) {
+		hashLocation$$1 = hashLocation(window);
+	}
+
+	function onNotFound(path, queryStringParameters) {
+		emitter.emit('not found', path, queryStringParameters);
+	}
+
+	var routes = [];
+
+	var onHashChange = evaluateCurrentPath.bind(null, routes, hashLocation$$1, !!opts.reverse, onNotFound);
+
+	hashLocation$$1.on('hashchange', onHashChange);
+
+	function stop() {
+		hashLocation$$1.removeListener('hashchange', onHashChange);
+	}
+
+	emitter.add = add.bind(null, routes);
+	emitter.stop = stop;
+	emitter.evaluateCurrent = evaluateCurrentPathOrGoToDefault.bind(null, routes, hashLocation$$1, !!opts.reverse, onNotFound);
+	emitter.replace = hashLocation$$1.replace;
+	emitter.go = hashLocation$$1.go;
+	emitter.location = hashLocation$$1;
+
+	return emitter
+};
+
+function evaluateCurrentPath(routes, hashLocation$$1, reverse, onNotFound) {
+	evaluatePath(routes, hashLocation$$1.get(), reverse, onNotFound);
+}
+
+function getPathParts(path) {
+	var chunks = path.split('?');
+	return {
+		path: chunks.shift(),
+		queryString: index$18.parse(chunks.join(''))
+	}
+}
+
+function evaluatePath(routes, path, reverse, onNotFound) {
+	var pathParts = getPathParts(path);
+	path = pathParts.path;
+	var queryStringParameters = pathParts.queryString;
+
+	var matchingRoute = find((reverse ? reverseArray(routes) : routes), path);
+
+	if (matchingRoute) {
+		var regexResult = matchingRoute.exec(path);
+		var routeParameters = makeParametersObjectFromRegexResult(matchingRoute.keys, regexResult);
+		var params = immutable(queryStringParameters, routeParameters);
+		matchingRoute.fn(params);
+	} else {
+		onNotFound(path, queryStringParameters);
+	}
+}
+
+function reverseArray(ary) {
+	return ary.slice().reverse()
+}
+
+function makeParametersObjectFromRegexResult(keys, regexResult) {
+	return keys.reduce(function(memo, urlKey, index) {
+		memo[urlKey.name] = regexResult[index + 1];
+		return memo
+	}, {})
+}
+
+function add(routes, routeString, routeFunction) {
+	if (typeof routeFunction !== 'function') {
+		throw new Error('The router add function must be passed a callback function')
+	}
+	var newRoute = index$8(routeString);
+	newRoute.fn = routeFunction;
+	routes.push(newRoute);
+}
+
+function evaluateCurrentPathOrGoToDefault(routes, hashLocation$$1, reverse, onNotFound, defaultPath) {
+	const currentLocation = hashLocation$$1.get();
+	if (currentLocation && currentLocation !== '/') {
+		var routesCopy = routes.slice();
+
+		evaluateCurrentPath(routesCopy, hashLocation$$1, reverse, onNotFound);
+	} else {
+		hashLocation$$1.go(defaultPath);
+	}
+}
+
+function isHashLocation(hashLocation$$1) {
+	return hashLocation$$1 && hashLocation$$1.go && hashLocation$$1.replace && hashLocation$$1.on
+}
+
+function find(aryOfRegexes, str) {
+	for (var i = 0; i < aryOfRegexes.length; ++i) {
+		if (str.match(aryOfRegexes[i])) {
+			return aryOfRegexes[i]
+		}
+	}
+}
+
+// This file to be replaced with an official implementation maintained by
+// the page.js crew if and when that becomes an option
+
+
+
+var pathParser = function(pathString) {
+	var parseResults = index$8(pathString);
+
+	// The only reason I'm returning a new object instead of the results of the pathToRegexp
+	// function is so that if the official implementation ends up returning an
+	// allTokens-style array via some other mechanism, I may be able to change this file
+	// without having to change the rest of the module in index.js
+	return {
+		regex: parseResults,
+		allTokens: parseResults.allTokens
+	}
+};
+
+var stringifyQuerystring = index$18.stringify;
+
+var index$24 = function(pathStr, parameters) {
+	var parsed = typeof pathStr === 'string' ? pathParser(pathStr) : pathStr;
+	var allTokens = parsed.allTokens;
+	var regex = parsed.regex;
+
+	if (parameters) {
+		var path = allTokens.map(function(bit) {
+			if (bit.string) {
+				return bit.string
+			}
+
+			var defined = typeof parameters[bit.name] !== 'undefined';
+			if (!bit.optional && !defined) {
+				throw new Error('Must supply argument ' + bit.name + ' for path ' + pathStr)
+			}
+
+			return defined ? (bit.delimiter + encodeURIComponent(parameters[bit.name])) : ''
+		}).join('');
+
+		if (!regex.test(path)) {
+			throw new Error('Provided arguments do not match the original arguments')
+		}
+
+		return buildPathWithQuerystring(path, parameters, allTokens)
+	} else {
+		return parsed
+	}
+};
+
+function buildPathWithQuerystring(path, parameters, tokenArray) {
+	var parametersInQuerystring = getParametersWithoutMatchingToken(parameters, tokenArray);
+
+	if (Object.keys(parametersInQuerystring).length === 0) {
+		return path
+	}
+
+	return path + '?' + stringifyQuerystring(parametersInQuerystring)
+}
+
+function getParametersWithoutMatchingToken(parameters, tokenArray) {
+	var tokenHash = tokenArray.reduce(function(memo, bit) {
+		if (!bit.string) {
+			memo[bit.name] = bit;
+		}
+		return memo
+	}, {});
+
+	return Object.keys(parameters).filter(function(param) {
+		return !tokenHash[param]
+	}).reduce(function(newParameters, param) {
+		newParameters[param] = parameters[param];
+		return newParameters
+	}, {})
+}
+
+var browser$1 = function (fn) {
+  typeof setImmediate === 'function' ?
+    setImmediate(fn) :
+    setTimeout(fn, 0);
+};
+
+var expectedPropertiesOfAddState = [ 'name', 'route', 'defaultChild', 'data', 'template', 'resolve', 'activate', 'querystringParameters', 'defaultQuerystringParameters', 'defaultParameters' ];
+
+var index$4 = function StateProvider(makeRenderer, rootElement, stateRouterOptions) {
+	var prototypalStateHolder = stateState();
+	var lastCompletelyLoadedState = currentState();
+	var lastStateStartedActivating = currentState();
+	var stateProviderEmitter = new index$14();
+	stateTransitionManager(stateProviderEmitter);
+	stateRouterOptions = immutable({
+		throwOnError: true,
+		pathPrefix: '#'
+	}, stateRouterOptions);
+
+	if (!stateRouterOptions.router) {
+		stateRouterOptions.router = index$16(defaultRouterOptions);
+	}
+
+	stateRouterOptions.router.on('not found', function(route, parameters) {
+		stateProviderEmitter.emit('routeNotFound', route, parameters);
+	});
+
+	var destroyDom = null;
+	var getDomChild = null;
+	var renderDom = null;
+	var resetDom = null;
+
+	var activeDomApis = {};
+	var activeStateResolveContent = {};
+	var activeEmitters = {};
+
+	function handleError(event, err) {
+		browser$1(function() {
+			stateProviderEmitter.emit(event, err);
+			console.error(event + ' - ' + err.message);
+			if (stateRouterOptions.throwOnError) {
+				throw err
+			}
+		});
+	}
+
+	function destroyStateName(stateName) {
+		var state = prototypalStateHolder.get(stateName);
+		stateProviderEmitter.emit('beforeDestroyState', {
+			state: state,
+			domApi: activeDomApis[stateName]
+		});
+
+		activeEmitters[stateName].emit('destroy');
+		activeEmitters[stateName].removeAllListeners();
+		delete activeEmitters[stateName];
+		delete activeStateResolveContent[stateName];
+
+		return destroyDom(activeDomApis[stateName]).then(function() {
+			delete activeDomApis[stateName];
+			stateProviderEmitter.emit('afterDestroyState', {
+				state: state
+			});
+		})
+	}
+
+	function resetStateName(parameters, stateName) {
+		var domApi = activeDomApis[stateName];
+		var content = getContentObject(activeStateResolveContent, stateName);
+		var state = prototypalStateHolder.get(stateName);
+
+		stateProviderEmitter.emit('beforeResetState', {
+			domApi: domApi,
+			content: content,
+			state: state,
+			parameters: parameters
+		});
+
+		activeEmitters[stateName].emit('destroy');
+		delete activeEmitters[stateName];
+
+		return resetDom({
+			domApi: domApi,
+			content: content,
+			template: state.template,
+			parameters: parameters
+		}).then(function(newDomApi) {
+			if (newDomApi) {
+				activeDomApis[stateName] = newDomApi;
+			}
+
+			stateProviderEmitter.emit('afterResetState', {
+				domApi: activeDomApis[stateName],
+				content: content,
+				state: state,
+				parameters: parameters
+			});
+		})
+	}
+
+	function getChildElementForStateName(stateName) {
+		return new Promise(function(resolve) {
+			var parent = prototypalStateHolder.getParent(stateName);
+			if (parent) {
+				var parentDomApi = activeDomApis[parent.name];
+				resolve(getDomChild(parentDomApi));
+			} else {
+				resolve(rootElement);
+			}
+		})
+	}
+
+	function renderStateName(parameters, stateName) {
+		return getChildElementForStateName(stateName).then(function(childElement) {
+			var state = prototypalStateHolder.get(stateName);
+			var content = getContentObject(activeStateResolveContent, stateName);
+
+			stateProviderEmitter.emit('beforeCreateState', {
+				state: state,
+				content: content,
+				parameters: parameters
+			});
+
+			return renderDom({
+				element: childElement,
+				template: state.template,
+				content: content,
+				parameters: parameters
+			}).then(function(domApi) {
+				activeDomApis[stateName] = domApi;
+				stateProviderEmitter.emit('afterCreateState', {
+					state: state,
+					domApi: domApi,
+					content: content,
+					parameters: parameters
+				});
+				return domApi
+			})
+		})
+	}
+
+	function renderAll(stateNames, parameters) {
+		return promiseMapSeries(stateNames, renderStateName.bind(null, parameters))
+	}
+
+	function onRouteChange(state, parameters) {
+		try {
+			var finalDestinationStateName = prototypalStateHolder.applyDefaultChildStates(state.name);
+
+			if (finalDestinationStateName === state.name) {
+				emitEventAndAttemptStateChange(finalDestinationStateName, parameters);
+			} else {
+				// There are default child states that need to be applied
+
+				var theRouteWeNeedToEndUpAt = makePath(finalDestinationStateName, parameters);
+				var currentRoute = stateRouterOptions.router.location.get();
+
+				if (theRouteWeNeedToEndUpAt === currentRoute) {
+					// the child state has the same route as the current one, just start navigating there
+					emitEventAndAttemptStateChange(finalDestinationStateName, parameters);
+				} else {
+					// change the url to match the full default child state route
+					stateProviderEmitter.go(finalDestinationStateName, parameters, { replace: true });
+				}
+			}
+		} catch (err) {
+			handleError('stateError', err);
+		}
+	}
+
+	function addState(state) {
+		if (typeof state === 'undefined') {
+			throw new Error('Expected \'state\' to be passed in.')
+		} else if (typeof state.name === 'undefined') {
+			throw new Error('Expected the \'name\' option to be passed in.')
+		} else if (typeof state.template === 'undefined') {
+			throw new Error('Expected the \'template\' option to be passed in.')
+		}
+		Object.keys(state).filter(function(key) {
+			return expectedPropertiesOfAddState.indexOf(key) === -1
+		}).forEach(function(key) {
+			console.warn('Unexpected property passed to addState:', key);
+		});
+
+		prototypalStateHolder.add(state.name, state);
+
+		var route = prototypalStateHolder.buildFullStateRoute(state.name);
+
+		stateRouterOptions.router.add(route, onRouteChange.bind(null, state));
+	}
+
+	function getStatesToResolve(stateChanges) {
+		return stateChanges.change.concat(stateChanges.create).map(prototypalStateHolder.get)
+	}
+
+	function emitEventAndAttemptStateChange(newStateName, parameters) {
+		stateProviderEmitter.emit('stateChangeAttempt', function stateGo(transition) {
+			attemptStateChange(newStateName, parameters, transition);
+		});
+	}
+
+	function attemptStateChange(newStateName, parameters, transition) {
+		function ifNotCancelled(fn) {
+			return function() {
+				if (transition.cancelled) {
+					var err = new Error('The transition to ' + newStateName + 'was cancelled');
+					err.wasCancelledBySomeoneElse = true;
+					throw err
+				} else {
+					return fn.apply(null, arguments)
+				}
+			}
+		}
+
+		return promiseMe(prototypalStateHolder.guaranteeAllStatesExist, newStateName)
+		.then(function applyDefaultParameters() {
+			var state = prototypalStateHolder.get(newStateName);
+			var defaultParams = state.defaultParameters || state.defaultQuerystringParameters || {};
+			var needToApplyDefaults = Object.keys(defaultParams).some(function missingParameterValue(param) {
+				return typeof parameters[param] === 'undefined'
+			});
+
+			if (needToApplyDefaults) {
+				throw redirector(newStateName, immutable(defaultParams, parameters))
+			}
+			return state
+		}).then(ifNotCancelled(function(state) {
+			stateProviderEmitter.emit('stateChangeStart', state, parameters);
+			lastStateStartedActivating.set(state.name, parameters);
+		})).then(function getStateChanges() {
+			var stateComparisonResults = stateComparison_1(prototypalStateHolder)(lastCompletelyLoadedState.get().name, lastCompletelyLoadedState.get().parameters, newStateName, parameters);
+			return stateChangeLogic(stateComparisonResults) // { destroy, change, create }
+		}).then(ifNotCancelled(function resolveDestroyAndActivateStates(stateChanges) {
+			return resolveStates(getStatesToResolve(stateChanges), immutable(parameters)).catch(function onResolveError(e) {
+				e.stateChangeError = true;
+				throw e
+			}).then(ifNotCancelled(function destroyAndActivate(stateResolveResultsObject) {
+				transition.cancellable = false;
+
+				function activateAll() {
+					var statesToActivate = stateChanges.change.concat(stateChanges.create);
+
+					return activateStates(statesToActivate)
+				}
+
+				activeStateResolveContent = immutable(activeStateResolveContent, stateResolveResultsObject);
+
+				return promiseMapSeries(reverse(stateChanges.destroy), destroyStateName).then(function() {
+					return promiseMapSeries(reverse(stateChanges.change), resetStateName.bind(null, immutable(parameters)))
+				}).then(function() {
+					return renderAll(stateChanges.create, immutable(parameters)).then(activateAll)
+				})
+			}))
+
+			function activateStates(stateNames) {
+				return stateNames.map(prototypalStateHolder.get).forEach(function(state) {
+					var emitter = new index$14();
+					var context = Object.create(emitter);
+					context.domApi = activeDomApis[state.name];
+					context.data = state.data;
+					context.parameters = parameters;
+					context.content = getContentObject(activeStateResolveContent, state.name);
+					activeEmitters[state.name] = emitter;
+
+					try {
+						state.activate && state.activate(context);
+					} catch (e) {
+						browser$1(function() {
+							throw e
+						});
+					}
+				})
+			}
+		})).then(function stateChangeComplete() {
+			lastCompletelyLoadedState.set(newStateName, parameters);
+			try {
+				stateProviderEmitter.emit('stateChangeEnd', prototypalStateHolder.get(newStateName), parameters);
+			} catch (e) {
+				handleError('stateError', e);
+			}
+		}).catch(ifNotCancelled(function handleStateChangeError(err) {
+			if (err && err.redirectTo) {
+				stateProviderEmitter.emit('stateChangeCancelled', err);
+				return stateProviderEmitter.go(err.redirectTo.name, err.redirectTo.params, { replace: true })
+			} else if (err) {
+				handleError('stateChangeError', err);
+			}
+		})).catch(function handleCancellation(err) {
+			if (err && err.wasCancelledBySomeoneElse) {
+				// we don't care, the state transition manager has already emitted the stateChangeCancelled for us
+			} else {
+				throw new Error("This probably shouldn't happen, maybe file an issue or something " + err)
+			}
+		})
+	}
+
+	function makePath(stateName, parameters, options) {
+		function getGuaranteedPreviousState() {
+			if (!lastStateStartedActivating.get().name) {
+				throw new Error('makePath required a previous state to exist, and none was found')
+			}
+			return lastStateStartedActivating.get()
+		}
+		if (options && options.inherit) {
+			parameters = immutable(getGuaranteedPreviousState().parameters, parameters);
+		}
+
+		var destinationStateName = stateName === null ? getGuaranteedPreviousState().name : stateName;
+
+		var destinationState = prototypalStateHolder.get(destinationStateName) || {};
+		var defaultParams = destinationState.defaultParameters || destinationState.defaultQuerystringParameters;
+
+		parameters = immutable(defaultParams, parameters);
+
+		prototypalStateHolder.guaranteeAllStatesExist(destinationStateName);
+		var route = prototypalStateHolder.buildFullStateRoute(destinationStateName);
+		return index$24(route, parameters || {})
+	}
+
+	var defaultOptions = {
+		replace: false
+	};
+
+	stateProviderEmitter.addState = addState;
+	stateProviderEmitter.go = function go(newStateName, parameters, options) {
+		options = immutable(defaultOptions, options);
+		var goFunction = options.replace ? stateRouterOptions.router.replace : stateRouterOptions.router.go;
+
+		return promiseMe(makePath, newStateName, parameters, options).then(goFunction, handleError.bind(null, 'stateChangeError'))
+	};
+	stateProviderEmitter.evaluateCurrentRoute = function evaluateCurrentRoute(defaultState, defaultParams) {
+		return promiseMe(makePath, defaultState, defaultParams).then(function(defaultPath) {
+			stateRouterOptions.router.evaluateCurrent(defaultPath);
+		}).catch(function(err) {
+			handleError('stateError', err);
+		})
+	};
+	stateProviderEmitter.makePath = function makePathAndPrependHash(stateName, parameters, options) {
+		return stateRouterOptions.pathPrefix + makePath(stateName, parameters, options)
+	};
+	stateProviderEmitter.stateIsActive = function stateIsActive(stateName, opts) {
+		var currentState$$1 = lastCompletelyLoadedState.get();
+		return (currentState$$1.name === stateName || currentState$$1.name.indexOf(stateName + '.') === 0) && (typeof opts === 'undefined' || Object.keys(opts).every(function matches(key) {
+			return opts[key] === currentState$$1.parameters[key]
+		}))
+	};
+
+	var renderer = makeRenderer(stateProviderEmitter);
+
+	destroyDom = index$12(renderer.destroy);
+	getDomChild = index$12(renderer.getChildElement);
+	renderDom = index$12(renderer.render);
+	resetDom = index$12(renderer.reset);
+
+	return stateProviderEmitter
+};
+
+function getContentObject(stateResolveResultsObject, stateName) {
+	var allPossibleResolvedStateNames = stateStringParser(stateName);
+
+	return allPossibleResolvedStateNames.filter(function(stateName) {
+		return stateResolveResultsObject[stateName]
+	}).reduce(function(obj, stateName) {
+		return immutable(obj, stateResolveResultsObject[stateName])
+	}, {})
+}
+
+function redirector(newStateName, parameters) {
+	return {
+		redirectTo: {
+			name: newStateName,
+			params: parameters
+		}
+	}
+}
+
+// { [stateName]: resolveResult }
+function resolveStates(states, parameters) {
+	var statesWithResolveFunctions = states.filter(isFunction$1('resolve'));
+	var stateNamesWithResolveFunctions = statesWithResolveFunctions.map(property('name'));
+	var resolves = Promise.all(statesWithResolveFunctions.map(function(state) {
+		return new Promise(function(resolve, reject) {
+			function resolveCb(err, content) {
+				err ? reject(err) : resolve(content);
+			}
+
+			resolveCb.redirect = function redirect(newStateName, parameters) {
+				reject(redirector(newStateName, parameters));
+			};
+
+			var res = state.resolve(state.data, parameters, resolveCb);
+			if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
+				resolve(res);
+			}
+		})
+	}));
+
+	return resolves.then(function(resolveResults) {
+		return index$6({
+			stateName: stateNamesWithResolveFunctions,
+			resolveResult: resolveResults
+		}).reduce(function(obj, result) {
+			obj[result.stateName] = result.resolveResult;
+			return obj
+		}, {})
+	})
+}
+
+function property(name) {
+	return function(obj) {
+		return obj[name]
+	}
+}
+
+function reverse(ary) {
+	return ary.slice().reverse()
+}
+
+function isFunction$1(property) {
+	return function(obj) {
+		return typeof obj[property] === 'function'
+	}
+}
+
+function promiseMe() {
+	var fn = Array.prototype.shift.apply(arguments);
+	var args = arguments;
+	return new Promise(function(resolve) {
+		resolve(fn.apply(null, args));
+	})
+}
+
+var index$28 = createCommonjsModule(function (module, exports) {
+(function (root, factory) {
+    if (typeof undefined === 'function' && undefined.amd) {
+        undefined(factory);
+    } else {
+        module.exports = factory();
+    }
+}(commonjsGlobal, function () {
+
+function isMergeableObject(val) {
+    var nonNullObject = val && typeof val === 'object';
+
+    return nonNullObject
+        && Object.prototype.toString.call(val) !== '[object RegExp]'
+        && Object.prototype.toString.call(val) !== '[object Date]'
+}
+
+function emptyTarget(val) {
+    return Array.isArray(val) ? [] : {}
+}
+
+function cloneIfNecessary(value, optionsArgument) {
+    var clone = optionsArgument && optionsArgument.clone === true;
+    return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+
+function defaultArrayMerge(target, source, optionsArgument) {
+    var destination = target.slice();
+    source.forEach(function(e, i) {
+        if (typeof destination[i] === 'undefined') {
+            destination[i] = cloneIfNecessary(e, optionsArgument);
+        } else if (isMergeableObject(e)) {
+            destination[i] = deepmerge(target[i], e, optionsArgument);
+        } else if (target.indexOf(e) === -1) {
+            destination.push(cloneIfNecessary(e, optionsArgument));
+        }
+    });
+    return destination
+}
+
+function mergeObject(target, source, optionsArgument) {
+    var destination = {};
+    if (isMergeableObject(target)) {
+        Object.keys(target).forEach(function (key) {
+            destination[key] = cloneIfNecessary(target[key], optionsArgument);
+        });
+    }
+    Object.keys(source).forEach(function (key) {
+        if (!isMergeableObject(source[key]) || !target[key]) {
+            destination[key] = cloneIfNecessary(source[key], optionsArgument);
+        } else {
+            destination[key] = deepmerge(target[key], source[key], optionsArgument);
+        }
+    });
+    return destination
+}
+
+function deepmerge(target, source, optionsArgument) {
+    var array = Array.isArray(source);
+    var options = optionsArgument || { arrayMerge: defaultArrayMerge };
+    var arrayMerge = options.arrayMerge || defaultArrayMerge;
+
+    if (array) {
+        return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+    } else {
+        return mergeObject(target, source, optionsArgument)
+    }
+}
+
+deepmerge.all = function deepmergeAll(array, optionsArgument) {
+    if (!Array.isArray(array) || array.length < 2) {
+        throw new Error('first argument should be an array with at least two elements')
+    }
+
+    // we are sure there are at least 2 values, so it is safe to have no initial value
+    return array.reduce(function(prev, next) {
+        return deepmerge(prev, next, optionsArgument)
+    })
+};
+
+return deepmerge
+
+}));
+});
+
+const copy = object => index$28({}, object, { clone: true });
+
+var index$26 = function SvelteStateRendererFactory(defaultOptions = {}) {
+	return function makeRenderer(stateRouter) {
+		const asr = {
+			makePath: stateRouter.makePath,
+			stateIsActive: stateRouter.stateIsActive
+		};
+
+		function render(context, cb) {
+			const { element: target, template, content } = context;
+
+			const rendererSuppliedOptions = index$28(defaultOptions, {
+				target,
+				data: Object.assign(content, defaultOptions.data, { asr })
+			});
+
+			let svelte;
+
+			try {
+				if (typeof template === 'function') {
+					svelte = new template(rendererSuppliedOptions);
+				} else {
+					const options = index$28(rendererSuppliedOptions, template.options);
+
+					svelte = options.methods
+						? instantiateWithMethods(template.component, options, options.methods)
+						: new template.component(options);
+				}
+				svelte.asrReset = createComponentResetter(svelte);
+			} catch (e) {
+				cb(e);
+				return
+			}
+
+			function onRouteChange() {
+				svelte.set({
+					asr
+				});
+			}
+
+			stateRouter.on('stateChangeEnd', onRouteChange);
+
+			svelte.on('destroy', () => {
+				stateRouter.removeListener('stateChangeEnd', onRouteChange);
+			});
+
+			svelte.mountedToTarget = target;
+			cb(null, svelte);
+		}
+
+		return {
+			render,
+			reset: function reset(context, cb) {
+				const svelte = context.domApi;
+
+				svelte.asrReset(context.content);
+
+				cb();
+			},
+			destroy: function destroy(svelte, cb) {
+				svelte.teardown();
+				cb();
+			},
+			getChildElement: function getChildElement(svelte, cb) {
+				try {
+					const element = svelte.mountedToTarget;
+					const child = element.querySelector('uiView');
+					cb(null, child);
+				} catch (e) {
+					cb(e);
+				}
+			}
+		}
+	}
+};
+
+function createComponentResetter(component) {
+	const originalData = copy(component.get());
+
+	return function reset(newData) {
+		const resetObject = Object.create(null);
+		Object.keys(component.get()).forEach(key => {
+			resetObject[key] = undefined;
+		});
+		Object.assign(resetObject, copy(originalData), newData);
+		component.set(resetObject);
+	}
+}
+
+function instantiateWithMethods(Component, options, methods) {
+	// const coolPrototype = Object.assign(Object.create(Component.prototype), methods)
+	// return Component.call(coolPrototype, options)
+	return Object.assign(new Component(options), methods)
+}
+
+/* src\components\Home.html generated by Svelte v1.64.1 */
+function create_main_fragment$2(component, state) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div.textContent = "Welcome to the Grants Management System. To continue please use the top menu for navigation.";
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "mt-4";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+		},
+
+		p: noop$1,
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$2(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$2(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -3198,23 +9035,3166 @@ function SvelteComponent(options) {
 	}
 }
 
-assign(SvelteComponent.prototype, proto);
+assign(SvelteComponent$2.prototype, proto);
 
-/* src\core\ui\inputs\Number.html generated by Svelte v1.64.1 */
-function step(field, form) {
-    var step = field.metadata.customProperties != null ? field.metadata.customProperties["decimalStep"] : null;
-    return step != null ? step : "0";
+/* src\core\ui\help\Tooltip.html generated by Svelte v1.64.1 */
+function create_main_fragment$5(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.data) && create_if_block$4(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.data) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$4(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
 }
 
-function create_main_fragment$1(component, state) {
-	var input, input_updating = false, input_required_value;
+// (1:0) {{#if data }}
+function create_if_block$4(component, state) {
+	var span, raw_value = state.data.content;
 
-	function input_input_handler() {
+	return {
+		c: function create() {
+			span = createElement("span");
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "tooltiptext";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			span.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.data) && raw_value !== (raw_value = state.data.content)) {
+				span.innerHTML = raw_value;
+			}
+		},
+
+		u: function unmount() {
+			span.innerHTML = '';
+
+			detachNode(span);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$5(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$5(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$5.prototype, proto);
+
+/* src\core\ui\Input.html generated by Svelte v1.64.1 */
+let inputId = 0;
+
+function data$2() {
+	inputId += 1;
+	return {
+		id: `i${inputId}`,
+		visible: false
+	};
+}
+
+var methods$1 = {
+	show(visible) {
+		const field = this.get("field");
+		const currentlyVisible = !!this.get("visible");
+
+		this.set({ visible: !!visible });
+
+		if (currentlyVisible === false && visible === true) {
+			const app = this.get("app");
+			const input = app.controlRegister.getInput(field.metadata.type);
+
+			// eslint-disable-next-line
+			new input.component({
+				target: this.refs.container,
+				data: {
+					field,
+					tabindex: this.get("tabindex"),
+					id: this.get("id"),
+					app,
+					form: this.get("form"),
+					wrapper: this
+				}
+			});
+		}
+
+		if (!visible) {
+			field.value = null;
+		}
+	}
+};
+
+function oncreate$1() {
+	const field = this.get("field");
+	const app = this.get("app");
+
+	const input = app.controlRegister.getInput(field.metadata.type);
+
+	// Set correct css class based on the field type.
+	const inputDisplayConfig = field.constants || input.constants || {};
+
+	const cssClass = field.metadata.customProperties != null ? field.metadata.customProperties.cssClass : null;
+
+	// Set correct css class based on the field type.
+	if (inputDisplayConfig.block) {
+		this.set({ class: `block ${cssClass}` });
+	}
+	else {
+		this.set({ class: `inline ${cssClass}` });
+	}
+
+	this.set({
+		class: cssClass,
+		alwaysHideLabel: inputDisplayConfig.alwaysHideLabel
+	});
+
+	const inputs = this.get("form").get("inputs");
+	// If `inputs` is null, then it means our parent form has been closed
+	// and "destroyed". In such cases we should just return.
+	// TODO: find a better way to implement "parent form null check".
+	if (inputs != null) {
+		// Register input in the parent form.
+		inputs.push(this);
+	}
+
+	const isVisible = !field.metadata.eventHandlers.length ||
+		field.metadata.eventHandlers.find(t => t.id === "depend-on") == null;
+
+	this.show(isVisible);
+}
+
+function add_css$1() {
+	var style = createElement("style");
+	style.id = 'svelte-1enahe1-style';
+	style.textContent = ".svelte-1enahe1.inline,.svelte-1enahe1 .inline{display:inline-block\r\n    }";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$4(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.visible) && create_if_block$3(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.visible) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$3(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (5:12) {{#if field.metadata.customProperties != null && field.metadata.customProperties["documentation"] != null}}
+function create_if_block_2$2(component, state) {
+	var div, text_value = state.field.metadata.label, text, text_1;
+
+	var tooltip_initial_data = { data: state.field.metadata.customProperties.documentation[0] };
+	var tooltip = new SvelteComponent$5({
+		root: component.root,
+		data: tooltip_initial_data
+	});
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			text = createText(text_value);
+			text_1 = createText(":\r\n                ");
+			tooltip._fragment.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-tooltip";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(text, div);
+			appendNode(text_1, div);
+			tooltip._mount(div, null);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
+				text.data = text_value;
+			}
+
+			var tooltip_changes = {};
+			if (changed.field) tooltip_changes.data = state.field.metadata.customProperties.documentation[0];
+			tooltip._set(tooltip_changes);
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			tooltip.destroy(false);
+		}
+	};
+}
+
+// (9:12) {{else}}
+function create_if_block_3$2(component, state) {
+	var text_value = state.field.metadata.label, text, text_1;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+			text_1 = createText(":");
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+			insertNode(text_1, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+			detachNode(text_1);
+		},
+
+		d: noop$1
+	};
+}
+
+// (2:4) {{#if !alwaysHideLabel && field.metadata.label !== "" }}
+function create_if_block_1$2(component, state) {
+	var div, label, text_1, div_1, div_class_value;
+
+	function select_block_type(state) {
+		if (state.field.metadata.customProperties != null && state.field.metadata.customProperties["documentation"] != null) return create_if_block_2$2;
+		return create_if_block_3$2;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			label = createElement("label");
+			if_block.c();
+			text_1 = createText("\r\n        ");
+			div_1 = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			label.htmlFor = state.id;
+			label.className = "col-form-label col-md-3";
+			div_1.className = "col-md-9";
+			div.className = div_class_value = "form-group row " + state.class + " svelte-1enahe1";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(label, div);
+			if_block.m(label, null);
+			appendNode(text_1, div);
+			appendNode(div_1, div);
+			component.refs.container = div_1;
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(label, null);
+			}
+
+			if (changed.id) {
+				label.htmlFor = state.id;
+			}
+
+			if ((changed.class) && div_class_value !== (div_class_value = "form-group row " + state.class + " svelte-1enahe1")) {
+				div.className = div_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (component.refs.container === div_1) component.refs.container = null;
+		}
+	};
+}
+
+// (15:4) {{else}}
+function create_if_block_4$2(component, state) {
+	var div, div_1, div_class_value;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div_1 = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div_1.className = "col-md-12";
+			div.className = div_class_value = "form-group " + state.class + " svelte-1enahe1";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(div_1, div);
+			component.refs.container = div_1;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.class) && div_class_value !== (div_class_value = "form-group " + state.class + " svelte-1enahe1")) {
+				div.className = div_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			if (component.refs.container === div_1) component.refs.container = null;
+		}
+	};
+}
+
+// (1:0) {{#if visible}}
+function create_if_block$3(component, state) {
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (!state.alwaysHideLabel && state.field.metadata.label !== "") return create_if_block_1$2;
+		return create_if_block_4$2;
+	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+function SvelteComponent$4(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$2(), options.data);
+
+	if (!document.getElementById("svelte-1enahe1-style")) add_css$1();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { visible: 1, alwaysHideLabel: 1, field: 1, class: 1, id: 1 };
+		oncreate$1.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$4(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$4.prototype, proto);
+assign(SvelteComponent$4.prototype, methods$1);
+
+/* src\core\ui\Output.html generated by Svelte v1.64.1 */
+function data$3() {
+	return {
+		showLabel: true
+	};
+}
+
+function oncreate$2() {
+	const field = this.get("field");
+	const app = this.get("app");
+	const parent = this.get("parent");
+	const form = this.get("form");
+
+	const output = app.controlRegister.getOutput(field);
+
+	// Never show label if `alwaysHideLabel` is set to true.
+	const outputDisplayConfig = output.constants || {};
+	this.set({
+		alwaysHideLabel: outputDisplayConfig.alwaysHideLabel
+	});
+
+	// eslint-disable-next-line
+	new output.constructor({
+		target: this.refs.container,
+		data: {
+			field,
+			app,
+			form,
+			parent
+		}
+	});
+
+	const cssClass = field.metadata.customProperties != null ? field.metadata.customProperties.cssClass : null;
+
+	// Set correct css class based on the field type.
+	if (outputDisplayConfig.block) {
+		this.set({ class: `block ${cssClass}` });
+	}
+	else {
+		this.set({ class: `inline ${cssClass}` });
+	}
+}
+
+function add_css$2() {
+	var style = createElement("style");
+	style.id = 'svelte-1enahe1-style';
+	style.textContent = ".svelte-1enahe1.inline,.svelte-1enahe1 .inline{display:inline-block\r\n    }";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$6(component, state) {
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (state.showLabel === true && !state.alwaysHideLabel && state.field.metadata.label !== "") return create_if_block$5;
+		return create_if_block_3$3;
+	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (4:8) {{#if field.metadata.customProperties != null && field.metadata.customProperties["documentation"] != null}}
+function create_if_block_1$3(component, state) {
+	var div, text_value = state.field.metadata.label, text, text_1;
+
+	var tooltip_initial_data = { data: state.field.metadata.customProperties.documentation[0] };
+	var tooltip = new SvelteComponent$5({
+		root: component.root,
+		data: tooltip_initial_data
+	});
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			text = createText(text_value);
+			text_1 = createText(":\r\n            ");
+			tooltip._fragment.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-tooltip";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(text, div);
+			appendNode(text_1, div);
+			tooltip._mount(div, null);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
+				text.data = text_value;
+			}
+
+			var tooltip_changes = {};
+			if (changed.field) tooltip_changes.data = state.field.metadata.customProperties.documentation[0];
+			tooltip._set(tooltip_changes);
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			tooltip.destroy(false);
+		}
+	};
+}
+
+// (8:8) {{else}}
+function create_if_block_2$3(component, state) {
+	var text_value = state.field.metadata.label, text, text_1;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+			text_1 = createText(":");
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+			insertNode(text_1, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+			detachNode(text_1);
+		},
+
+		d: noop$1
+	};
+}
+
+// (1:0) {{#if showLabel === true && !alwaysHideLabel && field.metadata.label !== ""}}
+function create_if_block$5(component, state) {
+	var div, strong, text_1, div_1;
+
+	function select_block_type(state) {
+		if (state.field.metadata.customProperties != null && state.field.metadata.customProperties["documentation"] != null) return create_if_block_1$3;
+		return create_if_block_2$3;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			strong = createElement("strong");
+			if_block.c();
+			text_1 = createText("\r\n    ");
+			div_1 = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div_1.className = state.class;
+			div.className = "svelte-1enahe1";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(strong, div);
+			if_block.m(strong, null);
+			appendNode(text_1, div);
+			appendNode(div_1, div);
+			component.refs.container = div_1;
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(strong, null);
+			}
+
+			if (changed.class) {
+				div_1.className = state.class;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (component.refs.container === div_1) component.refs.container = null;
+		}
+	};
+}
+
+// (14:0) {{else}}
+function create_if_block_3$3(component, state) {
+	var div, div_class_value;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = div_class_value = "" + state.class + " svelte-1enahe1";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			component.refs.container = div;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.class) && div_class_value !== (div_class_value = "" + state.class + " svelte-1enahe1")) {
+				div.className = div_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			if (component.refs.container === div) component.refs.container = null;
+		}
+	};
+}
+
+function SvelteComponent$6(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$3(), options.data);
+
+	if (!document.getElementById("svelte-1enahe1-style")) add_css$2();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { showLabel: 1, alwaysHideLabel: 1, field: 1, class: 1 };
+		oncreate$2.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$6(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$6.prototype, proto);
+
+/* src\core\ui\help\Help.html generated by Svelte v1.64.1 */
+function humanize(e){
+	return e.replace(/\.[^/.]+$/, "")
+		.split(/(?=[A-Z])/)
+		.join(" ");
+}
+
+// https://stackoverflow.com/a/3369743/111438
+// Close topmost modal when user presses escape key.
+var currentlyOpenHelpModal = null;
+document.addEventListener("keydown", function(evt) {
+	evt = evt || window.event;
+	var isEscape = false;
+	if ("key" in evt) {
+		isEscape = (evt.key == "Escape" || evt.key == "Esc");
+	} else {
+		isEscape = (evt.keyCode == 27);
+	}
+	if (isEscape && currentlyOpenHelpModal != null) {
+		currentlyOpenHelpModal.close();
+	}
+});
+
+function data$4(){
+	return {
+		files :[],
+		open:false,
+		modalId: ""
+	}
+}
+
+var methods$2 = {
+	open() {
+		this.set({ open: true });
+		currentlyOpenHelpModal = this;
+	},
+	close() {
+		this.set({ open: false });
+		currentlyOpenHelpModal = null;
+	}
+};
+
+function oncreate$3(){			
+	var files =  this.get("data").files.map(function(i,e) {
+		return {file:i, name: humanize(i)};
+	});
+
+	this.set({ 
+		files: files,
+		modalId: this.constructor.name
+	});
+}
+
+function add_css$3() {
+	var style = createElement("style");
+	style.id = 'svelte-1peaht8-style';
+	style.textContent = "ul.svelte-1peaht8.help-files,.svelte-1peaht8 ul.help-files{list-style:none}.svelte-1peaht8.inline-help,.svelte-1peaht8 .inline-help{background:#ecf8fb;padding:10px}.svelte-1peaht8.modal-help > i,.svelte-1peaht8 .modal-help > i{font-size:15pt;color:#5b7b9b}.svelte-1peaht8.modal-help,.svelte-1peaht8 .modal-help{display:block;margin-left:-10px;position:absolute;right:10px;top:30px}.svelte-1peaht8.help-files,.svelte-1peaht8 .help-files{border-top:1px solid #d8d8d8;padding:10px;margin:10px;background:#ecf8fb}.svelte-1peaht8.help-files ul,.svelte-1peaht8 .help-files ul{list-style:circle}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$7(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.data) && create_if_block$6(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.data) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$6(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (16:8) {{#each files as file}}
+function create_each_block$3(component, state) {
+	var file = state.file, each_value = state.each_value, file_index = state.file_index;
+	var li, a, text_value = file.name, text, a_href_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = "/#/form/help?FileId=" + file.file;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(a, li);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			file = state.file;
+			each_value = state.each_value;
+			file_index = state.file_index;
+			if ((changed.files) && text_value !== (text_value = file.name)) {
+				text.data = text_value;
+			}
+
+			if ((changed.files) && a_href_value !== (a_href_value = "/#/form/help?FileId=" + file.file)) {
+				a.href = a_href_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (12:5) {{ #if files && files.length >0 }}
+function create_if_block_2$4(component, state) {
+	var div, span, text_1, ul;
+
+	var each_value = state.files;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$3(component, assign(assign({}, state), {
+			each_value: each_value,
+			file: each_value[i],
+			file_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			span = createElement("span");
+			span.textContent = "For more information:";
+			text_1 = createText("\r\n\t\t\t\t\t\t\t");
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-files";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(span, div);
+			appendNode(text_1, div);
+			appendNode(ul, div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.files;
+
+			if (changed.files) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						file: each_value[i],
+						file_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$3(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (36:4) {{#each files as file}}
+function create_each_block_1$1(component, state) {
+	var file = state.file, each_value_1 = state.each_value_1, file_index_1 = state.file_index_1;
+	var li, a, text_value = file.name, text, a_href_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = "/#/form/help?FileId=" + file.file;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(a, li);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			file = state.file;
+			each_value_1 = state.each_value_1;
+			file_index_1 = state.file_index_1;
+			if ((changed.files) && text_value !== (text_value = file.name)) {
+				text.data = text_value;
+			}
+
+			if ((changed.files) && a_href_value !== (a_href_value = "/#/form/help?FileId=" + file.file)) {
+				a.href = a_href_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (32:2) {{#if files && files.length >0 }}
+function create_if_block_4$3(component, state) {
+	var div, span, text_1, ul;
+
+	var each_value_1 = state.files;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$1(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			file: each_value_1[i],
+			file_index_1: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			span = createElement("span");
+			span.textContent = "For more information";
+			text_1 = createText("\r\n\t\t\t");
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-files";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(span, div);
+			appendNode(text_1, div);
+			appendNode(ul, div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value_1 = state.files;
+
+			if (changed.files) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						file: each_value_1[i],
+						file_index_1: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$1(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (2:1) {{#if data.placement == 'Hint' }}
+function create_if_block_1$4(component, state) {
+	var div, i, text, input, input_id_value, text_1, div_1, div_2, label, text_2, div_3, raw_value = state.data.content, raw_after, text_3;
+
+	function click_handler(event) {
+		component.open();
+	}
+
+	function input_change_handler() {
+		component.set({ open: input.checked });
+	}
+
+	function click_handler_1(event) {
+		component.close();
+	}
+
+	var if_block = (state.files && state.files.length >0) && create_if_block_2$4(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			i = createElement("i");
+			text = createText("\r\n\t\t");
+			input = createElement("input");
+			text_1 = createText("\r\n\t\t");
+			div_1 = createElement("div");
+			div_2 = createElement("div");
+			label = createElement("label");
+			text_2 = createText("\r\n\t\t\t\t");
+			div_3 = createElement("div");
+			raw_after = createElement('noscript');
+			text_3 = createText("\r\n\r\n\t\t\t\t\t");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(i, "click", click_handler);
+			i.className = "far fa-question-circle";
+			i.title = "Click to open help for this form";
+			addListener$1(input, "change", input_change_handler);
+			input.id = input_id_value = "modal-" + state.modalId;
+			setAttribute(input, "type", "checkbox");
+			input.className = "hidden";
+			addListener$1(label, "click", click_handler_1);
+			label.className = "close";
+			div_2.className = "card";
+			div_1.className = "modal";
+			div.className = "help-content modal-help svelte-1peaht8";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(i, div);
+			appendNode(text, div);
+			appendNode(input, div);
+
+			input.checked = state.open;
+
+			appendNode(text_1, div);
+			appendNode(div_1, div);
+			appendNode(div_2, div_1);
+			appendNode(label, div_2);
+			appendNode(text_2, div_2);
+			appendNode(div_3, div_2);
+			appendNode(raw_after, div_3);
+			raw_after.insertAdjacentHTML("beforebegin", raw_value);
+			appendNode(text_3, div_3);
+			if (if_block) if_block.m(div_3, null);
+			component.refs.container = div_3;
+		},
+
+		p: function update(changed, state) {
+			input.checked = state.open;
+			if ((changed.modalId) && input_id_value !== (input_id_value = "modal-" + state.modalId)) {
+				input.id = input_id_value;
+			}
+
+			if ((changed.data) && raw_value !== (raw_value = state.data.content)) {
+				detachBefore(raw_after);
+				raw_after.insertAdjacentHTML("beforebegin", raw_value);
+			}
+
+			if (state.files && state.files.length >0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_2$4(component, state);
+					if_block.c();
+					if_block.m(div_3, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachBefore(raw_after);
+
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(i, "click", click_handler);
+			removeListener$1(input, "change", input_change_handler);
+			removeListener$1(label, "click", click_handler_1);
+			if (if_block) if_block.d();
+			if (component.refs.container === div_3) component.refs.container = null;
+		}
+	};
+}
+
+// (29:39) 
+function create_if_block_3$4(component, state) {
+	var div, raw_value = state.data.content, raw_after, text;
+
+	var if_block = (state.files && state.files.length >0) && create_if_block_4$3(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			raw_after = createElement('noscript');
+			text = createText("\r\n\t\t");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-content inline-help svelte-1peaht8";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(raw_after, div);
+			raw_after.insertAdjacentHTML("beforebegin", raw_value);
+			appendNode(text, div);
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.data) && raw_value !== (raw_value = state.data.content)) {
+				detachBefore(raw_after);
+				raw_after.insertAdjacentHTML("beforebegin", raw_value);
+			}
+
+			if (state.files && state.files.length >0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_4$3(component, state);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachBefore(raw_after);
+
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if data }}
+function create_if_block$6(component, state) {
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.data.placement == 'Hint') return create_if_block_1$4;
+		if (state.data.placement == 'Inline') return create_if_block_3$4;
+		return null;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type && current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if (if_block) {
+					if_block.u();
+					if_block.d();
+				}
+				if_block = current_block_type && current_block_type(component, state);
+				if (if_block) if_block.c();
+				if (if_block) if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+function SvelteComponent$7(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$4(), options.data);
+
+	if (!document.getElementById("svelte-1peaht8-style")) add_css$3();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { data: 1, modalId: 1, open: 1, files: 1 };
+		oncreate$3.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$7(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$7.prototype, proto);
+assign(SvelteComponent$7.prototype, methods$2);
+
+/* src\core\ui\Form.html generated by Svelte v1.64.1 */
+let tabindex = 1;
+let openForms = [];
+
+function bindEventHandlersToCustomEvents(formComponent, eventHandlers) {
+	const formInstance = formComponent.get("form");
+
+	for (const eventHandler of eventHandlers) {
+		// Don't bind default event handlers, because they are already auto-bound inside FormInstance.
+		if (eventHandler.runAt.indexOf("form:") === 0) {
+			continue;
+		}
+
+		formComponent.on(eventHandler.runAt, e => {
+			// Augment event args with form which is firing the event. This is needed,
+			// so that event handler can know from which particular form this event is coming.
+			e.form = formComponent;
+
+			formInstance.handleEvent(eventHandler.runAt, eventHandler, e);
+		});
+	}
+}
+
+function data$1() {
+	return {
+		disabled: false,
+		tabindex,
+		urlData: null,
+		initialized: false,
+		responseMetadata: {},
+		useUrl: true,
+		parent: null, // Can be set if this is a nested form within another form (i.e. - InlineForm.html)
+		inputs: []
+	};
+}
+
+var methods = {
+	async init() {
+		if (!this.get("initialized")) {
+			const form = this.get("form");
+
+			this.set({
+				self: this,
+				initialized: true,
+				visibleInputFields: form.inputs.filter(t => t.metadata.hidden === false),
+				submitButtonLabel: form.metadata.getCustomProperty("submitButtonLabel") || "Submit",
+				cssClass: form.metadata.getCustomProperty("cssClass") || "",
+				documentation: form.metadata.getCustomProperty("documentation")
+			});
+
+			tabindex += 1;
+
+			const app = this.get("app");
+
+			// Subscribe all event handlers (form, inputs, outputs).
+			const formMetadata = form.metadata;
+			const handlers = [];
+			formMetadata.inputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
+			formMetadata.outputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
+			formMetadata.eventHandlers.forEach(h => handlers.push(h));
+			bindEventHandlersToCustomEvents(this, handlers);
+
+			form.fire("form:loaded", { app });
+
+			// Auto-submit form if necessary.
+			if (form.metadata.postOnLoad) {
+				await this.submit();
+			}
+
+			openForms.push(this);
+
+			if (this.get("parent") == null) {
+				if (this.get("responseMetadata").title == null) {
+					document.title = form.metadata.label;
+				}
+			}
+		}
+	},
+	fireAndBubbleUp(eventName, eventArgs) {
+		this.fire(eventName, eventArgs);
+		const parentFormComponent = this.get("parent");
+
+		if (parentFormComponent != null) {
+			parentFormComponent.fireAndBubbleUp(eventName, eventArgs);
+		}
+	},
+	enableForm() {
+		const formInstance = this.get("form");
+
+		// Hide all inputs, to re-render them. This is needed due to the way that
+		// Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
+		this.set({ visibleInputFields: [] });
+
+		this.set({
+		// Show inputs again.
+			visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden === false),
+
+			disabled: false
+		});
+	},
+	renderResponse(response) {
+		const formInstance = this.get("form");
+
+		// Force Svelte to re-render outputs.
+		this.set({
+			outputFieldValues: null
+		});
+
+		this.set({
+			outputFieldValues: formInstance.outputs,
+			responseMetadata: response.metadata
+		});
+
+		if (this.get("parent") == null) {
+			document.title = response.metadata.title;
+		}
+	},
+	async submit(event, redirect) {
+		const self = this;
+		const formInstance = this.get("form");
+		const app = this.get("app");
+
+		if (event != null) {
+			event.preventDefault();
+		}
+
+		// If not all required inputs are filled.
+		const allRequiredInputsHaveValues = await formInstance.allRequiredInputsHaveData(redirect == null);
+		if (!allRequiredInputsHaveValues) {
+			return;
+		}
+
+		// Disable double-posts.
+		self.set({ disabled: true });
+
+		// If postOnLoad == true, then the input field values should appear in the url.
+		// Reason is that postOnLoad == true is used by "report" pages, which need
+		// their filters to be saved in the url. This does not apply to forms
+		// with postOnLoad == false, because those forms are usually for creating new data
+		// and hence should not be tracked in browser's history based on parameters.
+		if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
+			const urlParams = await formInstance.getSerializedInputValues();
+
+			// Update url in the browser.
+			app.go(formInstance.metadata.id, urlParams);
+
+			return;
+		}
+
+		try {
+			const response = await formInstance.submit(app, redirect == null, { formComponent: self });
+
+			self.enableForm();
+
+			// Signal event to child controls.
+			self.fire("form:responseHandled", {
+				form: self,
+				invokedByUser: event != null,
+				response
+			});
+		}
+		catch (e) {
+			self.enableForm();
+		}
+	},
+	reloadTopForm() {
+		const parentFormComponent = this.get("parent");
+
+		if (parentFormComponent != null) {
+			parentFormComponent.reloadTopForm();
+		}
+		else {
+			this.submit(null, true);
+		}
+	},
+	reloadAllForms() {
+		for (const f of openForms) {
+			f.reloadTopForm();
+		}
+	},
+	getInputComponent(inputId) {
+		return this.get("inputs").find(t => t.get("field").metadata.id === inputId);
+	}
+};
+
+function ondestroy() {
+	openForms = openForms.filter(f => f !== this);
+}
+
+function add_css() {
+	var style = createElement("style");
+	style.id = 'svelte-1djvwan-style';
+	style.textContent = ".svelte-1djvwan.response,.svelte-1djvwan .response{margin-top:15px;padding-left:10px;padding-right:10px}.svelte-1djvwan.form-header,.svelte-1djvwan .form-header{text-align:center;padding-top:20px;border-bottom:1px solid #bbd2d6;background-color:#fff;position:relative}.svelte-1djvwan.form-header h2,.svelte-1djvwan .form-header h2{display:inline-block}.svelte-1djvwan.help-content,.svelte-1djvwan .help-content{text-align:left}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$3(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.initialized) && create_if_block$2(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.initialized) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$2(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (8:3) {{#each documentation as document }}
+function create_each_block$2(component, state) {
+	var document_1 = state.document, each_value = state.each_value, document_index = state.document_index;
+
+	var help_initial_data = { data: document_1 };
+	var help = new SvelteComponent$7({
+		root: component.root,
+		data: help_initial_data
+	});
+
+	return {
+		c: function create() {
+			help._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			help._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			document_1 = state.document;
+			each_value = state.each_value;
+			document_index = state.document_index;
+			var help_changes = {};
+			if (changed.documentation) help_changes.data = document_1;
+			help._set(help_changes);
+		},
+
+		u: function unmount() {
+			help._unmount();
+		},
+
+		d: function destroy$$1() {
+			help.destroy(false);
+		}
+	};
+}
+
+// (7:2) {{#if documentation }}
+function create_if_block_2$1(component, state) {
+	var each_anchor;
+
+	var each_value = state.documentation;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$2(component, assign(assign({}, state), {
+			each_value: each_value,
+			document: each_value[i],
+			document_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.documentation;
+
+			if (changed.documentation) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						document: each_value[i],
+						document_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$2(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (3:2) {{#if (responseMetadata.title != null && responseMetadata.title != "") || (metadata.label != null && metadata.label != "")}}
+function create_if_block_1$1(component, state) {
+	var div, h2, text_value = state.responseMetadata.title || state.metadata.label, text, text_1;
+
+	var if_block = (state.documentation) && create_if_block_2$1(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			h2 = createElement("h2");
+			text = createText(text_value);
+			text_1 = createText("\r\n\r\n\t\t");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "form-header";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(h2, div);
+			appendNode(text, h2);
+			appendNode(text_1, div);
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.responseMetadata || changed.metadata) && text_value !== (text_value = state.responseMetadata.title || state.metadata.label)) {
+				text.data = text_value;
+			}
+
+			if (state.documentation) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_2$1(component, state);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (18:2) {{#each visibleInputFields as inputField}}
+function create_each_block_1(component, state) {
+	var inputField = state.inputField, each_value_1 = state.each_value_1, inputField_index = state.inputField_index;
+
+	var forminput_initial_data = {
+	 	field: inputField,
+	 	app: state.app,
+	 	tabindex: state.tabindex * 100 + inputField.metadata.orderIndex,
+	 	form: state.self
+	 };
+	var forminput = new SvelteComponent$4({
+		root: component.root,
+		data: forminput_initial_data
+	});
+
+	return {
+		c: function create() {
+			forminput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			forminput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			inputField = state.inputField;
+			each_value_1 = state.each_value_1;
+			inputField_index = state.inputField_index;
+			var forminput_changes = {};
+			if (changed.visibleInputFields) forminput_changes.field = inputField;
+			if (changed.app) forminput_changes.app = state.app;
+			if (changed.tabindex || changed.visibleInputFields) forminput_changes.tabindex = state.tabindex * 100 + inputField.metadata.orderIndex;
+			if (changed.self) forminput_changes.form = state.self;
+			forminput._set(forminput_changes);
+		},
+
+		u: function unmount() {
+			forminput._unmount();
+		},
+
+		d: function destroy$$1() {
+			forminput.destroy(false);
+		}
+	};
+}
+
+// (15:1) {{#if initialized && visibleInputFields.length > 0}}
+function create_if_block_3$1(component, state) {
+	var div, form, text, div_1, button;
+
+	var each_value_1 = state.visibleInputFields;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			inputField: each_value_1[i],
+			inputField_index: i
+		}));
+	}
+
+	function submit_handler(event) {
+		component.submit(event, true);
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			form = createElement("form");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text = createText("\r\n\t\t");
+			div_1 = createElement("div");
+			button = createElement("button");
+			this.h();
+		},
+
+		h: function hydrate() {
+			button.type = "submit";
+			button.disabled = state.disabled;
+			button.tabIndex = "-1";
+			button.className = "btn btn-info";
+			setStyle(div_1, "width", "100%");
+			addListener$1(form, "submit", submit_handler);
+			div.className = "form-body";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(form, div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(form, null);
+			}
+
+			appendNode(text, form);
+			appendNode(div_1, form);
+			appendNode(button, div_1);
+			button.innerHTML = state.submitButtonLabel;
+		},
+
+		p: function update(changed, state) {
+			var each_value_1 = state.visibleInputFields;
+
+			if (changed.visibleInputFields || changed.app || changed.tabindex || changed.self) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						inputField: each_value_1[i],
+						inputField_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(form, text);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+
+			if (changed.submitButtonLabel) {
+				button.innerHTML = state.submitButtonLabel;
+			}
+
+			if (changed.disabled) {
+				button.disabled = state.disabled;
+			}
+		},
+
+		u: function unmount() {
+			button.innerHTML = '';
+
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+
+			removeListener$1(form, "submit", submit_handler);
+		}
+	};
+}
+
+// (30:2) {{#each outputFieldValues as outputField }}
+function create_each_block_2(component, state) {
+	var outputField = state.outputField, each_value_2 = state.each_value_2, outputField_index = state.outputField_index;
+	var if_block_anchor;
+
+	var if_block = (outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)) && create_if_block_5(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			outputField = state.outputField;
+			each_value_2 = state.each_value_2;
+			outputField_index = state.outputField_index;
+			if (outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_5(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (31:2) {{#if outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)}}
+function create_if_block_5(component, state) {
+	var outputField = state.outputField, each_value_2 = state.each_value_2, outputField_index = state.outputField_index;
+
+	var formoutput_initial_data = {
+	 	field: outputField,
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.self
+	 };
+	var formoutput = new SvelteComponent$6({
+		root: component.root,
+		data: formoutput_initial_data
+	});
+
+	return {
+		c: function create() {
+			formoutput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			formoutput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			outputField = state.outputField;
+			each_value_2 = state.each_value_2;
+			outputField_index = state.outputField_index;
+			var formoutput_changes = {};
+			if (changed.outputFieldValues) formoutput_changes.field = outputField;
+			if (changed.app) formoutput_changes.app = state.app;
+			if (changed.form) formoutput_changes.form = state.form;
+			if (changed.self) formoutput_changes.parent = state.self;
+			formoutput._set(formoutput_changes);
+		},
+
+		u: function unmount() {
+			formoutput._unmount();
+		},
+
+		d: function destroy$$1() {
+			formoutput.destroy(false);
+		}
+	};
+}
+
+// (28:1) {{#if outputFieldValues != null}}
+function create_if_block_4$1(component, state) {
+	var div;
+
+	var each_value_2 = state.outputFieldValues;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2(component, assign(assign({}, state), {
+			each_value_2: each_value_2,
+			outputField: each_value_2[i],
+			outputField_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "response";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value_2 = state.outputFieldValues;
+
+			if (changed.outputFieldValues || changed.app || changed.form || changed.self) {
+				for (var i = 0; i < each_value_2.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_2: each_value_2,
+						outputField: each_value_2[i],
+						outputField_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_2(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(div, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_2.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (1:0) {{#if initialized}}
+function create_if_block$2(component, state) {
+	var div, text, text_1, div_class_value;
+
+	var if_block = ((state.responseMetadata.title != null && state.responseMetadata.title != "") || (state.metadata.label != null && state.metadata.label != "")) && create_if_block_1$1(component, state);
+
+	var if_block_1 = (state.initialized && state.visibleInputFields.length > 0) && create_if_block_3$1(component, state);
+
+	var if_block_2 = (state.outputFieldValues != null) && create_if_block_4$1(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n\t");
+			if (if_block_1) if_block_1.c();
+			text_1 = createText("\r\n\r\n\t");
+			if (if_block_2) if_block_2.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = div_class_value = "" + state.cssClass + " svelte-1djvwan";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			if (if_block) if_block.m(div, null);
+			appendNode(text, div);
+			if (if_block_1) if_block_1.m(div, null);
+			appendNode(text_1, div);
+			if (if_block_2) if_block_2.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			if ((state.responseMetadata.title != null && state.responseMetadata.title != "") || (state.metadata.label != null && state.metadata.label != "")) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$1(component, state);
+					if_block.c();
+					if_block.m(div, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.initialized && state.visibleInputFields.length > 0) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_3$1(component, state);
+					if_block_1.c();
+					if_block_1.m(div, text_1);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+
+			if (state.outputFieldValues != null) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_4$1(component, state);
+					if_block_2.c();
+					if_block_2.m(div, null);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+
+			if ((changed.cssClass) && div_class_value !== (div_class_value = "" + state.cssClass + " svelte-1djvwan")) {
+				div.className = div_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+			if (if_block_1) if_block_1.u();
+			if (if_block_2) if_block_2.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+			if (if_block_2) if_block_2.d();
+		}
+	};
+}
+
+function SvelteComponent$3(options) {
+	init(this, options);
+	this._state = assign(data$1(), options.data);
+
+	this._handlers.destroy = [ondestroy];
+
+	if (!document.getElementById("svelte-1djvwan-style")) add_css();
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$3(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$3.prototype, proto);
+assign(SvelteComponent$3.prototype, methods);
+
+var AppRouter = (function () {
+    function AppRouter(element, app) {
+        this.element = element;
+        this.stateRenderer = index$26({});
+        this.stateRouter = index$4(this.stateRenderer, this.element);
+        var rpb = this.rpb = new RouteParameterBuilder("_", app);
+        this.stateRouter.addState({
+            name: "home",
+            route: "/home",
+            template: SvelteComponent$2,
+            resolve: function (data, parameters, cb) {
+                cb(false, {
+                    app: app,
+                    parent: SvelteComponent$3
+                });
+            }
+        });
+        var self = this;
+        this.stateRouter.addState({
+            name: "menu",
+            route: "/menu",
+            template: SvelteComponent,
+            resolve: function (data, parameters, cb) {
+                cb(false, {
+                    forms: app.forms,
+                    getMenu: function (form) {
+                        if (form.customProperties != null) {
+                            return app.getMenu(form.customProperties.menu);
+                        }
+                        return null;
+                    },
+                    makeUrl: function (formId) { return self.makeUrl(formId, null); }
+                });
+            }
+        });
+        this.stateRouter.addState({
+            name: "form",
+            data: {},
+            route: "/form/:_id",
+            template: SvelteComponent$3,
+            // Force route reload when value of _d parameter changes. This is
+            // needed because by default the router will not reload route even if
+            // any of the parameters change, unless they are specified in "querystringParameters".
+            // This means that if we are trying to reload same form, but with different parameters,
+            // nothing will happen, unless _d changes too.
+            querystringParameters: [rpb.parameterName],
+            defaultParameters: rpb.defaultParameters,
+            activate: function (context) {
+                context.domApi.init();
+                rpb.currentForm = context.parameters._id;
+                context.on("destroy", function () { return rpb.currentForm = null; });
+                self.fire("router:activated", null);
+            },
+            resolve: function (data, parameters, cb) {
+                var formInstance = app.getFormInstance(parameters._id, true);
+                formInstance.initializeInputFields(parameters).then(function () {
+                    cb(false, {
+                        metadata: formInstance.metadata,
+                        form: formInstance,
+                        app: app
+                    });
+                });
+            }
+        });
+        this.stateRouter.evaluateCurrentRoute("home");
+    }
+    AppRouter.prototype.fire = function (eventName, params) {
+        var event = new Event(eventName, params);
+        this.element.dispatchEvent(event);
+    };
+    AppRouter.prototype.on = function (eventName, fn) {
+        this.element.addEventListener(eventName, function () {
+            fn();
+        });
+    };
+    AppRouter.prototype.go = function (form, values) {
+        this.stateRouter.go("form", this.rpb.buildFormRouteParameters(form, values));
+    };
+    AppRouter.prototype.makeUrl = function (form, values) {
+        return this.stateRouter.makePath("form", this.rpb.buildFormRouteParameters(form, values));
+    };
+    return AppRouter;
+}());
+
+var BooleanInputController = (function (_super) {
+    __extends(BooleanInputController, _super);
+    function BooleanInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BooleanInputController.prototype.serializeValue = function (value) {
+        var parsed = this.parse(value);
+        return parsed != null ? parsed.toString() : null;
+    };
+    BooleanInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    BooleanInputController.prototype.getValue = function () {
+        return Promise.resolve(this.parse(this.value));
+    };
+    BooleanInputController.prototype.parse = function (value) {
+        return value != null && value.toString() != ""
+            ? value.toString() == "true"
+            : this.metadata.required ? false : null;
+    };
+    return BooleanInputController;
+}(InputController));
+
+var DateInputController = (function (_super) {
+    __extends(DateInputController, _super);
+    function DateInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.valueAsText = null;
+        return _this;
+    }
+    DateInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = DateInputController.parseDate(value);
+            _this.valueAsText = _this.serializeValue(_this.value);
+            resolve(_this);
+        });
+    };
+    DateInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    DateInputController.prototype.serializeValue = function (date) {
+        return DateInputController.serialize(date);
+    };
+    DateInputController.serialize = function (date) {
+        var asDate = typeof (date) === "string"
+            ? DateInputController.parseDate(date)
+            : date;
+        return asDate != null
+            ? asDate.getFullYear() + "-" + DateInputController.format2DecimalPlaces(asDate.getMonth() + 1) + "-" + DateInputController.format2DecimalPlaces(asDate.getDate())
+            : null;
+    };
+    DateInputController.parseDate = function (value) {
+        var selectedDate = this.asUtcTime(value, 7, 0, 0);
+        if (selectedDate) {
+            var dateAsNumber = Date.parse(selectedDate.toString());
+            return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+        }
+    };
+    DateInputController.asUtcTime = function (date, hour, min, second) {
+        /// <summary>Returns provided date as if it was UTC date.</summary>
+        /// <param name="date">Local date/time.</param>
+        /// <returns type="Date">Date object.</returns>
+        if (date == null) {
+            return null;
+        }
+        // If string but not UTC.
+        if (typeof (date) === "string" && date[date.length - 1] !== "Z") {
+            var year = parseInt(date.substr(0, 4)), month = parseInt(date.substr(5, 2)), day = parseInt(date.substr(8, 2));
+            // Assume UTC.
+            return this.getIsoDate(year, month, day, hour, min, second);
+        }
+        var datepart = new Date(new Date(date).toISOString());
+        return this.getIsoDate(datepart.getFullYear(), datepart.getMonth() + 1, datepart.getDate(), hour, min, second);
+    };
+    DateInputController.getIsoDate = function (year, month, day, hour, min, second) {
+        var iso = year +
+            "-" +
+            this.format2DecimalPlaces(month) +
+            "-" +
+            this.format2DecimalPlaces(day) +
+            "T" +
+            this.format2DecimalPlaces(hour) +
+            ":" +
+            this.format2DecimalPlaces(min) +
+            ":" +
+            this.format2DecimalPlaces(second) +
+            ".000Z";
+        return new Date(iso);
+    };
+    DateInputController.format2DecimalPlaces = function (n) {
+        return ("0" + n).slice(-2);
+    };
+    return DateInputController;
+}(InputController));
+
+var DateRangeInputController = (function (_super) {
+    __extends(DateRangeInputController, _super);
+    function DateRangeInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.minValueAsText = null;
+        _this.maxValueAsText = null;
+        return _this;
+    }
+    DateRangeInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            if (_this.value != null && _this.value.min != null) {
+                _this.minValueAsText = DateInputController.serialize(_this.value.min);
+            }
+            if (_this.value != null && _this.value.max != null) {
+                _this.maxValueAsText = DateInputController.serialize(_this.value.max);
+            }
+            resolve(_this);
+        });
+    };
+    DateRangeInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    DateRangeInputController.prototype.serializeValue = function (date) {
+        var parsed = this.parse(date);
+        return parsed != null ? parsed.serialize() : "";
+    };
+    DateRangeInputController.prototype.parse = function (value) {
+        if (value == null) {
+            return new DateRange();
+        }
+        return typeof (value) === "string"
+            ? DateRange.parse(value)
+            : value;
+    };
+    return DateRangeInputController;
+}(InputController));
+var DateRange = (function () {
+    function DateRange(min, max) {
+        if (min === void 0) { min = null; }
+        if (max === void 0) { max = null; }
+        this.min = min;
+        this.max = max;
+    }
+    DateRange.parse = function (date) {
+        var split = date.split("|");
+        var minPart = DateInputController.parseDate(split[0]), maxPart = DateInputController.parseDate(split[1]);
+        return new DateRange(minPart, maxPart);
+    };
+    DateRange.prototype.serialize = function () {
+        return DateInputController.serialize(this.min) + "|" + DateInputController.serialize(this.max);
+    };
+    return DateRange;
+}());
+
+var DropdownInputController = (function (_super) {
+    __extends(DropdownInputController, _super);
+    function DropdownInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DropdownInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? value.value : null;
+    };
+    DropdownInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.selected = value != null ? value.toString() : null;
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    DropdownInputController.prototype.getValue = function () {
+        return Promise.resolve(this.parse(this.selected));
+    };
+    DropdownInputController.prototype.initFromSelected = function () {
+        this.value = this.parse(this.selected);
+    };
+    DropdownInputController.prototype.parse = function (value) {
+        return value == null || value == "" ? null : { value: value };
+    };
+    return DropdownInputController;
+}(InputController));
+
+var DynamicFormInputController = (function (_super) {
+    __extends(DynamicFormInputController, _super);
+    function DynamicFormInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.inputs = [];
+        return _this;
+    }
+    DynamicFormInputController.prototype.serializeValue = function (value) {
+        var parsed = this.parse(value);
+        return JSON.stringify(parsed);
+    };
+    DynamicFormInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    DynamicFormInputController.prototype.getValue = function () {
+        var value = this.parse(this.value);
+        var promises = [];
+        var _loop_1 = function (input) {
+            var controller = this_1.inputs.find(function (t) { return t.metadata.id == input.id; });
+            var p = controller.serialize().then(function (t) {
+                input.value = t.value;
+            });
+            promises.push(p);
+        };
+        var this_1 = this;
+        for (var _i = 0, _a = value.inputs; _i < _a.length; _i++) {
+            var input = _a[_i];
+            _loop_1(input);
+        }
+        return Promise.all(promises).then(function () {
+            return value;
+        });
+    };
+    DynamicFormInputController.prototype.parse = function (value) {
+        if (value == null) {
+            return new DynamicFormValue();
+        }
+        var parsed = typeof (value) === "string"
+            ? JSON.parse(value)
+            : parsed = value;
+        return parsed == null || typeof (parsed.inputs) === "undefined"
+            ? new DynamicFormValue()
+            : parsed;
+    };
+    return DynamicFormInputController;
+}(InputController));
+var DynamicFormValue = (function () {
+    function DynamicFormValue(inputs) {
+        if (inputs === void 0) { inputs = []; }
+        this.inputs = [];
+        this.inputs = inputs;
+    }
+    return DynamicFormValue;
+}());
+
+var DynamicQueryInputController = (function (_super) {
+    __extends(DynamicQueryInputController, _super);
+    function DynamicQueryInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.filters = [];
+        return _this;
+    }
+    DynamicQueryInputController.prototype.serializeValue = function (value) {
+        var parsed = this.parse(value);
+        return JSON.stringify(parsed);
+    };
+    DynamicQueryInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    DynamicQueryInputController.prototype.getValue = function () {
+        var value = this.parse(new DynamicQueryValue(this.value.inputs, this.value.binaryOperators, this.filters.filter(function (a) { return a.inputId != null && a.inputId != ""; })));
+        var promises = [];
+        var _loop_1 = function (filter) {
+            var controller = filter.inputField;
+            if (controller != null) {
+                var p = controller.serialize().then(function (t) {
+                    filter.operand = t.value;
+                });
+                promises.push(p);
+            }
+        };
+        for (var _i = 0, _a = this.filters; _i < _a.length; _i++) {
+            var filter = _a[_i];
+            _loop_1(filter);
+        }
+        return Promise.all(promises).then(function () {
+            return value;
+        });
+    };
+    DynamicQueryInputController.prototype.parse = function (value) {
+        if (value == null) {
+            return new DynamicQueryValue();
+        }
+        var parsed = typeof (value) === "string"
+            ? JSON.parse(value)
+            : parsed = value;
+        return parsed == null || typeof (parsed.inputs) === "undefined"
+            ? new DynamicQueryValue()
+            : parsed;
+    };
+    return DynamicQueryInputController;
+}(InputController));
+var DynamicQueryValue = (function () {
+    function DynamicQueryValue(inputs, binaryOperators, filters) {
+        if (inputs === void 0) { inputs = []; }
+        if (binaryOperators === void 0) { binaryOperators = []; }
+        if (filters === void 0) { filters = []; }
+        this.inputs = [];
+        this.filters = [];
+        this.binaryOperators = [];
+        this.inputs = inputs;
+        this.binaryOperators = binaryOperators;
+        this.filters = filters;
+    }
+    return DynamicQueryValue;
+}());
+
+var EmailInputController = (function (_super) {
+    __extends(EmailInputController, _super);
+    function EmailInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    EmailInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? value.value : null;
+    };
+    EmailInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.selected = value;
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    EmailInputController.prototype.getValue = function () {
+        return Promise.resolve(this.parse(this.selected));
+    };
+    EmailInputController.prototype.parse = function (value) {
+        return value == null || value == "" ? null : Email.parse(value);
+    };
+    return EmailInputController;
+}(InputController));
+var Email = (function () {
+    function Email(value) {
+        if (value === void 0) { value = null; }
+        this.value = value;
+    }
+    Email.parse = function (value) {
+        return new Email(value);
+    };
+    return Email;
+}());
+
+var axios$4 = index;
+var FileUploaderController = (function (_super) {
+    __extends(FileUploaderController, _super);
+    function FileUploaderController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.filesIds = [];
+        return _this;
+    }
+    FileUploaderController.prototype.serializeValue = function (value) {
+        return value != null ? JSON.stringify(value) : null;
+    };
+    FileUploaderController.prototype.init = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            // Don't do anything. File uploader doesn't allow initialization
+            // from pre-existing value.
+            resolve(_this);
+        });
+    };
+    FileUploaderController.prototype.getValue = function () {
+        var self = this;
+        if (self.selected == null ||
+            self.selected.length === 0) {
+            return Promise.resolve(new FileUploaderValue());
+        }
+        var promises = [];
+        var result = new FileUploaderValue();
+        var files = self.selected;
+        if (self.filesIds.length > 0) {
+            for (var _i = 0, _a = self.filesIds; _i < _a.length; _i++) {
+                var fileId = _a[_i];
+                result.files.push(fileId);
+            }
+            self.filesIds = [];
+            self.selected = null;
+        }
+        else {
+            var p = new Promise(function (resolve, reject) {
+                var formData = new FormData();
+                for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
+                    var f = files_1[_i];
+                    formData.append("file", f);
+                }
+                // Make http request to upload the files.
+                axios$4.post("/file/upload", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(function (response) {
+                    if (response.data.fileIds != null && response.data.fileIds.length > 0) {
+                        for (var _i = 0, _a = response.data.fileIds; _i < _a.length; _i++) {
+                            var fileId = _a[_i];
+                            result.files.push(fileId);
+                            self.filesIds.push(fileId);
+                        }
+                    }
+                    resolve();
+                }).catch(function (error) {
+                    alert(error.response.data.error);
+                    reject(error);
+                });
+            });
+            promises.push(p);
+        }
+        return Promise.all(promises).then(function (t) {
+            return result;
+        });
+    };
+    return FileUploaderController;
+}(InputController));
+var FileUploaderValue = (function () {
+    function FileUploaderValue() {
+        this.files = [];
+    }
+    return FileUploaderValue;
+}());
+
+var MultiSelectInputController = (function (_super) {
+    __extends(MultiSelectInputController, _super);
+    function MultiSelectInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.maxItemCount = -1;
+        return _this;
+    }
+    MultiSelectInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? (value.items || []).join(",") : null;
+    };
+    MultiSelectInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    MultiSelectInputController.prototype.getValue = function () {
+        var valueToSubmit = this.value == null || this.value.items == null || this.value.items.length === 0
+            ? null
+            : this.value;
+        return Promise.resolve(valueToSubmit);
+    };
+    MultiSelectInputController.prototype.parse = function (value) {
+        return value == null || value == ""
+            ? new MultiSelectValue()
+            : new MultiSelectValue(value.split(","));
+    };
+    return MultiSelectInputController;
+}(InputController));
+var MultiSelectValue = (function () {
+    function MultiSelectValue(items) {
+        this.items = [];
+        this.items = items;
+    }
+    return MultiSelectValue;
+}());
+
+var NumberInputController = (function (_super) {
+    __extends(NumberInputController, _super);
+    function NumberInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NumberInputController.prototype.serializeValue = function (value) {
+        return NumberInputController.serialize(value);
+    };
+    NumberInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var v = parseFloat(value);
+            _this.value = isNaN(v) ? null : v;
+            resolve(_this);
+        });
+    };
+    NumberInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    NumberInputController.serialize = function (value) {
+        return value != null ? value.toString() : null;
+    };
+    return NumberInputController;
+}(InputController));
+
+var NumberRangeInputController = (function (_super) {
+    __extends(NumberRangeInputController, _super);
+    function NumberRangeInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.min = null;
+        _this.max = null;
+        return _this;
+    }
+    NumberRangeInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    NumberRangeInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    NumberRangeInputController.prototype.serializeValue = function (number) {
+        var parsed = this.parse(number);
+        return parsed != null ? parsed.serialize() : "";
+    };
+    NumberRangeInputController.prototype.parse = function (value) {
+        if (value == null) {
+            return new NumberRange();
+        }
+        return typeof (value) === "string"
+            ? NumberRange.parse(value)
+            : value;
+    };
+    return NumberRangeInputController;
+}(InputController));
+var NumberRange = (function () {
+    function NumberRange(min, max) {
+        if (min === void 0) { min = null; }
+        if (max === void 0) { max = null; }
+        this.min = min;
+        this.max = max;
+    }
+    NumberRange.parse = function (range) {
+        var split = range.split("|");
+        var minValue = parseFloat(split[0]), maxValue = parseFloat(split[1]);
+        return new NumberRange(minValue, maxValue);
+    };
+    NumberRange.prototype.serialize = function () {
+        return NumberInputController.serialize(this.min) + "|" + NumberInputController.serialize(this.max);
+    };
+    return NumberRange;
+}());
+
+var PaginationParameters = (function () {
+    function PaginationParameters(pageIndex, pageSize, orderBy, ascending) {
+        this.pageIndex = PaginationParameters.asInt(pageIndex, 1);
+        this.pageSize = PaginationParameters.asInt(pageSize, 10);
+        this.orderBy = orderBy || null;
+        this.ascending = PaginationParameters.asBool(ascending, null);
+    }
+    PaginationParameters.asInt = function (value, defaultValue) {
+        if (typeof (value) === "string") {
+            var result = parseInt(value);
+            return isNaN(result) ? defaultValue : result;
+        }
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    };
+    PaginationParameters.asBool = function (value, defaultValue) {
+        if (typeof (value) === "string" || value == null) {
+            return value != null
+                ? value.toString() === "true"
+                : defaultValue;
+        }
+        return value;
+    };
+    return PaginationParameters;
+}());
+var PaginatorInputController = (function (_super) {
+    __extends(PaginatorInputController, _super);
+    function PaginatorInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PaginatorInputController.prototype.serializeValue = function (value) {
+        var p = typeof (value) === "string" || value == null
+            ? this.parse(value)
+            : value;
+        if (p.pageIndex == 1 &&
+            p.pageSize == 10 &&
+            p.ascending == null &&
+            p.orderBy == null) {
+            return "";
+        }
+        var result = p.pageIndex + "-" + p.pageSize;
+        if (p.orderBy != null) {
+            result += "-" + p.orderBy + "-" + p.ascending + "}";
+        }
+        return result;
+    };
+    PaginatorInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    PaginatorInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    PaginatorInputController.prototype.parse = function (value) {
+        // 1-10-firstname-asc
+        // 1-10
+        if (value == null || value.length === 0) {
+            return new PaginationParameters();
+        }
+        var components = value.split("-");
+        return new PaginationParameters(components[0], components[1], components[2], components[3]);
+    };
+    return PaginatorInputController;
+}(InputController));
+
+var PasswordInputController = (function (_super) {
+    __extends(PasswordInputController, _super);
+    function PasswordInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PasswordInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? value.value : null;
+    };
+    PasswordInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.selected = value;
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    PasswordInputController.prototype.getValue = function () {
+        return Promise.resolve(this.parse(this.selected));
+    };
+    PasswordInputController.prototype.parse = function (value) {
+        return value == null || value == "" ? null : { value: value };
+    };
+    return PasswordInputController;
+}(InputController));
+
+var TextareaInputController = (function (_super) {
+    __extends(TextareaInputController, _super);
+    function TextareaInputController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TextareaInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? value.value : null;
+    };
+    TextareaInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.selected = value;
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    TextareaInputController.prototype.getValue = function () {
+        return Promise.resolve(this.parse(this.selected));
+    };
+    TextareaInputController.prototype.parse = function (value) {
+        return value == null || value == "" ? null : { value: value };
+    };
+    return TextareaInputController;
+}(InputController));
+
+var TypeaheadInputController = (function (_super) {
+    __extends(TypeaheadInputController, _super);
+    function TypeaheadInputController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.maxItemCount = 1;
+        return _this;
+    }
+    TypeaheadInputController.prototype.serializeValue = function (value) {
+        if (typeof (value) === "string") {
+            return value;
+        }
+        return value != null ? value.value : null;
+    };
+    TypeaheadInputController.prototype.init = function (value) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.value = _this.parse(value);
+            resolve(_this);
+        });
+    };
+    TypeaheadInputController.prototype.getValue = function () {
+        var valueToSubmit = this.value == null || this.value.value == null
+            ? null
+            : this.value;
+        return Promise.resolve(valueToSubmit);
+    };
+    TypeaheadInputController.prototype.parse = function (value) {
+        return value == null || value == ""
+            ? new TypeaheadValue()
+            : new TypeaheadValue(value);
+    };
+    return TypeaheadInputController;
+}(InputController));
+var TypeaheadValue = (function () {
+    function TypeaheadValue(value) {
+        this.value = value;
+    }
+    return TypeaheadValue;
+}());
+
+/* src\core\ui\inputs\Boolean.html generated by Svelte v1.64.1 */
+function add_css$4() {
+	var style = createElement("style");
+	style.id = 'svelte-ladshc-style';
+	style.textContent = ".svelte-ladshc.checkbox,.svelte-ladshc .checkbox{height:20px;width:20px;margin:0.6rem 0.5rem 1.1rem 0.5rem;overflow:initial;position:relative;clip:initial;-webkit-clip-path:initial;clip-path:initial;top:3px}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$8(component, state) {
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.field.metadata.required) return create_if_block$7;
+		return create_if_block_1$5;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if field.metadata.required}}
+function create_if_block$7(component, state) {
+	var input;
+
+	function input_change_handler() {
 		var state = component.get();
-		input_updating = true;
-		state.field.value = toNumber(input.value);
+		state.field.value = input.checked;
 		component.set({ field: state.field });
-		input_updating = false;
 	}
 
 	return {
@@ -3224,37 +12204,27 @@ function create_main_fragment$1(component, state) {
 		},
 
 		h: function hydrate() {
-			addListener$1(input, "input", input_input_handler);
-			setAttribute(input, "type", "number");
+			addListener$1(input, "change", input_change_handler);
+			setAttribute(input, "type", "checkbox");
 			input.id = state.id;
-			input.required = input_required_value = state.field.metadata.required;
+			input.className = "checkbox form-control svelte-ladshc";
 			input.tabIndex = state.tabindex;
-			input.className = "form-control";
-			input.step = state.step;
 		},
 
 		m: function mount(target, anchor) {
 			insertNode(input, target, anchor);
 
-			input.value = state.field.value;
+			input.checked = state.field.value;
 		},
 
 		p: function update(changed, state) {
-			if (!input_updating) input.value = state.field.value;
+			input.checked = state.field.value;
 			if (changed.id) {
 				input.id = state.id;
 			}
 
-			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
-				input.required = input_required_value;
-			}
-
 			if (changed.tabindex) {
 				input.tabIndex = state.tabindex;
-			}
-
-			if (changed.step) {
-				input.step = state.step;
 			}
 		},
 
@@ -3263,43 +12233,99 @@ function create_main_fragment$1(component, state) {
 		},
 
 		d: function destroy$$1() {
-			removeListener$1(input, "input", input_input_handler);
+			removeListener$1(input, "change", input_change_handler);
 		}
 	};
 }
 
-function SvelteComponent$1(options) {
+// (7:0) {{else}}
+function create_if_block_1$5(component, state) {
+	var select, option, option_1, text, option_1_value_value, option_2, text_1, option_2_value_value, select_updating = false;
+
+	function select_change_handler() {
+		var state = component.get();
+		select_updating = true;
+		state.field.value = selectValue(select);
+		component.set({ field: state.field });
+		select_updating = false;
+	}
+
+	return {
+		c: function create() {
+			select = createElement("select");
+			option = createElement("option");
+			option_1 = createElement("option");
+			text = createText("Yes");
+			option_2 = createElement("option");
+			text_1 = createText("No");
+			this.h();
+		},
+
+		h: function hydrate() {
+			option.__value = "";
+			option.value = option.__value;
+			option_1.__value = option_1_value_value = true;
+			option_1.value = option_1.__value;
+			option_2.__value = option_2_value_value = false;
+			option_2.value = option_2.__value;
+			addListener$1(select, "change", select_change_handler);
+			if (!('field' in state)) component.root._beforecreate.push(select_change_handler);
+			select.id = state.id;
+			select.className = "form-control svelte-ladshc";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(select, target, anchor);
+			appendNode(option, select);
+			appendNode(option_1, select);
+			appendNode(text, option_1);
+			appendNode(option_2, select);
+			appendNode(text_1, option_2);
+
+			selectOption(select, state.field.value);
+		},
+
+		p: function update(changed, state) {
+			option_1.value = option_1.__value;
+			option_2.value = option_2.__value;
+			if (!select_updating) selectOption(select, state.field.value);
+			if (changed.id) {
+				select.id = state.id;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(select);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(select, "change", select_change_handler);
+		}
+	};
+}
+
+function SvelteComponent$8(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
-	this._recompute({ field: 1, form: 1 }, this._state);
 
-	this._fragment = create_main_fragment$1(this, this._state);
+	if (!document.getElementById("svelte-ladshc-style")) add_css$4();
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+	}
+
+	this._fragment = create_main_fragment$8(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
 		this._mount(options.target, options.anchor);
+
+		callAll(this._beforecreate);
 	}
 }
 
-assign(SvelteComponent$1.prototype, proto);
-
-SvelteComponent$1.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field || changed.form) {
-		if (this._differs(state.step, (state.step = step(state.field, state.form)))) changed.step = true;
-	}
-};
-
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-
-
-function unwrapExports (x) {
-	return x && x.__esModule ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
+assign(SvelteComponent$8.prototype, proto);
 
 var hookCallback;
 
@@ -3313,7 +12339,7 @@ function setHookCallback (callback) {
     hookCallback = callback;
 }
 
-function isArray$1(input) {
+function isArray$2(input) {
     return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
 }
 
@@ -3356,7 +12382,7 @@ function hasOwnProp(a, b) {
     return Object.prototype.hasOwnProperty.call(a, b);
 }
 
-function extend$1(a, b) {
+function extend$2(a, b) {
     for (var i in b) {
         if (hasOwnProp(b, i)) {
             a[i] = b[i];
@@ -3459,7 +12485,7 @@ function isValid(m) {
 function createInvalid (flags) {
     var m = createUTC(NaN);
     if (flags != null) {
-        extend$1(getParsingFlags(m), flags);
+        extend$2(getParsingFlags(m), flags);
     }
     else {
         getParsingFlags(m).userInvalidated = true;
@@ -3586,7 +12612,7 @@ function warn(msg) {
 function deprecate(msg, fn) {
     var firstTime = true;
 
-    return extend$1(function () {
+    return extend$2(function () {
         if (hooks.deprecationHandler != null) {
             hooks.deprecationHandler(null, msg);
         }
@@ -3628,7 +12654,7 @@ function deprecateSimple(name, msg) {
 hooks.suppressDeprecationWarnings = false;
 hooks.deprecationHandler = null;
 
-function isFunction$1(input) {
+function isFunction$2(input) {
     return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
 }
 
@@ -3636,7 +12662,7 @@ function set$1 (config) {
     var prop, i;
     for (i in config) {
         prop = config[i];
-        if (isFunction$1(prop)) {
+        if (isFunction$2(prop)) {
             this[i] = prop;
         } else {
             this['_' + i] = prop;
@@ -3652,13 +12678,13 @@ function set$1 (config) {
 }
 
 function mergeConfigs(parentConfig, childConfig) {
-    var res = extend$1({}, parentConfig), prop;
+    var res = extend$2({}, parentConfig), prop;
     for (prop in childConfig) {
         if (hasOwnProp(childConfig, prop)) {
             if (isObject$1(parentConfig[prop]) && isObject$1(childConfig[prop])) {
                 res[prop] = {};
-                extend$1(res[prop], parentConfig[prop]);
-                extend$1(res[prop], childConfig[prop]);
+                extend$2(res[prop], parentConfig[prop]);
+                extend$2(res[prop], childConfig[prop]);
             } else if (childConfig[prop] != null) {
                 res[prop] = childConfig[prop];
             } else {
@@ -3671,7 +12697,7 @@ function mergeConfigs(parentConfig, childConfig) {
                 !hasOwnProp(childConfig, prop) &&
                 isObject$1(parentConfig[prop])) {
             // make sure changes to properties don't modify parent config
-            res[prop] = extend$1({}, res[prop]);
+            res[prop] = extend$2({}, res[prop]);
         }
     }
     return res;
@@ -3710,7 +12736,7 @@ var defaultCalendar = {
 
 function calendar (key, mom, now) {
     var output = this._calendar[key] || this._calendar['sameElse'];
-    return isFunction$1(output) ? output.call(mom, now) : output;
+    return isFunction$2(output) ? output.call(mom, now) : output;
 }
 
 var defaultLongDateFormat = {
@@ -3769,14 +12795,14 @@ var defaultRelativeTime = {
 
 function relativeTime (number, withoutSuffix, string, isFuture) {
     var output = this._relativeTime[string];
-    return (isFunction$1(output)) ?
+    return (isFunction$2(output)) ?
         output(number, withoutSuffix, string, isFuture) :
         output.replace(/%d/i, number);
 }
 
 function pastFuture (diff, output) {
     var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-    return isFunction$1(format) ? format(output) : format.replace(/%s/i, output);
+    return isFunction$2(format) ? format(output) : format.replace(/%s/i, output);
 }
 
 var aliases = {};
@@ -3831,12 +12857,12 @@ function makeGetSet (unit, keepTime) {
             hooks.updateOffset(this, keepTime);
             return this;
         } else {
-            return get$1(this, unit);
+            return get$2(this, unit);
         }
     };
 }
 
-function get$1 (mom, unit) {
+function get$2 (mom, unit) {
     return mom.isValid() ?
         mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
 }
@@ -3851,7 +12877,7 @@ function set$2 (mom, unit, value) {
 
 function stringGet (units) {
     units = normalizeUnits(units);
-    if (isFunction$1(this[units])) {
+    if (isFunction$2(this[units])) {
         return this[units]();
     }
     return this;
@@ -3867,7 +12893,7 @@ function stringSet (units, value) {
         }
     } else {
         units = normalizeUnits(units);
-        if (isFunction$1(this[units])) {
+        if (isFunction$2(this[units])) {
             return this[units](value);
         }
     }
@@ -3937,7 +12963,7 @@ function makeFormatFunction(format) {
     return function (mom) {
         var output = '', i;
         for (i = 0; i < length; i++) {
-            output += isFunction$1(array[i]) ? array[i].call(mom, format) : array[i];
+            output += isFunction$2(array[i]) ? array[i].call(mom, format) : array[i];
         }
         return output;
     };
@@ -4000,7 +13026,7 @@ var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF
 var regexes = {};
 
 function addRegexToken (token, regex, strictRegex) {
-    regexes[token] = isFunction$1(regex) ? regex : function (isStrict, localeData) {
+    regexes[token] = isFunction$2(regex) ? regex : function (isStrict, localeData) {
         return (isStrict && strictRegex) ? strictRegex : regex;
     };
 }
@@ -4138,20 +13164,20 @@ var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
 var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
 function localeMonths (m, format) {
     if (!m) {
-        return isArray$1(this._months) ? this._months :
+        return isArray$2(this._months) ? this._months :
             this._months['standalone'];
     }
-    return isArray$1(this._months) ? this._months[m.month()] :
+    return isArray$2(this._months) ? this._months[m.month()] :
         this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
 }
 
 var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
 function localeMonthsShort (m, format) {
     if (!m) {
-        return isArray$1(this._monthsShort) ? this._monthsShort :
+        return isArray$2(this._monthsShort) ? this._monthsShort :
             this._monthsShort['standalone'];
     }
-    return isArray$1(this._monthsShort) ? this._monthsShort[m.month()] :
+    return isArray$2(this._monthsShort) ? this._monthsShort[m.month()] :
         this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
 }
 
@@ -4267,7 +13293,7 @@ function getSetMonth (value) {
         hooks.updateOffset(this, true);
         return this;
     } else {
-        return get$1(this, 'Month');
+        return get$2(this, 'Month');
     }
 }
 
@@ -4648,10 +13674,10 @@ function parseIsoWeekday(input, locale) {
 var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
 function localeWeekdays (m, format) {
     if (!m) {
-        return isArray$1(this._weekdays) ? this._weekdays :
+        return isArray$2(this._weekdays) ? this._weekdays :
             this._weekdays['standalone'];
     }
-    return isArray$1(this._weekdays) ? this._weekdays[m.day()] :
+    return isArray$2(this._weekdays) ? this._weekdays[m.day()] :
         this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
 }
 
@@ -5229,7 +14255,7 @@ function getLocale (key) {
         return globalLocale;
     }
 
-    if (!isArray$1(key)) {
+    if (!isArray$2(key)) {
         //short-circuit everything else
         locale = loadLocale(key);
         if (locale) {
@@ -5762,7 +14788,7 @@ function configFromStringAndArray(config) {
         }
     }
 
-    extend$1(config, bestMoment || tempConfig);
+    extend$2(config, bestMoment || tempConfig);
 }
 
 function configFromObject(config) {
@@ -5807,7 +14833,7 @@ function prepareConfig (config) {
         return new Moment(checkOverflow(input));
     } else if (isDate$1(input)) {
         config._d = input;
-    } else if (isArray$1(format)) {
+    } else if (isArray$2(format)) {
         configFromStringAndArray(config);
     } else if (format) {
         configFromStringAndFormat(config);
@@ -5830,7 +14856,7 @@ function configFromInput(config) {
         config._d = new Date(input.valueOf());
     } else if (typeof input === 'string') {
         configFromString(config);
-    } else if (isArray$1(input)) {
+    } else if (isArray$2(input)) {
         config._a = map(input.slice(0), function (obj) {
             return parseInt(obj, 10);
         });
@@ -5854,7 +14880,7 @@ function createLocalOrUTC (input, format, locale, strict, isUTC) {
     }
 
     if ((isObject$1(input) && isObjectEmpty(input)) ||
-            (isArray$1(input) && input.length === 0)) {
+            (isArray$2(input) && input.length === 0)) {
         input = undefined;
     }
     // object construction must be done this way.
@@ -5904,7 +14930,7 @@ var prototypeMax = deprecate(
 // first element is an array of moment objects.
 function pickBy(fn, moments) {
     var res, i;
-    if (moments.length === 1 && isArray$1(moments[0])) {
+    if (moments.length === 1 && isArray$2(moments[0])) {
         moments = moments[0];
     }
     if (!moments.length) {
@@ -6384,17 +15410,17 @@ function addSubtract (mom, duration, isAdding, updateOffset) {
         mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
     }
     if (days) {
-        set$2(mom, 'Date', get$1(mom, 'Date') + days * isAdding);
+        set$2(mom, 'Date', get$2(mom, 'Date') + days * isAdding);
     }
     if (months) {
-        setMonth(mom, get$1(mom, 'Month') + months * isAdding);
+        setMonth(mom, get$2(mom, 'Month') + months * isAdding);
     }
     if (updateOffset) {
         hooks.updateOffset(mom, days || months);
     }
 }
 
-var add      = createAdder(1, 'add');
+var add$1      = createAdder(1, 'add');
 var subtract = createAdder(-1, 'subtract');
 
 function getCalendarFormat(myMoment, now) {
@@ -6414,7 +15440,7 @@ function calendar$1 (time, formats) {
         sod = cloneWithOffset(now, this).startOf('day'),
         format = hooks.calendarFormat(this, sod) || 'sameElse';
 
-    var output = formats && (isFunction$1(formats[format]) ? formats[format].call(this, now) : formats[format]);
+    var output = formats && (isFunction$2(formats[format]) ? formats[format].call(this, now) : formats[format]);
 
     return this.format(output || this.localeData().calendar(format, this, createLocal(now)));
 }
@@ -6552,7 +15578,7 @@ function toISOString() {
     if (m.year() < 0 || m.year() > 9999) {
         return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
     }
-    if (isFunction$1(Date.prototype.toISOString)) {
+    if (isFunction$2(Date.prototype.toISOString)) {
         // native implementation is ~50x faster, use it when we can
         return this.toDate().toISOString();
     }
@@ -6726,7 +15752,7 @@ function toArray () {
     return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
 }
 
-function toObject () {
+function toObject$1 () {
     var m = this;
     return {
         years: m.year(),
@@ -6749,7 +15775,7 @@ function isValid$2 () {
 }
 
 function parsingFlags () {
-    return extend$1({}, getParsingFlags(this));
+    return extend$2({}, getParsingFlags(this));
 }
 
 function invalidAt () {
@@ -7069,7 +16095,7 @@ function getZoneName () {
 
 var proto$1 = Moment.prototype;
 
-proto$1.add               = add;
+proto$1.add               = add$1;
 proto$1.calendar          = calendar$1;
 proto$1.clone             = clone;
 proto$1.diff              = diff;
@@ -7098,7 +16124,7 @@ proto$1.set               = stringSet;
 proto$1.startOf           = startOf;
 proto$1.subtract          = subtract;
 proto$1.toArray           = toArray;
-proto$1.toObject          = toObject;
+proto$1.toObject          = toObject$1;
 proto$1.toDate            = toDate;
 proto$1.toISOString       = toISOString;
 proto$1.inspect           = inspect;
@@ -7221,7 +16247,7 @@ proto$2.weekdaysMinRegex    =        weekdaysMinRegex;
 proto$2.isPM = localeIsPM;
 proto$2.meridiem = localeMeridiem;
 
-function get$2 (format, index, field, setter) {
+function get$3 (format, index, field, setter) {
     var locale = getLocale();
     var utc = createUTC().set(setter, index);
     return locale[field](utc, format);
@@ -7236,13 +16262,13 @@ function listMonthsImpl (format, index, field) {
     format = format || '';
 
     if (index != null) {
-        return get$2(format, index, field, 'month');
+        return get$3(format, index, field, 'month');
     }
 
     var i;
     var out = [];
     for (i = 0; i < 12; i++) {
-        out[i] = get$2(format, i, field, 'month');
+        out[i] = get$3(format, i, field, 'month');
     }
     return out;
 }
@@ -7280,13 +16306,13 @@ function listWeekdaysImpl (localeSorted, format, index, field) {
         shift = localeSorted ? locale._week.dow : 0;
 
     if (index != null) {
-        return get$2(format, (index + shift) % 7, field, 'day');
+        return get$3(format, (index + shift) % 7, field, 'day');
     }
 
     var i;
     var out = [];
     for (i = 0; i < 7; i++) {
-        out[i] = get$2(format, (i + shift) % 7, field, 'day');
+        out[i] = get$3(format, (i + shift) % 7, field, 'day');
     }
     return out;
 }
@@ -7357,7 +16383,7 @@ function addSubtract$1 (duration, input, value, direction) {
 }
 
 // supports only 2.0-style add(1, 's') or add(duration)
-function add$1 (input, value) {
+function add$2 (input, value) {
     return addSubtract$1(this, input, value, 1);
 }
 
@@ -7490,7 +16516,7 @@ var asWeeks        = makeAs('w');
 var asMonths       = makeAs('M');
 var asYears        = makeAs('y');
 
-function get$3 (units) {
+function get$4 (units) {
     units = normalizeUnits(units);
     return this.isValid() ? this[units + 's']() : NaN;
 }
@@ -7582,7 +16608,7 @@ function getSetRelativeTimeThreshold (threshold, limit) {
     return true;
 }
 
-function humanize (withSuffix) {
+function humanize$1 (withSuffix) {
     if (!this.isValid()) {
         return this.localeData().invalidDate();
     }
@@ -7657,7 +16683,7 @@ var proto$3 = Duration.prototype;
 
 proto$3.isValid        = isValid$1;
 proto$3.abs            = abs;
-proto$3.add            = add$1;
+proto$3.add            = add$2;
 proto$3.subtract       = subtract$1;
 proto$3.as             = as;
 proto$3.asMilliseconds = asMilliseconds;
@@ -7670,7 +16696,7 @@ proto$3.asMonths       = asMonths;
 proto$3.asYears        = asYears;
 proto$3.valueOf        = valueOf$1;
 proto$3._bubble        = bubble;
-proto$3.get            = get$3;
+proto$3.get            = get$4;
 proto$3.milliseconds   = milliseconds;
 proto$3.seconds        = seconds;
 proto$3.minutes        = minutes;
@@ -7679,7 +16705,7 @@ proto$3.days           = days;
 proto$3.weeks          = weeks;
 proto$3.months         = months;
 proto$3.years          = years;
-proto$3.humanize       = humanize;
+proto$3.humanize       = humanize$1;
 proto$3.toISOString    = toISOString$1;
 proto$3.toString       = toISOString$1;
 proto$3.toJSON         = toISOString$1;
@@ -7755,7 +16781,7 @@ var moment$1 = Object.freeze({
 	default: hooks
 });
 
-var require$$0$2 = ( moment$1 && hooks ) || moment$1;
+var require$$0$3 = ( moment$1 && hooks ) || moment$1;
 
 var pikaday = createCommonjsModule(function (module, exports) {
 /*!
@@ -7772,7 +16798,7 @@ var pikaday = createCommonjsModule(function (module, exports) {
     {
         // CommonJS module
         // Load moment.js as an optional dependency
-        try { moment = require$$0$2; } catch (e) {}
+        try { moment = require$$0$3; } catch (e) {}
         module.exports = factory(moment);
     }
 }(commonjsGlobal, function (moment)
@@ -8995,25 +18021,26 @@ var pikaday = createCommonjsModule(function (module, exports) {
 });
 
 /* src\core\ui\inputs\Date.html generated by Svelte v1.64.1 */
-function oncreate() {
-  var element = this.refs.container;
-  var field = this.get("field");
-    var picker = new pikaday(
-        { 
-            field : element,
-            format: 'D/M/YYYY',
-            onSelect: function (date) 
-            {
-                field.valueAsText = date.toString();
-            } 
-            
+function oncreate$4() {
+    var field = this.get("field");
+    new pikaday({
+        field: this.refs.container,
+        format: 'YYYY-MM-DD',
+        onSelect: async function (date) {
+            await field.init(date.toISOString());
         }
-     );
-     
+    });
 
+    var formElement =  this.refs.container;
+        var self = this;
+        formElement.addEventListener("change", function (e) {
+             if (formElement.value == "") {
+                field.init(null);
+             }
+        });
 }
 
-function create_main_fragment$2(component, state) {
+function create_main_fragment$9(component, state) {
 	var input, input_updating = false, input_required_value;
 
 	function input_input_handler() {
@@ -9073,7 +18100,7 @@ function create_main_fragment$2(component, state) {
 	};
 }
 
-function SvelteComponent$2(options) {
+function SvelteComponent$9(options) {
 	init(this, options);
 	this.refs = {};
 	this._state = assign({}, options.data);
@@ -9081,7 +18108,7 @@ function SvelteComponent$2(options) {
 	var self = this;
 	var _oncreate = function() {
 		var changed = { id: 1, field: 1, tabindex: 1 };
-		oncreate.call(self);
+		oncreate$4.call(self);
 		self.fire("update", { changed: changed, current: self._state });
 	};
 
@@ -9089,7 +18116,7 @@ function SvelteComponent$2(options) {
 		this._oncreate = [];
 	}
 
-	this._fragment = create_main_fragment$2(this, this._state);
+	this._fragment = create_main_fragment$9(this, this._state);
 
 	this.root._oncreate.push(_oncreate);
 
@@ -9101,18 +18128,345 @@ function SvelteComponent$2(options) {
 	}
 }
 
-assign(SvelteComponent$2.prototype, proto);
+assign(SvelteComponent$9.prototype, proto);
+
+/* src\core\ui\inputs\DateRange.html generated by Svelte v1.64.1 */
+function oncreate$5() {
+    var field = this.get("field");
+
+    new pikaday({
+        field: this.refs.minContainer,
+        format: 'YYYY-MM-DD',
+        onSelect: function (date) {
+            field.value.min = date;
+        }
+    });
+
+    new pikaday({
+        field: this.refs.maxContainer,
+        format: 'YYYY-MM-DD',
+        onSelect: function (date) {
+            field.value.max = date;
+        }
+    });
+    var minElement = this.refs.minContainer;
+    var self = this;
+    minElement.addEventListener("change", function (e) {
+        if (minElement.value == "") {
+             field.value.min = null;
+        }
+    });
+    var maxElement = this.refs.maxContainer;
+    var self = this;
+    maxElement.addEventListener("change", function (e) {
+        if (maxElement.value == "") {
+            field.value.max = null;
+        }
+    });
+}
+
+function add_css$5() {
+	var style = createElement("style");
+	style.id = 'svelte-j1tgqp-style';
+	style.textContent = ".svelte-j1tgqp.input-group-addon,.svelte-j1tgqp .input-group-addon{font-size:0.8rem !important}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$10(component, state) {
+	var div, span, text_1, input, input_updating = false, input_required_value, text_2, span_1, text_4, input_1, input_1_updating = false, input_1_required_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.minValueAsText = input.value;
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	function input_1_input_handler() {
+		var state = component.get();
+		input_1_updating = true;
+		state.field.maxValueAsText = input_1.value;
+		component.set({ field: state.field });
+		input_1_updating = false;
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			span = createElement("span");
+			span.textContent = "Min";
+			text_1 = createText("\r\n    ");
+			input = createElement("input");
+			text_2 = createText("\r\n\r\n    ");
+			span_1 = createElement("span");
+			span_1.textContent = "Max";
+			text_4 = createText("\r\n    ");
+			input_1 = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "input-group-addon";
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "text");
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.autocomplete = "off";
+			input.className = "form-control";
+			span_1.className = "input-group-addon";
+			addListener$1(input_1, "input", input_1_input_handler);
+			setAttribute(input_1, "type", "text");
+			input_1.required = input_1_required_value = state.field.metadata.required;
+			input_1.tabIndex = state.tabindex;
+			input_1.autocomplete = "off";
+			input_1.className = "form-control";
+			div.className = "input-group svelte-j1tgqp";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(span, div);
+			appendNode(text_1, div);
+			appendNode(input, div);
+			component.refs.minContainer = input;
+
+			input.value = state.field.minValueAsText;
+
+			appendNode(text_2, div);
+			appendNode(span_1, div);
+			appendNode(text_4, div);
+			appendNode(input_1, div);
+			component.refs.maxContainer = input_1;
+
+			input_1.value = state.field.maxValueAsText;
+		},
+
+		p: function update(changed, state) {
+			if (!input_updating) input.value = state.field.minValueAsText;
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+
+			if (!input_1_updating) input_1.value = state.field.maxValueAsText;
+			if ((changed.field) && input_1_required_value !== (input_1_required_value = state.field.metadata.required)) {
+				input_1.required = input_1_required_value;
+			}
+
+			if (changed.tabindex) {
+				input_1.tabIndex = state.tabindex;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+			if (component.refs.minContainer === input) component.refs.minContainer = null;
+			removeListener$1(input_1, "input", input_1_input_handler);
+			if (component.refs.maxContainer === input_1) component.refs.maxContainer = null;
+		}
+	};
+}
+
+function SvelteComponent$10(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-j1tgqp-style")) add_css$5();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, tabindex: 1 };
+		oncreate$5.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$10(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$10.prototype, proto);
 
 /* src\core\ui\inputs\Dropdown.html generated by Svelte v1.64.1 */
-function create_main_fragment$3(component, state) {
+function mapToTypeaheadItems(items) {
+	return items.map(t => {
+		return {
+			label: t.label,
+			value: t.value.toString()
+		};
+	});
+}
+
+function buildFilter(parentForm, parameters) {
+	var promise;
+
+	var filter = {};
+	if (parameters != null && parameters.length > 0) {
+		promise = parentForm.get("form").getSerializedInputValues().then(data => {
+			for (let p of parameters) {
+				filter[p] = data[p];
+			}
+
+			return filter;
+		});
+	}
+	else {
+		promise = Promise.resolve(filter);
+	}
+
+	return promise;
+}
+
+var methods$3 = {
+	onChange() {
+		this.get("field").initFromSelected();
+		this.get("form").fireAndBubbleUp('input:changed', {
+			app: this.get('app'),
+			form: this.get('form'),
+			input: this
+		});
+	}
+};
+
+function oncreate$6() {
+	var field = this.get("field");
+	var source = field.metadata.customProperties.source;
+	var items = field.metadata.customProperties.items;
+
+	if (items != null) {
+		this.set({ options: items });
+	}
+	else if (typeof (source) === "string") {
+		var parameters = field.metadata.customProperties.parameters;
+		var app = this.get("app");
+		var parentForm = this.get("form");
+
+		buildFilter(parentForm, parameters).then(filter => {
+			app.server.postForm(source, filter).then(data => {
+				this.set({ options: mapToTypeaheadItems(data.items) });
+			});
+		});
+	}
+}
+
+function create_main_fragment$11(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.options != null) && create_if_block$8(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.options != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$8(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (10:1) {{#each options as option}}
+function create_each_block$4(component, state) {
+	var option = state.option, each_value = state.each_value, option_index = state.option_index;
+	var option_1, text_value = option.label, text, option_1_value_value;
+
+	return {
+		c: function create() {
+			option_1 = createElement("option");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			option_1.__value = option_1_value_value = option.value;
+			option_1.value = option_1.__value;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(option_1, target, anchor);
+			appendNode(text, option_1);
+		},
+
+		p: function update(changed, state) {
+			option = state.option;
+			each_value = state.each_value;
+			option_index = state.option_index;
+			if ((changed.options) && text_value !== (text_value = option.label)) {
+				text.data = text_value;
+			}
+
+			if ((changed.options) && option_1_value_value !== (option_1_value_value = option.value)) {
+				option_1.__value = option_1_value_value;
+			}
+
+			option_1.value = option_1.__value;
+		},
+
+		u: function unmount() {
+			detachNode(option_1);
+		},
+
+		d: noop$1
+	};
+}
+
+// (1:0) {{#if options != null }}
+function create_if_block$8(component, state) {
 	var select, option, select_updating = false, select_required_value;
 
-	var each_value = state.field.metadata.customProperties.items;
+	var each_value = state.options;
 
 	var each_blocks = [];
 
 	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block(component, assign(assign({}, state), {
+		each_blocks[i] = create_each_block$4(component, assign(assign({}, state), {
 			each_value: each_value,
 			option: each_value[i],
 			option_index: i
@@ -9123,8 +18477,12 @@ function create_main_fragment$3(component, state) {
 		var state = component.get();
 		select_updating = true;
 		state.field.selected = selectValue(select);
-		component.set({ field: state.field });
+		component.set({ field: state.field, options: state.options });
 		select_updating = false;
+	}
+
+	function change_handler(event) {
+		component.onChange();
 	}
 
 	return {
@@ -9143,6 +18501,7 @@ function create_main_fragment$3(component, state) {
 			option.value = option.__value;
 			addListener$1(select, "change", select_change_handler);
 			if (!('field' in state)) component.root._beforecreate.push(select_change_handler);
+			addListener$1(select, "change", change_handler);
 			select.id = state.id;
 			select.required = select_required_value = state.field.metadata.required;
 			select.tabIndex = state.tabindex;
@@ -9161,9 +18520,9 @@ function create_main_fragment$3(component, state) {
 		},
 
 		p: function update(changed, state) {
-			var each_value = state.field.metadata.customProperties.items;
+			var each_value = state.options;
 
-			if (changed.field) {
+			if (changed.options) {
 				for (var i = 0; i < each_value.length; i += 1) {
 					var each_context = assign(assign({}, state), {
 						each_value: each_value,
@@ -9174,7 +18533,7 @@ function create_main_fragment$3(component, state) {
 					if (each_blocks[i]) {
 						each_blocks[i].p(changed, each_context);
 					} else {
-						each_blocks[i] = create_each_block(component, each_context);
+						each_blocks[i] = create_each_block$4(component, each_context);
 						each_blocks[i].c();
 						each_blocks[i].m(select, null);
 					}
@@ -9213,230 +18572,1007 @@ function create_main_fragment$3(component, state) {
 			destroyEach(each_blocks);
 
 			removeListener$1(select, "change", select_change_handler);
+			removeListener$1(select, "change", change_handler);
 		}
 	};
 }
 
-// (8:1) {{#each field.metadata.customProperties.items as option}}
-function create_each_block(component, state) {
-	var option = state.option, each_value = state.each_value, option_index = state.option_index;
-	var option_1, text_value = option.label, text, option_1_value_value;
-
-	return {
-		c: function create() {
-			option_1 = createElement("option");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			option_1.__value = option_1_value_value = option.value;
-			option_1.value = option_1.__value;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(option_1, target, anchor);
-			appendNode(text, option_1);
-		},
-
-		p: function update(changed, state) {
-			option = state.option;
-			each_value = state.each_value;
-			option_index = state.option_index;
-			if ((changed.field) && text_value !== (text_value = option.label)) {
-				text.data = text_value;
-			}
-
-			if ((changed.field) && option_1_value_value !== (option_1_value_value = option.value)) {
-				option_1.__value = option_1_value_value;
-			}
-
-			option_1.value = option_1.__value;
-		},
-
-		u: function unmount() {
-			detachNode(option_1);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$3(options) {
+function SvelteComponent$11(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { options: 1, id: 1, field: 1, tabindex: 1 };
+		oncreate$6.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
 
 	if (!options.root) {
 		this._oncreate = [];
 		this._beforecreate = [];
 	}
 
-	this._fragment = create_main_fragment$3(this, this._state);
+	this._fragment = create_main_fragment$11(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
 
 	if (options.target) {
 		this._fragment.c();
 		this._mount(options.target, options.anchor);
 
 		callAll(this._beforecreate);
+		callAll(this._oncreate);
 	}
 }
 
-assign(SvelteComponent$3.prototype, proto);
+assign(SvelteComponent$11.prototype, proto);
+assign(SvelteComponent$11.prototype, methods$3);
 
-/* src\core\ui\inputs\Boolean.html generated by Svelte v1.64.1 */
-function add_css() {
-	var style = createElement("style");
-	style.id = 'svelte-ladshc-style';
-	style.textContent = ".svelte-ladshc.checkbox,.svelte-ladshc .checkbox{height:20px;width:20px;margin:0.6rem 0.5rem 1.1rem 0.5rem;overflow:initial;position:relative;clip:initial;-webkit-clip-path:initial;clip-path:initial;top:3px}";
-	appendNode(style, document.head);
+/* src\core\ui\inputs\DynamicForm.html generated by Svelte v1.64.1 */
+var inputId$1 = 0;
+
+function data$5() {
+    inputId$1 += 1;
+    return {
+				id: "dfi" + inputId$1,
+				inputs: []
+    }
 }
 
-function create_main_fragment$4(component, state) {
+var methods$4 = {
+    initialiseInputs: async function (field, app) {
+        field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
+
+        var promises = [];
+        for (let input of field.inputs) {
+            let i = field.value.inputs.find(t => t.inputId == input.metadata.inputId);
+            if (i != null) {
+                let p = input.init(i.value);
+                promises.push(p);
+            }
+        }
+
+        await Promise.all(promises);
+    },
+};
+
+function oncreate$7() {
+    let field = this.get("field");
+    let app = this.get("app");
+
+    if (field.value == null) {
+        return;
+    }
+
+    var self = this;
+    this.initialiseInputs(field, app).then(() => {
+        self.set({
+            inputs: field.inputs
+        });
+    });
+}
+
+function create_main_fragment$12(component, state) {
 	var if_block_anchor;
 
-	function select_block_type(state) {
-		if (state.field.metadata.required) return create_if_block;
-		return create_if_block_1;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
+	var if_block = (state.inputs != null) && create_if_block$9(component, state);
 
 	return {
 		c: function create() {
-			if_block.c();
+			if (if_block) if_block.c();
 			if_block_anchor = createComment();
 		},
 
 		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
+			if (if_block) if_block.m(target, anchor);
 			insertNode(if_block_anchor, target, anchor);
 		},
 
 		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
+			if (state.inputs != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$9(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
 				if_block.u();
 				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				if_block = null;
 			}
 		},
 
 		u: function unmount() {
-			if_block.u();
+			if (if_block) if_block.u();
 			detachNode(if_block_anchor);
 		},
 
 		d: function destroy$$1() {
-			if_block.d();
+			if (if_block) if_block.d();
 		}
 	};
 }
 
-// (1:0) {{#if field.metadata.required}}
-function create_if_block(component, state) {
-	var input;
+// (2:0) {{#each inputs as inputField}}
+function create_each_block$5(component, state) {
+	var inputField = state.inputField, each_value = state.each_value, inputField_index = state.inputField_index;
 
-	function input_change_handler() {
-		var state = component.get();
-		state.field.value = input.checked;
-		component.set({ field: state.field });
+	var forminput_initial_data = {
+	 	field: inputField,
+	 	app: state.app,
+	 	tabindex: state.tabindex * 100 + inputField.metadata.orderIndex,
+	 	form: state.form
+	 };
+	var forminput = new SvelteComponent$4({
+		root: component.root,
+		data: forminput_initial_data
+	});
+
+	return {
+		c: function create() {
+			forminput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			forminput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			inputField = state.inputField;
+			each_value = state.each_value;
+			inputField_index = state.inputField_index;
+			var forminput_changes = {};
+			if (changed.inputs) forminput_changes.field = inputField;
+			if (changed.app) forminput_changes.app = state.app;
+			if (changed.tabindex || changed.inputs) forminput_changes.tabindex = state.tabindex * 100 + inputField.metadata.orderIndex;
+			if (changed.form) forminput_changes.form = state.form;
+			forminput._set(forminput_changes);
+		},
+
+		u: function unmount() {
+			forminput._unmount();
+		},
+
+		d: function destroy$$1() {
+			forminput.destroy(false);
+		}
+	};
+}
+
+// (1:0) {{#if inputs != null}}
+function create_if_block$9(component, state) {
+	var each_anchor;
+
+	var each_value = state.inputs;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$5(component, assign(assign({}, state), {
+			each_value: each_value,
+			inputField: each_value[i],
+			inputField_index: i
+		}));
 	}
 
 	return {
 		c: function create() {
-			input = createElement("input");
-			this.h();
-		},
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
 
-		h: function hydrate() {
-			addListener$1(input, "change", input_change_handler);
-			setAttribute(input, "type", "checkbox");
-			input.id = state.id;
-			input.className = "checkbox form-control svelte-ladshc";
-			input.tabIndex = state.tabindex;
+			each_anchor = createComment();
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(input, target, anchor);
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
 
-			input.checked = state.field.value;
+			insertNode(each_anchor, target, anchor);
 		},
 
 		p: function update(changed, state) {
-			input.checked = state.field.value;
-			if (changed.id) {
-				input.id = state.id;
-			}
+			var each_value = state.inputs;
 
-			if (changed.tabindex) {
-				input.tabIndex = state.tabindex;
+			if (changed.inputs || changed.app || changed.tabindex || changed.form) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						inputField: each_value[i],
+						inputField_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$5(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
 			}
 		},
 
 		u: function unmount() {
-			detachNode(input);
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
 		},
 
 		d: function destroy$$1() {
-			removeListener$1(input, "change", input_change_handler);
+			destroyEach(each_blocks);
 		}
 	};
 }
 
-// (7:0) {{else}}
-function create_if_block_1(component, state) {
-	var select, option, option_1, text, option_1_value_value, option_2, text_1, option_2_value_value, select_updating = false;
+function SvelteComponent$12(options) {
+	init(this, options);
+	this._state = assign(data$5(), options.data);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { inputs: 1, app: 1, tabindex: 1, form: 1 };
+		oncreate$7.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$12(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$12.prototype, proto);
+assign(SvelteComponent$12.prototype, methods$4);
+
+/* src\core\ui\inputs\DynamicQuery.html generated by Svelte v1.64.1 */
+function humanize$2(e){
+    return e.replace(/\.[^/.]+$/, "").split(/(?=[A-Z])/).join(" "); 
+            }
+
+var methods$5 = {
+     initialiseInputs: async function (fields, app, inputs) {
+        var promises = [];
+        for (let field of fields) {
+            if(field.inputId != null && field.inputId != ""){
+                var filter = inputs.find(t => t.inputId == field.inputId);
+                 if (filter.type == 'datetime') {
+                        filter.type = 'date-range';
+                    }
+                var inputField = app.controlRegister.createInputControllers([filter])[0];                  
+                if (inputField != null) {
+                    inputField.constants = {
+                        alwaysHideLabel: true
+                    };
+                   
+                    let p = inputField.init(field.operand);
+                    promises.push(p);
+                    field.inputField = inputField;
+                }
+            }else{
+                field.inputField = null;
+            }
+        }
+        await Promise.all(promises);
+    },
+    fieldChanged : function(row){
+        var selected = row.inputId;
+        var field = this.get("field");
+        var app = this.get("app");
+        var inputs = this.get("inputs");
+         var filters = this.get("filters");
+        var input = inputs.find(t => t.inputId == selected);
+        
+        row.operators = input != null ? input.operators : null;
+        row.inputType = input != null ? input.inputType : null;
+        row.inputField = null;
+        this.set({
+           filters: filters
+        });
+        if(input != null){
+            if(input.type == 'datetime'){
+                input.type = 'date-range';
+            }
+           var inputField = app.controlRegister.createInputControllers([input])[0];
+           if (inputField != null) {
+               inputField.constants = {
+                   alwaysHideLabel: true
+               };
+               inputField.init(null);
+               row.inputField = inputField;
+            }                
+       }
+      
+         this.set({
+                filters: filters
+            });
+    },
+    changeBinaryOperator: function(rhsBinaryOperator, index){
+        var filters = this.get("filters");
+         var row = filters[index];
+            row.rhsBinaryOperator = rhsBinaryOperator;
+        if(index == filters.length - 1){
+            filters.push({});
+        }
+        this.set({
+            filters: filters
+        });
+    },
+    removeRow:function (index){
+        var filters = this.get("filters");
+        filters.splice(index, 1);
+         this.set({
+            filters: null
+        });
+        this.set({
+            filters: filters
+        });
+    }
+};
+
+function oncreate$8() {
+    let field = this.get("field");
+    let app = this.get("app");
+    if (field.value == null) {
+        return;
+    }
+   
+   this.set({
+        inputs: field.value.inputs,
+        binaryOperators: field.value.binaryOperators,
+     });
+
+    if(field.value.filters != null && field.value.filters.length > 0){
+        var self = this;
+        this.initialiseInputs(field.value.filters, app, field.value.inputs).then(() => {
+             var filters = field.value.filters;
+            self.set({
+                filters: filters
+            });
+             field.filters = filters;
+        });
+    }else{
+        var filters = [{}];
+        this.set({
+            filters: filters
+        });
+        field.filters = filters;
+    }
+}
+
+function add_css$6() {
+	var style = createElement("style");
+	style.id = 'svelte-1skjpeh-style';
+	style.textContent = ".svelte-1skjpeh.btn,.svelte-1skjpeh .btn{margin:0;border-radius:inherit}.svelte-1skjpeh.btn:focus,.svelte-1skjpeh .btn:focus{box-shadow:none}.svelte-1skjpeh.btn-primary.selected,.svelte-1skjpeh .btn-primary.selected{background-color:#3598dc !important;color:#fff !important;border-color:#3598dc !important}.svelte-1skjpeh.row,.svelte-1skjpeh .row{margin:0;padding:0}.svelte-1skjpeh.no-padding,.svelte-1skjpeh .no-padding,.svelte-1skjpeh.no-padding .col-sm-12,.svelte-1skjpeh .no-padding .col-sm-12{padding-left:0}.svelte-1skjpeh.actions,.svelte-1skjpeh .actions{text-align:right}.svelte-1skjpeh.table thead th,.svelte-1skjpeh .table thead th,.svelte-1skjpeh.table tbody tr:nth-child(even) td,.svelte-1skjpeh .table tbody tr:nth-child(even) td,.svelte-1skjpeh.table tbody td,.svelte-1skjpeh .table tbody td{color:#333;background:#f8f8f8}.svelte-1skjpeh.table tbody tr:nth-child(odd) td,.svelte-1skjpeh .table tbody tr:nth-child(odd) td{background:#f8f8f8}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$13(component, state) {
+	var table, thead, text_8, tbody;
+
+	var if_block = (state.filters != null) && create_if_block$10(component, state);
+
+	return {
+		c: function create() {
+			table = createElement("table");
+			thead = createElement("thead");
+			thead.innerHTML = "<tr><th>Field</th>\r\n            <th>Operator</th>\r\n            <th>Value</th>\r\n            <th></th></tr>";
+			text_8 = createText("\r\n");
+			tbody = createElement("tbody");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			table.className = "table svelte-1skjpeh";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(table, target, anchor);
+			appendNode(thead, table);
+			appendNode(text_8, table);
+			appendNode(tbody, table);
+			if (if_block) if_block.m(tbody, null);
+		},
+
+		p: function update(changed, state) {
+			if (state.filters != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$10(component, state);
+					if_block.c();
+					if_block.m(tbody, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(table);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (12:0) {{#each filters as row, index }}
+function create_each_block$6(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var tr, td, select, select_updating = false, text_1, td_1, text_3, td_2, text_5, td_3, text_6;
+
+	var if_block = (state.inputs != null && state.inputs.length > 0) && create_if_block_1$6(component, state);
 
 	function select_change_handler() {
+		var context = select._svelte;
 		var state = component.get();
 		select_updating = true;
-		state.field.value = selectValue(select);
-		component.set({ field: state.field });
+		context.each_value[context.index].inputId = selectValue(select);
+		component.set({ filters: state.filters });
 		select_updating = false;
+	}
+
+	function select_block_type(state) {
+		if (row.operators != null && row.operators.length > 0) return create_if_block_2$5;
+		return create_if_block_3$5;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block_1 = current_block_type(component, state);
+
+	var if_block_2 = (row.inputField != null) && create_if_block_4$4(component, state);
+
+	var if_block_3 = (index != state.filters.length -1) && create_if_block_5$1(component, state);
+
+	var if_block_4 = (state.binaryOperators != null && state.binaryOperators.length > 0) && create_if_block_6(component, state);
+
+	return {
+		c: function create() {
+			tr = createElement("tr");
+			td = createElement("td");
+			select = createElement("select");
+			if (if_block) if_block.c();
+			text_1 = createText("\r\n    ");
+			td_1 = createElement("td");
+			if_block_1.c();
+			text_3 = createText("\r\n    ");
+			td_2 = createElement("td");
+			if (if_block_2) if_block_2.c();
+			text_5 = createText("\r\n    ");
+			td_3 = createElement("td");
+			if (if_block_3) if_block_3.c();
+			text_6 = createText(" \r\n        ");
+			if (if_block_4) if_block_4.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(select, "change", select_change_handler);
+			if (!('row' in state)) component.root._beforecreate.push(select_change_handler);
+			addListener$1(select, "change", change_handler);
+			select.className = "form-control";
+
+			select._svelte = {
+				component: component,
+				each_value: state.each_value,
+				index: state.index
+			};
+
+			td_3.className = "actions";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tr, target, anchor);
+			appendNode(td, tr);
+			appendNode(select, td);
+			if (if_block) if_block.m(select, null);
+
+			selectOption(select, row.inputId);
+
+			appendNode(text_1, tr);
+			appendNode(td_1, tr);
+			if_block_1.m(td_1, null);
+			appendNode(text_3, tr);
+			appendNode(td_2, tr);
+			if (if_block_2) if_block_2.m(td_2, null);
+			appendNode(text_5, tr);
+			appendNode(td_3, tr);
+			if (if_block_3) if_block_3.m(td_3, null);
+			appendNode(text_6, td_3);
+			if (if_block_4) if_block_4.m(td_3, null);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			if (state.inputs != null && state.inputs.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$6(component, state);
+					if_block.c();
+					if_block.m(select, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (!select_updating) selectOption(select, row.inputId);
+
+			select._svelte.each_value = state.each_value;
+			select._svelte.index = state.index;
+
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block_1) {
+				if_block_1.p(changed, state);
+			} else {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = current_block_type(component, state);
+				if_block_1.c();
+				if_block_1.m(td_1, null);
+			}
+
+			if (row.inputField != null) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_4$4(component, state);
+					if_block_2.c();
+					if_block_2.m(td_2, null);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+
+			if (index != state.filters.length -1) {
+				if (!if_block_3) {
+					if_block_3 = create_if_block_5$1(component, state);
+					if_block_3.c();
+					if_block_3.m(td_3, text_6);
+				}
+			} else if (if_block_3) {
+				if_block_3.u();
+				if_block_3.d();
+				if_block_3 = null;
+			}
+
+			if (state.binaryOperators != null && state.binaryOperators.length > 0) {
+				if (if_block_4) {
+					if_block_4.p(changed, state);
+				} else {
+					if_block_4 = create_if_block_6(component, state);
+					if_block_4.c();
+					if_block_4.m(td_3, null);
+				}
+			} else if (if_block_4) {
+				if_block_4.u();
+				if_block_4.d();
+				if_block_4 = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tr);
+			if (if_block) if_block.u();
+			if_block_1.u();
+			if (if_block_2) if_block_2.u();
+			if (if_block_3) if_block_3.u();
+			if (if_block_4) if_block_4.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			removeListener$1(select, "change", select_change_handler);
+			removeListener$1(select, "change", change_handler);
+			if_block_1.d();
+			if (if_block_2) if_block_2.d();
+			if (if_block_3) if_block_3.d();
+			if (if_block_4) if_block_4.d();
+		}
+	};
+}
+
+// (18:12) {{#each inputs as input}}
+function create_each_block_1$2(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index, input = state.input, each_value_1 = state.each_value_1, input_index = state.input_index;
+	var option, text_value = input.label, text, option_value_value;
+
+	return {
+		c: function create() {
+			option = createElement("option");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			option.__value = option_value_value = input.inputId;
+			option.value = option.__value;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(option, target, anchor);
+			appendNode(text, option);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			input = state.input;
+			each_value_1 = state.each_value_1;
+			input_index = state.input_index;
+			if ((changed.inputs) && text_value !== (text_value = input.label)) {
+				text.data = text_value;
+			}
+
+			if ((changed.inputs) && option_value_value !== (option_value_value = input.inputId)) {
+				option.__value = option_value_value;
+			}
+
+			option.value = option.__value;
+		},
+
+		u: function unmount() {
+			detachNode(option);
+		},
+
+		d: noop$1
+	};
+}
+
+// (16:12) {{#if inputs != null && inputs.length > 0}}
+function create_if_block_1$6(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var option, each_anchor;
+
+	var each_value_1 = state.inputs;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$2(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			input: each_value_1[i],
+			input_index: i
+		}));
 	}
 
 	return {
 		c: function create() {
-			select = createElement("select");
 			option = createElement("option");
-			option_1 = createElement("option");
-			text = createText("Yes");
-			option_2 = createElement("option");
-			text_1 = createText("No");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
 			this.h();
 		},
 
 		h: function hydrate() {
 			option.__value = "";
 			option.value = option.__value;
-			option_1.__value = option_1_value_value = true;
-			option_1.value = option_1.__value;
-			option_2.__value = option_2_value_value = false;
-			option_2.value = option_2.__value;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(option, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			var each_value_1 = state.inputs;
+
+			if (changed.inputs) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						input: each_value_1[i],
+						input_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$2(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(option);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (27:16) {{#each row.operators as operator}}
+function create_each_block_2$1(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index, operator = state.operator, each_value_2 = state.each_value_2, operator_index = state.operator_index;
+	var option, text_value = humanize$2(operator), text, option_value_value;
+
+	return {
+		c: function create() {
+			option = createElement("option");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			option.__value = option_value_value = operator;
+			option.value = option.__value;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(option, target, anchor);
+			appendNode(text, option);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			operator = state.operator;
+			each_value_2 = state.each_value_2;
+			operator_index = state.operator_index;
+			if ((changed.filters) && text_value !== (text_value = humanize$2(operator))) {
+				text.data = text_value;
+			}
+
+			if ((changed.filters) && option_value_value !== (option_value_value = operator)) {
+				option.__value = option_value_value;
+			}
+
+			option.value = option.__value;
+		},
+
+		u: function unmount() {
+			detachNode(option);
+		},
+
+		d: noop$1
+	};
+}
+
+// (25:8) {{#if row.operators != null && row.operators.length > 0}}
+function create_if_block_2$5(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var select, select_updating = false, select_value_value;
+
+	var each_value_2 = row.operators;
+
+	var each_blocks = [];
+
+	for (var i_1 = 0; i_1 < each_value_2.length; i_1 += 1) {
+		each_blocks[i_1] = create_each_block_2$1(component, assign(assign({}, state), {
+			each_value_2: each_value_2,
+			operator: each_value_2[i_1],
+			operator_index: i_1
+		}));
+	}
+
+	function select_change_handler() {
+		var context = select._svelte;
+		var state = component.get();
+		select_updating = true;
+		context.each_value[context.index].operator = selectValue(select);
+		component.set({ filters: state.filters });
+		select_updating = false;
+	}
+
+	return {
+		c: function create() {
+			select = createElement("select");
+
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
 			addListener$1(select, "change", select_change_handler);
-			if (!('field' in state)) component.root._beforecreate.push(select_change_handler);
-			select.className = "svelte-ladshc";
+			if (!('row' in state)) component.root._beforecreate.push(select_change_handler);
+			select.className = "form-control";
+
+			select_value_value = row.operators[0];
+			for (var i = 0; i < select.options.length; i += 1) {
+				var option = select.options[i];
+
+				if (option.__value === select_value_value) {
+					option.selected = true;
+					break;
+				}
+			}
+
+			select._svelte = {
+				each_value: state.each_value,
+				index: state.index
+			};
 		},
 
 		m: function mount(target, anchor) {
 			insertNode(select, target, anchor);
-			appendNode(option, select);
-			appendNode(option_1, select);
-			appendNode(text, option_1);
-			appendNode(option_2, select);
-			appendNode(text_1, option_2);
 
-			selectOption(select, state.field.value);
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].m(select, null);
+			}
+
+			selectOption(select, row.operator);
 		},
 
 		p: function update(changed, state) {
-			option_1.value = option_1.__value;
-			option_2.value = option_2.__value;
-			if (!select_updating) selectOption(select, state.field.value);
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			var each_value_2 = row.operators;
+
+			if (changed.filters) {
+				for (var i_1 = 0; i_1 < each_value_2.length; i_1 += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_2: each_value_2,
+						operator: each_value_2[i_1],
+						operator_index: i_1
+					});
+
+					if (each_blocks[i_1]) {
+						each_blocks[i_1].p(changed, each_context);
+					} else {
+						each_blocks[i_1] = create_each_block_2$1(component, each_context);
+						each_blocks[i_1].c();
+						each_blocks[i_1].m(select, null);
+					}
+				}
+
+				for (; i_1 < each_blocks.length; i_1 += 1) {
+					each_blocks[i_1].u();
+					each_blocks[i_1].d();
+				}
+				each_blocks.length = each_value_2.length;
+			}
+
+			if (!select_updating) selectOption(select, row.operator);
+			select_value_value = row.operators[0];
+			if ((changed.filters) && select_value_value !== (select_value_value = row.operators[0])) {
+				for (var i = 0; i < select.options.length; i += 1) {
+					var option = select.options[i];
+
+					if (option.__value === select_value_value) {
+						option.selected = true;
+						break;
+					}
+				}
+			}
+
+			select._svelte.each_value = state.each_value;
+			select._svelte.index = state.index;
+		},
+
+		u: function unmount() {
+			detachNode(select);
+
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+
+			removeListener$1(select, "change", select_change_handler);
+		}
+	};
+}
+
+// (32:8) {{else}}
+function create_if_block_3$5(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var select, select_updating = false;
+
+	function select_change_handler() {
+		var context = select._svelte;
+		var state = component.get();
+		select_updating = true;
+		context.each_value[context.index].operator = selectValue(select);
+		component.set({ filters: state.filters });
+		select_updating = false;
+	}
+
+	return {
+		c: function create() {
+			select = createElement("select");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(select, "change", select_change_handler);
+			if (!('row' in state)) component.root._beforecreate.push(select_change_handler);
+			select.className = "form-control";
+
+			select._svelte = {
+				each_value: state.each_value,
+				index: state.index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(select, target, anchor);
+
+			selectOption(select, row.operator);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			if (!select_updating) selectOption(select, row.operator);
+
+			select._svelte.each_value = state.each_value;
+			select._svelte.index = state.index;
 		},
 
 		u: function unmount() {
@@ -9449,28 +19585,939 @@ function create_if_block_1(component, state) {
 	};
 }
 
-function SvelteComponent$4(options) {
+// (37:8) {{#if row.inputField != null}}
+function create_if_block_4$4(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+
+	var forminput_initial_data = {
+	 	field: row.inputField,
+	 	app: state.app,
+	 	form: state.form
+	 };
+	var forminput = new SvelteComponent$4({
+		root: component.root,
+		data: forminput_initial_data
+	});
+
+	return {
+		c: function create() {
+			forminput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			forminput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			var forminput_changes = {};
+			if (changed.filters) forminput_changes.field = row.inputField;
+			if (changed.app) forminput_changes.app = state.app;
+			if (changed.form) forminput_changes.form = state.form;
+			forminput._set(forminput_changes);
+		},
+
+		u: function unmount() {
+			forminput._unmount();
+		},
+
+		d: function destroy$$1() {
+			forminput.destroy(false);
+		}
+	};
+}
+
+// (42:8) {{#if index != filters.length -1 }}
+function create_if_block_5$1(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var button;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			button.innerHTML = "<i class=\"fa fa-times\"></i>";
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler);
+			button.type = "button";
+			button.className = "btn btn-danger btn-icon";
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				index: state.index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			button._svelte.each_value = state.each_value;
+			button._svelte.index = state.index;
+		},
+
+		u: function unmount() {
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler);
+		}
+	};
+}
+
+// (48:8) {{#each binaryOperators as binaryOperator}}
+function create_each_block_3(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index, binaryOperator = state.binaryOperator, each_value_3 = state.each_value_3, binaryOperator_index = state.binaryOperator_index;
+	var button, text_value = binaryOperator, text, button_class_value;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler_1);
+			button.type = "button";
+			button.className = button_class_value = row.rhsBinaryOperator == binaryOperator ? 'btn btn-primary selected' : 'btn btn-primary';
+
+			button._svelte = {
+				component: component,
+				each_value_3: state.each_value_3,
+				binaryOperator_index: state.binaryOperator_index,
+				each_value: state.each_value,
+				index: state.index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			binaryOperator = state.binaryOperator;
+			each_value_3 = state.each_value_3;
+			binaryOperator_index = state.binaryOperator_index;
+			if ((changed.binaryOperators) && text_value !== (text_value = binaryOperator)) {
+				text.data = text_value;
+			}
+
+			if ((changed.filters || changed.binaryOperators) && button_class_value !== (button_class_value = row.rhsBinaryOperator == binaryOperator ? 'btn btn-primary selected' : 'btn btn-primary')) {
+				button.className = button_class_value;
+			}
+
+			button._svelte.each_value_3 = state.each_value_3;
+			button._svelte.binaryOperator_index = state.binaryOperator_index;
+			button._svelte.each_value = state.each_value;
+			button._svelte.index = state.index;
+		},
+
+		u: function unmount() {
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler_1);
+		}
+	};
+}
+
+// (47:8) {{#if binaryOperators != null && binaryOperators.length > 0}}
+function create_if_block_6(component, state) {
+	var row = state.row, each_value = state.each_value, index = state.index;
+	var each_anchor;
+
+	var each_value_3 = state.binaryOperators;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_3.length; i += 1) {
+		each_blocks[i] = create_each_block_3(component, assign(assign({}, state), {
+			each_value_3: each_value_3,
+			binaryOperator: each_value_3[i],
+			binaryOperator_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value = state.each_value;
+			index = state.index;
+			var each_value_3 = state.binaryOperators;
+
+			if (changed.filters || changed.binaryOperators) {
+				for (var i = 0; i < each_value_3.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_3: each_value_3,
+						binaryOperator: each_value_3[i],
+						binaryOperator_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_3(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_3.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (11:0) {{#if filters != null}}
+function create_if_block$10(component, state) {
+	var each_anchor;
+
+	var each_value = state.filters;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$6(component, assign(assign({}, state), {
+			each_value: each_value,
+			row: each_value[i],
+			index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.filters;
+
+			if (changed.filters || changed.inputs || changed.app || changed.form || changed.binaryOperators) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						row: each_value[i],
+						index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$6(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+function change_handler(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, index = this._svelte.index, row = each_value[index];
+	component.fieldChanged(row);
+}
+
+function click_handler(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, index = this._svelte.index, row = each_value[index];
+	component.removeRow(index);
+}
+
+function click_handler_1(event) {
+	var component = this._svelte.component;
+	var each_value_3 = this._svelte.each_value_3, binaryOperator_index = this._svelte.binaryOperator_index, binaryOperator = each_value_3[binaryOperator_index];
+	var each_value = this._svelte.each_value, index = this._svelte.index, row = each_value[index];
+	component.changeBinaryOperator(binaryOperator,index);
+}
+
+function SvelteComponent$13(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	if (!document.getElementById("svelte-ladshc-style")) add_css();
+	if (!document.getElementById("svelte-1skjpeh-style")) add_css$6();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { filters: 1, inputs: 1, app: 1, form: 1, binaryOperators: 1 };
+		oncreate$8.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
 
 	if (!options.root) {
 		this._oncreate = [];
 		this._beforecreate = [];
+		this._aftercreate = [];
 	}
 
-	this._fragment = create_main_fragment$4(this, this._state);
+	this._fragment = create_main_fragment$13(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
 
 	if (options.target) {
 		this._fragment.c();
 		this._mount(options.target, options.anchor);
 
+		this._lock = true;
 		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
 	}
 }
 
-assign(SvelteComponent$4.prototype, proto);
+assign(SvelteComponent$13.prototype, proto);
+assign(SvelteComponent$13.prototype, methods$5);
+
+/* src\core\ui\inputs\Email.html generated by Svelte v1.64.1 */
+function oncreate$9() {
+    var field = this.get("field");
+    var formElement = this.refs.container;
+    formElement.addEventListener("change", function (e) {
+            field.init(field.selected);
+    });
+}
+
+function create_main_fragment$14(component, state) {
+	var input, input_updating = false, input_required_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.selected = input.value;
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "Email");
+			input.id = state.id;
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.className = "form-control";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+			component.refs.container = input;
+
+			input.value = state.field.selected;
+		},
+
+		p: function update(changed, state) {
+			if (!input_updating) input.value = state.field.selected;
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+			if (component.refs.container === input) component.refs.container = null;
+		}
+	};
+}
+
+function SvelteComponent$14(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign({}, options.data);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { id: 1, field: 1, tabindex: 1 };
+		oncreate$9.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$14(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$14.prototype, proto);
+
+/* src\core\ui\inputs\FileUploader.html generated by Svelte v1.64.1 */
+function objectToArray(obj) {
+	if (obj) {
+		return Array.from(Object.keys(obj), k => obj[k]);
+	}
+
+	return [];
+}
+
+function getExtension(filename) {
+	return `.${filename.split(".").pop()}`;
+}
+
+function canFileBeAdded(filelist, file, allowedFileExtensions, app) {
+	const isFileExtensionAllowed =
+		allowedFileExtensions.indexOf("*") > -1 ||
+		allowedFileExtensions.indexOf(getExtension(file.name)) > -1;
+
+	const fileWasAlreadyAdded = filelist.find(f => f.name === file.name);
+
+	if (isFileExtensionAllowed && !fileWasAlreadyAdded) {
+		return true;
+	}
+
+	if (!isFileExtensionAllowed) {
+		app.showError(`File ${file.name} extension not allowed. Only ` +
+			`these file extensions are allowed: ${allowedFileExtensions}.`);
+	}
+
+	return false;
+}
+
+function getAllowedFileExtensions(component) {
+	let	allowedExtension = "*";
+	if (component.get("uploaderConfig") && component.get("uploaderConfig").allowedFileExtensions) {
+		allowedExtension = component.get("uploaderConfig").allowedFileExtensions.split(",").map(item => item.trim());
+	}
+
+	return allowedExtension;
+}
+
+function addFiles(component, files) {
+	const app = component.get("app");
+	const filesToAdd = objectToArray(files);
+	let listedFiles = [];
+
+	if (component.get("selectedFiles")) {
+		listedFiles = component.get("selectedFiles");
+	}
+
+	const allowedFileExtensions = getAllowedFileExtensions(component);
+	const filesThatCanBeAdded = filesToAdd
+		.filter(file => canFileBeAdded(listedFiles, file, allowedFileExtensions, app));
+
+	if (filesThatCanBeAdded.length > 0) {
+		if (!component.get("uploaderConfig").allowMultipleFiles) {
+			component.set({ selectedFiles: filesThatCanBeAdded.slice(0, 1) });
+		}
+		else {
+			component.set({ selectedFiles: filesThatCanBeAdded.concat(listedFiles) });
+		}
+	}
+}
+
+var methods$6 = {
+	addFiles(files) {
+		addFiles(this, files);
+	},
+	removeFile(index) {
+		const files = this.get("selectedFiles");
+		files.splice(index, 1);
+		this.set({ selectedFiles: files });
+	}
+};
+
+function oncreate$10() {
+	const field = this.get("field");
+	const uploaderConfig = field.metadata.customProperties.fileUploaderConfig != null ?
+		field.metadata.customProperties.fileUploaderConfig : {
+			allowMultipleFiles: true,
+			allowedFileExtensions: "*"
+		};
+
+	this.set({ uploaderConfig });
+
+	this.refs.dropzone.addEventListener("dragenter", () => {
+		this.refs.dropzone.classList.add("hover");
+	});
+
+	const self = this;
+	["dragleave", "drop"].forEach(t => {
+		self.refs.dropzone.addEventListener(t, () => {
+			self.refs.dropzone.classList.remove("hover");
+		});
+	});
+
+	this.refs.dropzone.ondragover = e => {
+		e.preventDefault();
+	};
+
+	this.refs.dropzone.ondrop = e => {
+		e.preventDefault();
+		addFiles(self, e.dataTransfer.files);
+		return false;
+	};
+}
+
+function add_css$7() {
+	var style = createElement("style");
+	style.id = 'svelte-s03ab0-style';
+	style.textContent = ".svelte-s03ab0.file-drop-area,.svelte-s03ab0 .file-drop-area{text-align:center;border:dashed 2px #9c9c9c;min-height:60px;z-index:99999}.svelte-s03ab0.file-drop-area.hover,.svelte-s03ab0 .file-drop-area.hover{background:#fffde6}.svelte-s03ab0.file-drop-area label,.svelte-s03ab0 .file-drop-area label{margin:auto;line-height:60px;display:block}.svelte-s03ab0.files-list i,.svelte-s03ab0 .files-list i{margin-left:10px}.svelte-s03ab0.second-color,.svelte-s03ab0 .second-color{color:#f3818c}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$15(component_1, state) {
+	var text, div, text_1, label;
+
+	var if_block = (state.selectedFiles != null && state.selectedFiles.length > 0) && create_if_block$11(component_1, state);
+
+	function select_block_type(state) {
+		if (state.uploaderConfig != null && state.uploaderConfig.allowMultipleFiles) return create_if_block_1$7;
+		return create_if_block_2$6;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block_1 = current_block_type(component_1, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n");
+			div = createElement("div");
+			if_block_1.c();
+			text_1 = createText("\r\n\t");
+			label = createElement("label");
+			label.innerHTML = "drag or <strong class=\"second-color\">upload</strong> files";
+			this.h();
+		},
+
+		h: function hydrate() {
+			label.htmlFor = state.id;
+			div.className = "file-drop-area svelte-s03ab0";
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(div, target, anchor);
+			if_block_1.m(div, null);
+			appendNode(text_1, div);
+			appendNode(label, div);
+			component_1.refs.dropzone = div;
+		},
+
+		p: function update(changed, state) {
+			if (state.selectedFiles != null && state.selectedFiles.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$11(component_1, state);
+					if_block.c();
+					if_block.m(text.parentNode, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block_1) {
+				if_block_1.p(changed, state);
+			} else {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = current_block_type(component_1, state);
+				if_block_1.c();
+				if_block_1.m(div, text_1);
+			}
+
+			if (changed.id) {
+				label.htmlFor = state.id;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(text);
+			detachNode(div);
+			if_block_1.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if_block_1.d();
+			if (component_1.refs.dropzone === div) component_1.refs.dropzone = null;
+		}
+	};
+}
+
+// (3:1) {{#each selectedFiles as file, index}}
+function create_each_block$7(component_1, state) {
+	var file_1 = state.file, each_value = state.each_value, index = state.index;
+	var li, text_value = file_1.name, text, text_1, i;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			text = createText(text_value);
+			text_1 = createText("\r\n\t\t");
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(i, "click", click_handler$1);
+			i.className = "fa fa-times second-color";
+
+			i._svelte = {
+				component: component_1,
+				each_value: state.each_value,
+				index: state.index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(text, li);
+			appendNode(text_1, li);
+			appendNode(i, li);
+		},
+
+		p: function update(changed, state) {
+			file_1 = state.file;
+			each_value = state.each_value;
+			index = state.index;
+			if ((changed.selectedFiles) && text_value !== (text_value = file_1.name)) {
+				text.data = text_value;
+			}
+
+			i._svelte.each_value = state.each_value;
+			i._svelte.index = state.index;
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(i, "click", click_handler$1);
+		}
+	};
+}
+
+// (1:0) {{#if selectedFiles != null && selectedFiles.length > 0}}
+function create_if_block$11(component_1, state) {
+	var ul;
+
+	var each_value = state.selectedFiles;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$7(component_1, assign(assign({}, state), {
+			each_value: each_value,
+			file: each_value[i],
+			index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "files-list svelte-s03ab0";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.selectedFiles;
+
+			if (changed.selectedFiles) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						file: each_value[i],
+						index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$7(component_1, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (12:1) {{#if uploaderConfig != null && uploaderConfig.allowMultipleFiles}}
+function create_if_block_1$7(component_1, state) {
+	var input, input_accept_value;
+
+	function change_handler(event) {
+		component_1.addFiles(input.files);
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler);
+			setAttribute(input, "type", "file");
+			input.id = state.id;
+			input.tabIndex = state.tabindex;
+			input.multiple = "multiple";
+			input.accept = input_accept_value = state.uploaderConfig ? state.uploaderConfig.allowedFileExtensions : '*';
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+
+			if ((changed.uploaderConfig) && input_accept_value !== (input_accept_value = state.uploaderConfig ? state.uploaderConfig.allowedFileExtensions : '*')) {
+				input.accept = input_accept_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler);
+		}
+	};
+}
+
+// (19:1) {{else}}
+function create_if_block_2$6(component_1, state) {
+	var input, input_accept_value;
+
+	function change_handler(event) {
+		component_1.addFiles(input.files);
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler);
+			setAttribute(input, "type", "file");
+			input.id = state.id;
+			input.tabIndex = state.tabindex;
+			input.accept = input_accept_value = state.uploaderConfig ? state.uploaderConfig.allowedFileExtensions : '*';
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+
+			if ((changed.uploaderConfig) && input_accept_value !== (input_accept_value = state.uploaderConfig ? state.uploaderConfig.allowedFileExtensions : '*')) {
+				input.accept = input_accept_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler);
+		}
+	};
+}
+
+function click_handler$1(event) {
+	var component_1 = this._svelte.component;
+	var each_value = this._svelte.each_value, index = this._svelte.index, file_1 = each_value[index];
+	component_1.removeFile(index);
+}
+
+function SvelteComponent$15(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-s03ab0-style")) add_css$7();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { selectedFiles: 1, uploaderConfig: 1, id: 1, tabindex: 1 };
+		oncreate$10.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$15(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$15.prototype, proto);
+assign(SvelteComponent$15.prototype, methods$6);
 
 var choices = createCommonjsModule(function (module, exports) {
 /*! choices.js v3.0.4 | (c) 2018 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
@@ -15616,7 +26663,7 @@ return /******/ (function(modules) { // webpackBootstrap
 var Choices = unwrapExports(choices);
 
 /* src\core\ui\inputs\MultiSelect.html generated by Svelte v1.64.1 */
-function mapToTypeaheadItems(items) {
+function mapToTypeaheadItems$1(items) {
 	return items.map(t => {
 		return {
 			label: t.label,
@@ -15671,7 +26718,7 @@ function getIdsQuery(field) {
 	return currentValue;
 }
 
-function buildFilter(parentForm, parameters, query) {
+function buildFilter$1(parentForm, parameters, query) {
 	var promise;
 
 	var filter = { query: query };
@@ -15691,7 +26738,45 @@ function buildFilter(parentForm, parameters, query) {
 	return promise;
 }
 
-var methods = {
+function populateChoicesWithAjax(choicesComponent, multiSelectComponent, existingChoices, query, selectedItemIds) {
+	var componentData = multiSelectComponent.get();
+	var parameters = componentData.field.metadata.customProperties.parameters;
+	var source = componentData.field.metadata.customProperties.source;
+	var parentForm = componentData.form;
+	var app = componentData.app;
+
+	return new Promise((resolve, reject) => {
+		choicesComponent.ajax(callback => {
+			return buildFilter$1(parentForm, parameters, query).then(filter => {
+				if (selectedItemIds != null) {
+					filter.ids = { items: selectedItemIds };
+				}
+
+				return app.server.postForm(source, filter).then(data => {
+					// Mark items as added as "choices".
+					var toAdd = data.items.filter(t => {
+						var key = JSON.stringify(t.value);
+						if (existingChoices[key] == null) {
+							existingChoices[key] = true;
+
+							// Add item.
+							return true;
+						}
+
+						// Don't add item.
+						return false;
+					});
+
+					callback(mapToTypeaheadItems$1(toAdd), "value", "label");
+
+					resolve();
+				});
+			});
+		});
+	});
+}
+
+var methods$7 = {
 	onChange() {
 		this.get("form").fireAndBubbleUp('input:changed', {
 			app: this.get('app'),
@@ -15701,7 +26786,7 @@ var methods = {
 	}
 };
 
-function oncreate$1() {
+function oncreate$11() {
 	var field = this.get("field");
 	var source = field.metadata.customProperties.source;
 	var parameters = field.metadata.customProperties.parameters;
@@ -15715,13 +26800,12 @@ function oncreate$1() {
 		noChoicesText: "Please start typing to search..."
 	});
 
-	var formElement = this.refs.input.closest("form");  
-		var self = this;
-		formElement.addEventListener("submit", function (e) {
-			 if (typeof field.value.value == 'undefined' && field.metadata.required) {
-			 	self.refs.input.parentElement.classList.add("divError");
-			 }
-			
+	var formElement = this.refs.input.closest("form");
+	var self = this;
+	formElement.addEventListener("submit", function (e) {
+		if (typeof field.value.value == 'undefined' && field.metadata.required) {
+			self.refs.input.parentElement.classList.add("divError");
+		}
 	});
 
 	if (typeof (source) === "string") {
@@ -15740,52 +26824,21 @@ function oncreate$1() {
 			// Search when user types something, but introduce a short delay
 			// to avoid excessive http requests.
 			timer = setTimeout(function () {
-				a.ajax(callback => {
-					buildFilter(parentForm, parameters, query).then(filter => {
-						app.server.postForm(source, filter).then(data => {
-							var toAdd = data.items.filter(t => {
-								var key = JSON.stringify(t.value);
-								if (addedItems[key] == null) {
-									addedItems[key] = true;
-
-									// Add item.
-									return true;
-								}
-
-								// Don't add item.
-								return false;
-							});
-
-							callback(mapToTypeaheadItems(toAdd), "value", "label");
-						});
-					});
-				});
+				populateChoicesWithAjax(a, self, addedItems, query);
 			}, 300);
 		});
 
 		var currentValue = getIdsQuery(field);
+		populateChoicesWithAjax(a, self, addedItems, "");
 
 		// If the field has a value, we need to load it.
 		if (currentValue.length > 0) {
-			a.ajax(callback => {
-				return buildFilter(parentForm, parameters, query).then(filter => {
-					filter.ids = { items: currentValue };
-					return app.server.postForm(source, filter).then(data => {
-						// Mark items as added as "choices".
-						for (let t of data.items) {
-							var key = JSON.stringify(t.value);
-							addedItems[key] = true;
-						}
-
-						callback(mapToTypeaheadItems(data.items), "value", "label");
-						setInputValue(a, field);
-					});
-				});
-			});
+			populateChoicesWithAjax(a, self, addedItems, query, currentValue)
+				.then(() => setInputValue(a, field));
 		}
 	}
 	else {
-		a.setChoices(mapToTypeaheadItems(source), "value", "label", true);
+		a.setChoices(mapToTypeaheadItems$1(source), "value", "label", true);
 
 		var initialized = false;
 		this.observe("field", (newValue, oldValue) => {
@@ -15801,7 +26854,7 @@ function oncreate$1() {
 	});
 }
 
-function create_main_fragment$5(component, state) {
+function create_main_fragment$16(component, state) {
 	var select;
 
 	function change_handler(event) {
@@ -15848,7 +26901,7 @@ function create_main_fragment$5(component, state) {
 	};
 }
 
-function SvelteComponent$5(options) {
+function SvelteComponent$16(options) {
 	init(this, options);
 	this.refs = {};
 	this._state = assign({}, options.data);
@@ -15856,7 +26909,7 @@ function SvelteComponent$5(options) {
 	var self = this;
 	var _oncreate = function() {
 		var changed = { id: 1, tabindex: 1 };
-		oncreate$1.call(self);
+		oncreate$11.call(self);
 		self.fire("update", { changed: changed, current: self._state });
 	};
 
@@ -15864,7 +26917,7 @@ function SvelteComponent$5(options) {
 		this._oncreate = [];
 	}
 
-	this._fragment = create_main_fragment$5(this, this._state);
+	this._fragment = create_main_fragment$16(this, this._state);
 
 	this.root._oncreate.push(_oncreate);
 
@@ -15876,11 +26929,552 @@ function SvelteComponent$5(options) {
 	}
 }
 
-assign(SvelteComponent$5.prototype, proto);
-assign(SvelteComponent$5.prototype, methods);
+assign(SvelteComponent$16.prototype, proto);
+assign(SvelteComponent$16.prototype, methods$7);
+
+/* src\core\ui\inputs\Number.html generated by Svelte v1.64.1 */
+function oncreate$12() {
+	var field = this.get("field");
+	var numberConfig = field.metadata.customProperties != null &&
+		field.metadata.customProperties["numberConfig"] != null
+		? field.metadata.customProperties["numberConfig"]
+		: {
+			minValue: null,
+			maxValue: null,
+			step: 1
+		};
+	this.set({
+		numberConfig: numberConfig
+	});
+}
+
+function create_main_fragment$17(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.numberConfig != null) && create_if_block$12(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.numberConfig != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$12(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if numberConfig != null}}
+function create_if_block$12(component, state) {
+	var input, input_updating = false, input_required_value, input_step_value, input_min_value, input_max_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.value = toNumber(input.value);
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "number");
+			input.id = state.id;
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.className = "form-control";
+			input.step = input_step_value = state.numberConfig.step;
+			input.min = input_min_value = state.numberConfig.minValue;
+			input.max = input_max_value = state.numberConfig.maxValue;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+
+			input.value = state.field.value;
+		},
+
+		p: function update(changed, state) {
+			if (!input_updating) input.value = state.field.value;
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+
+			if ((changed.numberConfig) && input_step_value !== (input_step_value = state.numberConfig.step)) {
+				input.step = input_step_value;
+			}
+
+			if ((changed.numberConfig) && input_min_value !== (input_min_value = state.numberConfig.minValue)) {
+				input.min = input_min_value;
+			}
+
+			if ((changed.numberConfig) && input_max_value !== (input_max_value = state.numberConfig.maxValue)) {
+				input.max = input_max_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+		}
+	};
+}
+
+function SvelteComponent$17(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { numberConfig: 1, id: 1, field: 1, tabindex: 1 };
+		oncreate$12.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$17(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$17.prototype, proto);
+
+/* src\core\ui\inputs\NumberRange.html generated by Svelte v1.64.1 */
+function oncreate$13() {
+	const field = this.get("field");
+
+	if (field == null) {
+		return;
+	}
+
+	const numberConfig = (field.metadata.customProperties || {}).numberConfig || {
+		minValue: null,
+		maxValue: null,
+		step: 1
+	};
+
+	this.set({
+		numberConfig
+	});
+}
+
+function add_css$8() {
+	var style = createElement("style");
+	style.id = 'svelte-j1tgqp-style';
+	style.textContent = ".svelte-j1tgqp.input-group-addon,.svelte-j1tgqp .input-group-addon{font-size:0.8rem !important}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$18(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.numberConfig != null) && create_if_block$13(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.numberConfig != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$13(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if numberConfig != null}}
+function create_if_block$13(component, state) {
+	var div, span, text_1, input, input_updating = false, input_required_value, input_step_value, input_min_value, input_max_value, text_2, span_1, text_4, input_1, input_1_updating = false, input_1_required_value, input_1_step_value, input_1_min_value, input_1_max_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.value.min = toNumber(input.value);
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	function input_1_input_handler() {
+		var state = component.get();
+		input_1_updating = true;
+		state.field.value.max = toNumber(input_1.value);
+		component.set({ field: state.field });
+		input_1_updating = false;
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			span = createElement("span");
+			span.textContent = "Min";
+			text_1 = createText("\r\n\t");
+			input = createElement("input");
+			text_2 = createText("\r\n\r\n    ");
+			span_1 = createElement("span");
+			span_1.textContent = "Max";
+			text_4 = createText("\r\n\t");
+			input_1 = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "input-group-addon";
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "number");
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.autocomplete = "off";
+			input.className = "form-control";
+			input.step = input_step_value = state.numberConfig.step;
+			input.min = input_min_value = state.numberConfig.minValue;
+			input.max = input_max_value = state.numberConfig.maxValue;
+			span_1.className = "input-group-addon";
+			addListener$1(input_1, "input", input_1_input_handler);
+			setAttribute(input_1, "type", "number");
+			input_1.required = input_1_required_value = state.field.metadata.required;
+			input_1.tabIndex = state.tabindex;
+			input_1.autocomplete = "off";
+			input_1.className = "form-control";
+			input_1.step = input_1_step_value = state.numberConfig.step;
+			input_1.min = input_1_min_value = state.numberConfig.minValue;
+			input_1.max = input_1_max_value = state.numberConfig.maxValue;
+			div.className = "input-group svelte-j1tgqp";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(span, div);
+			appendNode(text_1, div);
+			appendNode(input, div);
+
+			input.value = state.field.value.min;
+
+			appendNode(text_2, div);
+			appendNode(span_1, div);
+			appendNode(text_4, div);
+			appendNode(input_1, div);
+
+			input_1.value = state.field.value.max;
+		},
+
+		p: function update(changed, state) {
+			if (!input_updating) input.value = state.field.value.min;
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+
+			if ((changed.numberConfig) && input_step_value !== (input_step_value = state.numberConfig.step)) {
+				input.step = input_step_value;
+			}
+
+			if ((changed.numberConfig) && input_min_value !== (input_min_value = state.numberConfig.minValue)) {
+				input.min = input_min_value;
+			}
+
+			if ((changed.numberConfig) && input_max_value !== (input_max_value = state.numberConfig.maxValue)) {
+				input.max = input_max_value;
+			}
+
+			if (!input_1_updating) input_1.value = state.field.value.max;
+			if ((changed.field) && input_1_required_value !== (input_1_required_value = state.field.metadata.required)) {
+				input_1.required = input_1_required_value;
+			}
+
+			if (changed.tabindex) {
+				input_1.tabIndex = state.tabindex;
+			}
+
+			if ((changed.numberConfig) && input_1_step_value !== (input_1_step_value = state.numberConfig.step)) {
+				input_1.step = input_1_step_value;
+			}
+
+			if ((changed.numberConfig) && input_1_min_value !== (input_1_min_value = state.numberConfig.minValue)) {
+				input_1.min = input_1_min_value;
+			}
+
+			if ((changed.numberConfig) && input_1_max_value !== (input_1_max_value = state.numberConfig.maxValue)) {
+				input_1.max = input_1_max_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+			removeListener$1(input_1, "input", input_1_input_handler);
+		}
+	};
+}
+
+function SvelteComponent$18(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-j1tgqp-style")) add_css$8();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { numberConfig: 1, field: 1, tabindex: 1 };
+		oncreate$13.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$18(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$18.prototype, proto);
 
 /* src\core\ui\inputs\Password.html generated by Svelte v1.64.1 */
-function create_main_fragment$6(component, state) {
+var methods$8 = {
+	onChange(confirmPassword) {
+		if (this.get("field").selected !== confirmPassword.value) {
+			confirmPassword
+				.setCustomValidity("Passwords do not match. Please make sure they are exactly the same.");
+		} else {
+			confirmPassword.setCustomValidity("");
+		}
+	}
+};
+
+function oncreate$14() {
+	const field = this.get("field");
+	const config = (field.metadata.customProperties || {}).passwordInputConfig;
+
+	this.set({
+		passwordConfig: config || {
+			regex: null,
+			requireConfirmation: null
+		}
+	});
+}
+
+function add_css$9() {
+	var style = createElement("style");
+	style.id = 'svelte-1ycz7wy-style';
+	style.textContent = "span.svelte-1ycz7wy,.svelte-1ycz7wy span{color:#9a9a9a;font-size:13px;margin-bottom:5px;display:block}.svelte-1ycz7wy.confirmation-password,.svelte-1ycz7wy .confirmation-password{padding-top:10px}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$19(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.passwordConfig != null) && create_if_block$14(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.passwordConfig != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$14(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (2:4) {{#if passwordConfig.regex}}
+function create_if_block_1$8(component, state) {
+	var span, text_value = state.passwordConfig.regexDescription, text, text_1, input, input_updating = false, input_pattern_value, input_required_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.selected = input.value;
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			text = createText(text_value);
+			text_1 = createText("\r\n\t\t");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "svelte-1ycz7wy";
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "password");
+			input.id = state.id;
+			input.pattern = input_pattern_value = state.passwordConfig.regex;
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.className = "form-control svelte-1ycz7wy";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			appendNode(text, span);
+			insertNode(text_1, target, anchor);
+			insertNode(input, target, anchor);
+
+			input.value = state.field.selected;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.passwordConfig) && text_value !== (text_value = state.passwordConfig.regexDescription)) {
+				text.data = text_value;
+			}
+
+			if (!input_updating) input.value = state.field.selected;
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if ((changed.passwordConfig) && input_pattern_value !== (input_pattern_value = state.passwordConfig.regex)) {
+				input.pattern = input_pattern_value;
+			}
+
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(span);
+			detachNode(text_1);
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+		}
+	};
+}
+
+// (11:4) {{else}}
+function create_if_block_2$7(component, state) {
 	var input, input_updating = false, input_required_value;
 
 	function input_input_handler() {
@@ -15903,7 +27497,7 @@ function create_main_fragment$6(component, state) {
 			input.id = state.id;
 			input.required = input_required_value = state.field.metadata.required;
 			input.tabIndex = state.tabindex;
-			input.className = "form-control";
+			input.className = "form-control svelte-1ycz7wy";
 		},
 
 		m: function mount(target, anchor) {
@@ -15937,11 +27531,220 @@ function create_main_fragment$6(component, state) {
 	};
 }
 
-function SvelteComponent$6(options) {
+// (19:4) {{#if passwordConfig.requireConfirmation}}
+function create_if_block_3$6(component, state) {
+	var div, input, input_required_value, input_tabindex_value;
+
+	function change_handler(event) {
+		component.onChange(input);
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler);
+			input.placeholder = "Please confirm the password by entering it one more time.";
+			setAttribute(input, "type", "password");
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = input_tabindex_value = state.tabindex + 1;
+			input.className = "form-control";
+			div.className = "confirmation-password svelte-1ycz7wy";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(input, div);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if ((changed.tabindex) && input_tabindex_value !== (input_tabindex_value = state.tabindex + 1)) {
+				input.tabIndex = input_tabindex_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler);
+		}
+	};
+}
+
+// (1:0) {{#if passwordConfig != null}}
+function create_if_block$14(component, state) {
+	var text, if_block_1_anchor;
+
+	function select_block_type(state) {
+		if (state.passwordConfig.regex) return create_if_block_1$8;
+		return create_if_block_2$7;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	var if_block_1 = (state.passwordConfig.requireConfirmation) && create_if_block_3$6(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			text = createText("\r\n    ");
+			if (if_block_1) if_block_1.c();
+			if_block_1_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(text, target, anchor);
+			if (if_block_1) if_block_1.m(target, anchor);
+			insertNode(if_block_1_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(text.parentNode, text);
+			}
+
+			if (state.passwordConfig.requireConfirmation) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_3$6(component, state);
+					if_block_1.c();
+					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(text);
+			if (if_block_1) if_block_1.u();
+			detachNode(if_block_1_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+function SvelteComponent$19(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	this._fragment = create_main_fragment$6(this, this._state);
+	if (!document.getElementById("svelte-1ycz7wy-style")) add_css$9();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { passwordConfig: 1, id: 1, field: 1, tabindex: 1 };
+		oncreate$14.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$19(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$19.prototype, proto);
+assign(SvelteComponent$19.prototype, methods$8);
+
+/* src\core\ui\inputs\Text.html generated by Svelte v1.64.1 */
+function create_main_fragment$20(component, state) {
+	var input, input_updating = false, input_required_value;
+
+	function input_input_handler() {
+		var state = component.get();
+		input_updating = true;
+		state.field.value = input.value;
+		component.set({ field: state.field });
+		input_updating = false;
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "input", input_input_handler);
+			setAttribute(input, "type", "text");
+			input.id = state.id;
+			input.required = input_required_value = state.field.metadata.required;
+			input.tabIndex = state.tabindex;
+			input.className = "form-control";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+
+			input.value = state.field.value;
+		},
+
+		p: function update(changed, state) {
+			if (!input_updating) input.value = state.field.value;
+			if (changed.id) {
+				input.id = state.id;
+			}
+
+			if ((changed.field) && input_required_value !== (input_required_value = state.field.metadata.required)) {
+				input.required = input_required_value;
+			}
+
+			if (changed.tabindex) {
+				input.tabIndex = state.tabindex;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(input);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "input", input_input_handler);
+		}
+	};
+}
+
+function SvelteComponent$20(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$20(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -15949,17 +27752,17 @@ function SvelteComponent$6(options) {
 	}
 }
 
-assign(SvelteComponent$6.prototype, proto);
+assign(SvelteComponent$20.prototype, proto);
 
 /* src\core\ui\inputs\Textarea.html generated by Svelte v1.64.1 */
-function add_css$1() {
+function add_css$10() {
 	var style = createElement("style");
 	style.id = 'svelte-ir2wwh-style';
 	style.textContent = "textarea.svelte-ir2wwh,.svelte-ir2wwh textarea{width:100%;height:100px}";
 	appendNode(style, document.head);
 }
 
-function create_main_fragment$7(component, state) {
+function create_main_fragment$21(component, state) {
 	var textarea, textarea_updating = false, textarea_required_value;
 
 	function textarea_input_handler() {
@@ -16016,4539 +27819,21 @@ function create_main_fragment$7(component, state) {
 	};
 }
 
-function SvelteComponent$7(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	if (!document.getElementById("svelte-ir2wwh-style")) add_css$1();
-
-	this._fragment = create_main_fragment$7(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$7.prototype, proto);
-
-/* src\core\ui\inputs\FileUploader.html generated by Svelte v1.64.1 */
-var methods$1 = {
-	addFiles(files) {
-		var field = this.get("field");
-		field.selected = files;
-
-		this.set({ selectedFiles: files });
-	}
-};
-
-function create_main_fragment$8(component, state) {
-	var input, text, label, text_2, if_block_anchor;
-
-	function change_handler(event) {
-		component.addFiles(input.files);
-	}
-
-	function select_block_type(state) {
-		if (state.selectedFiles != null && state.selectedFiles.length > 0) return create_if_block$1;
-		return create_if_block_1$1;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			input = createElement("input");
-			text = createText("\r\n");
-			label = createElement("label");
-			label.textContent = "Select files...";
-			text_2 = createText(" \r\n\r\n");
-			if_block.c();
-			if_block_anchor = createComment();
-			this.h();
-		},
-
-		h: function hydrate() {
-			addListener$1(input, "change", change_handler);
-			setAttribute(input, "type", "file");
-			input.id = state.id;
-			input.tabIndex = state.tabindex;
-			input.multiple = "multiple";
-			label.htmlFor = state.id;
-			label.className = "button";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(input, target, anchor);
-			insertNode(text, target, anchor);
-			insertNode(label, target, anchor);
-			insertNode(text_2, target, anchor);
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (changed.id) {
-				input.id = state.id;
-			}
-
-			if (changed.tabindex) {
-				input.tabIndex = state.tabindex;
-			}
-
-			if (changed.id) {
-				label.htmlFor = state.id;
-			}
-
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			detachNode(input);
-			detachNode(text);
-			detachNode(label);
-			detachNode(text_2);
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			removeListener$1(input, "change", change_handler);
-			if_block.d();
-		}
-	};
-}
-
-// (6:1) {{#each selectedFiles as file}}
-function create_each_block$1(component, state) {
-	var file = state.file, each_value = state.each_value, file_index = state.file_index;
-	var li, text_value = file.name, text;
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			appendNode(text, li);
-		},
-
-		p: function update(changed, state) {
-			file = state.file;
-			each_value = state.each_value;
-			file_index = state.file_index;
-			if ((changed.selectedFiles) && text_value !== (text_value = file.name)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: noop$1
-	};
-}
-
-// (4:0) {{#if selectedFiles != null && selectedFiles.length > 0}}
-function create_if_block$1(component, state) {
-	var ul;
-
-	var each_value = state.selectedFiles;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$1(component, assign(assign({}, state), {
-			each_value: each_value,
-			file: each_value[i],
-			file_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(ul, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.selectedFiles;
-
-			if (changed.selectedFiles) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						file: each_value[i],
-						file_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$1(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(ul);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (10:0) {{else}}
-function create_if_block_1$1(component, state) {
-	var text;
-
-	return {
-		c: function create() {
-			text = createText("No files selected.");
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: noop$1,
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$8(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	this._fragment = create_main_fragment$8(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$8.prototype, proto);
-assign(SvelteComponent$8.prototype, methods$1);
-
-/* src\core\ui\Input.html generated by Svelte v1.64.1 */
-var inputId$1 = 0;
-
-function data$1() {
-    inputId$1 += 1;
-    return {
-        id: "i" + inputId$1,
-        visible: true
-    }
-}
-
-var methods$3 = {
-    show(visible) {
-        var field = this.get("field");
-        this.set({ visible: !!visible });
-        if (!visible) {
-            field.metadata.type == "typeahead"
-                ? field.value.value = null
-                : field.value = null;
-        }
-    }
-};
-
-function oncreate$3() {
-    let field = this.get("field");
-    let tabindex = this.get("tabindex");
-    let app = this.get("app");
-    let form = this.get("form");
-
-    var input = app.controlRegister.getInput(field.metadata.type);
-
-    // Set correct css class based on the field type.
-    var inputDisplayConfig = input.constants || {};
-    this.set({
-        class: inputDisplayConfig.block ? "block" : "inline",
-        alwaysHideLabel: inputDisplayConfig.alwaysHideLabel
-    });
-
-    var i = new input.component({
-        target: this.refs.container,
-        data: {
-            field: field,
-            tabindex: tabindex,
-            id: this.get("id"),
-            app: app,
-            form: form,
-            wrapper: this
-        }
-    });
-
-    form.get("inputs").push(i);
-
-    if (field.metadata.eventHandlers.length) {
-        var event = field.metadata.eventHandlers.find(t => t.id === "depend-on");
-        if (event != null) {
-            this.show(false);
-        }
-    }
-}
-
-function add_css$2() {
-	var style = createElement("style");
-	style.id = 'svelte-1enahe1-style';
-	style.textContent = ".svelte-1enahe1.inline,.svelte-1enahe1 .inline{display:inline-block\r\n    }";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$10(component, state) {
-	var span, span_hidden_value;
-
-	function select_block_type(state) {
-		if (!state.alwaysHideLabel && state.field.metadata.label !== "") return create_if_block$3;
-		return create_if_block_1$2;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			span = createElement("span");
-			if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			span.hidden = span_hidden_value = !state.visible;
-			span.className = "svelte-1enahe1";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			if_block.m(span, null);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(span, null);
-			}
-
-			if ((changed.visible) && span_hidden_value !== (span_hidden_value = !state.visible)) {
-				span.hidden = span_hidden_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(span);
-			if_block.u();
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (2:4) {{#if !alwaysHideLabel && field.metadata.label !== "" }}
-function create_if_block$3(component, state) {
-	var div, label, text_value = state.field.metadata.label, text, text_1, div_1, div_1_class_value;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			label = createElement("label");
-			text = createText(text_value);
-			text_1 = createText("\r\n        ");
-			div_1 = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			label.htmlFor = state.id;
-			label.className = "col-sm-3 col-form-label";
-			div_1.className = div_1_class_value = "" + state.class + " col-sm-9";
-			div.className = "form-group row";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(label, div);
-			appendNode(text, label);
-			appendNode(text_1, div);
-			appendNode(div_1, div);
-			component.refs.container = div_1;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
-				text.data = text_value;
-			}
-
-			if (changed.id) {
-				label.htmlFor = state.id;
-			}
-
-			if ((changed.class) && div_1_class_value !== (div_1_class_value = "" + state.class + " col-sm-9")) {
-				div_1.className = div_1_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (component.refs.container === div_1) component.refs.container = null;
-		}
-	};
-}
-
-// (7:4) {{else}}
-function create_if_block_1$2(component, state) {
-	var div, div_1, div_1_class_value;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			div_1 = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			div_1.className = div_1_class_value = "" + state.class + " col-sm-12";
-			div.className = "form-group row";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(div_1, div);
-			component.refs.container = div_1;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.class) && div_1_class_value !== (div_1_class_value = "" + state.class + " col-sm-12")) {
-				div_1.className = div_1_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (component.refs.container === div_1) component.refs.container = null;
-		}
-	};
-}
-
-function SvelteComponent$10(options) {
-	init(this, options);
-	this.refs = {};
-	this._state = assign(data$1(), options.data);
-
-	if (!document.getElementById("svelte-1enahe1-style")) add_css$2();
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { visible: 1, alwaysHideLabel: 1, field: 1, id: 1, class: 1 };
-		oncreate$3.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-	}
-
-	this._fragment = create_main_fragment$10(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		callAll(this._oncreate);
-	}
-}
-
-assign(SvelteComponent$10.prototype, proto);
-assign(SvelteComponent$10.prototype, methods$3);
-
-/* src\core\ui\inputs\DynamicForm.html generated by Svelte v1.64.1 */
-var inputId = 0;
-
-function data() {
-    inputId += 1;
-    return {
-        id: "dfi" + inputId
-    }
-}
-
-var methods$2 = {
-    initialiseInputs: async function (field, app) {
-        field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
-        
-        var promises = [];
-        for (let input of field.inputs) {
-            let i = field.value.inputs.find(t => t.inputId == input.metadata.inputId);
-            if (i != null) {
-                let p = input.init(i.value);
-                promises.push(p);
-            }
-        }
-
-        await Promise.all(promises);
-    },
-};
-
-function oncreate$2() {
-    let field = this.get("field");
-    let app = this.get("app");
-
-    if (field.value == null) {
-        return;
-    }
-
-    var self = this;
-    this.initialiseInputs(field, app).then(() => {
-        self.set({
-            inputs: field.inputs
-        });
-    });
-}
-
-function create_main_fragment$9(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.inputs != null) && create_if_block$2(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.inputs != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$2(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (2:0) {{#each inputs as inputField}}
-function create_each_block$2(component, state) {
-	var inputField = state.inputField, each_value = state.each_value, inputField_index = state.inputField_index;
-
-	var forminput_initial_data = {
-	 	field: inputField,
-	 	app: state.app,
-	 	tabindex: state.tabindex * 100 + inputField.metadata.orderIndex,
-	 	form: state.form
-	 };
-	var forminput = new SvelteComponent$10({
-		root: component.root,
-		data: forminput_initial_data
-	});
-
-	return {
-		c: function create() {
-			forminput._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			forminput._mount(target, anchor);
-		},
-
-		p: function update(changed, state) {
-			inputField = state.inputField;
-			each_value = state.each_value;
-			inputField_index = state.inputField_index;
-			var forminput_changes = {};
-			if (changed.inputs) forminput_changes.field = inputField;
-			if (changed.app) forminput_changes.app = state.app;
-			if (changed.tabindex || changed.inputs) forminput_changes.tabindex = state.tabindex * 100 + inputField.metadata.orderIndex;
-			if (changed.form) forminput_changes.form = state.form;
-			forminput._set(forminput_changes);
-		},
-
-		u: function unmount() {
-			forminput._unmount();
-		},
-
-		d: function destroy$$1() {
-			forminput.destroy(false);
-		}
-	};
-}
-
-// (1:0) {{#if inputs != null}}
-function create_if_block$2(component, state) {
-	var each_anchor;
-
-	var each_value = state.inputs;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$2(component, assign(assign({}, state), {
-			each_value: each_value,
-			inputField: each_value[i],
-			inputField_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			each_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(target, anchor);
-			}
-
-			insertNode(each_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.inputs;
-
-			if (changed.inputs || changed.app || changed.tabindex || changed.form) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						inputField: each_value[i],
-						inputField_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$2(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(each_anchor.parentNode, each_anchor);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			detachNode(each_anchor);
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-function SvelteComponent$9(options) {
-	init(this, options);
-	this._state = assign(data(), options.data);
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { inputs: 1, app: 1, tabindex: 1, form: 1 };
-		oncreate$2.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
-
-	this._fragment = create_main_fragment$9(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
-	}
-}
-
-assign(SvelteComponent$9.prototype, proto);
-assign(SvelteComponent$9.prototype, methods$2);
-
-/* src\core\ui\outputs\Text.html generated by Svelte v1.64.1 */
-function cssClass(field, form) {
-	var cssClass = "";
-
-	var dynamicCssClass = field.metadata.getCustomProperty("dynamicCssClass");
-	if (dynamicCssClass != null) {
-		cssClass = dynamicCssClass.cssClassPrefix;
-		if (dynamicCssClass.outputFieldAsSuffix != null) {
-			var suffixOutputField = form.outputs.find(t => t.metadata.id == dynamicCssClass.outputFieldAsSuffix);
-			cssClass += suffixOutputField.data;
-		}
-	}
-
-	return cssClass;
-}
-
-function create_main_fragment$11(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.field.data != null) && create_if_block$4(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$4(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (1:0) {{#if field.data != null }}
-function create_if_block$4(component, state) {
-	var span, text_value = state.field.data, text;
-
-	return {
-		c: function create() {
-			span = createElement("span");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			span.className = state.cssClass;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			appendNode(text, span);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data)) {
-				text.data = text_value;
-			}
-
-			if (changed.cssClass) {
-				span.className = state.cssClass;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(span);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$11(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-	this._recompute({ field: 1, form: 1 }, this._state);
-
-	this._fragment = create_main_fragment$11(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$11.prototype, proto);
-
-SvelteComponent$11.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field || changed.form) {
-		if (this._differs(state.cssClass, (state.cssClass = cssClass(state.field, state.form)))) changed.cssClass = true;
-	}
-};
-
-/* src\core\ui\outputs\Number.html generated by Svelte v1.64.1 */
-function formatted(field) {
-	if (field.data == null) {
-		return "";
-	}
-
-	var x = field.data;
-	var parts = x.toString().split(".");
-	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	
-	return parts.join(".");
-}
-
-function create_main_fragment$12(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.field.data != null) && create_if_block$5(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$5(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (1:0) {{#if field.data != null}}
-function create_if_block$5(component, state) {
-	var text;
-
-	return {
-		c: function create() {
-			text = createText(state.formatted);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (changed.formatted) {
-				text.data = state.formatted;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$12(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-	this._recompute({ field: 1 }, this._state);
-
-	this._fragment = create_main_fragment$12(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$12.prototype, proto);
-
-SvelteComponent$12.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field) {
-		if (this._differs(state.formatted, (state.formatted = formatted(state.field)))) changed.formatted = true;
-	}
-};
-
-/* src\core\ui\outputs\Datetime.html generated by Svelte v1.64.1 */
-function format$1(datetime) {
-	return datetime != null ? hooks(datetime).format("D MMM YYYY") : "";
-}
-
-function create_main_fragment$13(component, state) {
-	var text_value = format$1(state.field.data), text;
-
-	return {
-		c: function create() {
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = format$1(state.field.data))) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$13(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	this._fragment = create_main_fragment$13(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$13.prototype, proto);
-
-/* src\core\ui\Output.html generated by Svelte v1.64.1 */
-function data$2() {
-    return {
-        showLabel: true
-    };
-}
-
-function oncreate$5() {
-    var field = this.get("field");
-    var app = this.get("app");
-    var parent = this.get("parent");
-    var form = this.get("form");
-    
-    var output = app.controlRegister.getOutput(field);
-    
-    // Never show label if `alwaysHideLabel` is set to true.
-    var outputDisplayConfig = output.constants || {};
-    this.set({
-        alwaysHideLabel: outputDisplayConfig.alwaysHideLabel
-    });
-    
-    new output.constructor({
-        target: this.refs.container,
-        data: {
-            field: field,
-            app: app,
-            form: form,
-            parent: parent
-        }
-    });
-
-    // Set correct css class based on the field type.
-    if (outputDisplayConfig.block) {
-        this.set({ class: "block" });
-    }
-    else {
-        this.set({ class: "inline" });
-    }
-}
-
-function add_css$3() {
-	var style = createElement("style");
-	style.id = 'svelte-1enahe1-style';
-	style.textContent = ".svelte-1enahe1.inline,.svelte-1enahe1 .inline{display:inline-block\r\n    }";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$15(component, state) {
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.showLabel === true && !state.alwaysHideLabel && state.field.metadata.label !== "") return create_if_block$7;
-		return create_if_block_1$4;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (1:0) {{#if showLabel === true && !alwaysHideLabel && field.metadata.label !== ""}}
-function create_if_block$7(component, state) {
-	var div, strong, text_value = state.field.metadata.label, text, text_1, text_2, div_1;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			strong = createElement("strong");
-			text = createText(text_value);
-			text_1 = createText(":");
-			text_2 = createText("\r\n    ");
-			div_1 = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			div_1.className = state.class;
-			div.className = "svelte-1enahe1";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(strong, div);
-			appendNode(text, strong);
-			appendNode(text_1, strong);
-			appendNode(text_2, div);
-			appendNode(div_1, div);
-			component.refs.container = div_1;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.metadata.label)) {
-				text.data = text_value;
-			}
-
-			if (changed.class) {
-				div_1.className = state.class;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (component.refs.container === div_1) component.refs.container = null;
-		}
-	};
-}
-
-// (6:0) {{else}}
-function create_if_block_1$4(component, state) {
-	var div, div_class_value;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = div_class_value = "" + state.class + " svelte-1enahe1";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			component.refs.container = div;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.class) && div_class_value !== (div_class_value = "" + state.class + " svelte-1enahe1")) {
-				div.className = div_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (component.refs.container === div) component.refs.container = null;
-		}
-	};
-}
-
-function SvelteComponent$15(options) {
-	init(this, options);
-	this.refs = {};
-	this._state = assign(data$2(), options.data);
-
-	if (!document.getElementById("svelte-1enahe1-style")) add_css$3();
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { showLabel: 1, alwaysHideLabel: 1, field: 1, class: 1 };
-		oncreate$5.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-	}
-
-	this._fragment = create_main_fragment$15(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		callAll(this._oncreate);
-	}
-}
-
-assign(SvelteComponent$15.prototype, proto);
-
-/* src\core\ui\outputs\Table.html generated by Svelte v1.64.1 */
-function columnsOrdered(field) {
-	return field.metadata.customProperties.columns.filter(b => !b.hidden).sort((a, b) => {
-            		return a.orderIndex - b.orderIndex;
-        		});
-}
-
-function oncreate$4() {
-	var data = this.get("field").data;
-
-	if (data == null) {
-		return;
-	}
-
-	var app = this.get("app");
-	var metadata = this.get("field").metadata;
-	var rowCssClass = (metadata.customProperties || {}).rowCssClass;
-
-	// Create map, with key being the lowercase version of the property name
-	// and value being the actual property name. 
-	var map = {};
-	if (data.length > 0) {
-		let firstRow = data[0];
-
-		for (let property in firstRow) {
-			if (firstRow.hasOwnProperty(property)) {
-				map[property.toLowerCase()] = property;
-			}
-		}
-	}
-
-	this.set({
-		map: map,
-		getField: function(row, column) {
-			var data = row[map[column.id.toLowerCase()]];
-			
-			return {
-				data: data,
-				metadata: column
-			};
-		},
-		getRowCssClass: function (row) {
-			var cssClass = "";
-
-			if (rowCssClass != null)
-			{
-				cssClass = rowCssClass.cssClass || "";
-
-				if (rowCssClass.suffix != null) {
-					cssClass += row[map[rowCssClass.suffix.toLowerCase()]];
-				}
-			}
-
-			return cssClass;
-		}
-	});
-}
-
-function create_main_fragment$14(component, state) {
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.field.data != null && state.field.data.length > 0) return create_if_block$6;
-		return create_if_block_2;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (5:3) {{#each columnsOrdered as column}}
-function create_each_block$3(component, state) {
-	var column = state.column, each_value = state.each_value, column_index = state.column_index;
-	var th, text_value = column.label, text;
-
-	return {
-		c: function create() {
-			th = createElement("th");
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(th, target, anchor);
-			appendNode(text, th);
-		},
-
-		p: function update(changed, state) {
-			column = state.column;
-			each_value = state.each_value;
-			column_index = state.column_index;
-			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(th);
-		},
-
-		d: noop$1
-	};
-}
-
-// (12:2) {{#each field.data as row}}
-function create_each_block_1(component, state) {
-	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index;
-	var tr, tr_class_value;
-
-	var each_value_2 = state.columnsOrdered;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_2.length; i += 1) {
-		each_blocks[i] = create_each_block_2(component, assign(assign({}, state), {
-			each_value_2: each_value_2,
-			column: each_value_2[i],
-			column_index_1: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			tr = createElement("tr");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			tr.className = tr_class_value = state.getRowCssClass(row);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(tr, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(tr, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			row = state.row;
-			each_value_1 = state.each_value_1;
-			row_index = state.row_index;
-			var each_value_2 = state.columnsOrdered;
-
-			if (changed.getField || changed.field || changed.columnsOrdered || changed.app || changed.form || changed.parent) {
-				for (var i = 0; i < each_value_2.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_2: each_value_2,
-						column: each_value_2[i],
-						column_index_1: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_2(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(tr, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_2.length;
-			}
-
-			if ((changed.getRowCssClass || changed.field) && tr_class_value !== (tr_class_value = state.getRowCssClass(row))) {
-				tr.className = tr_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(tr);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (14:3) {{#each columnsOrdered as column}}
-function create_each_block_2(component, state) {
-	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index, column = state.column, each_value_2 = state.each_value_2, column_index_1 = state.column_index_1;
-	var td;
-
-	var formoutput_initial_data = {
-	 	field: state.getField(row, column),
-	 	app: state.app,
-	 	form: state.form,
-	 	parent: state.parent,
-	 	showLabel: "false"
-	 };
-	var formoutput = new SvelteComponent$15({
-		root: component.root,
-		data: formoutput_initial_data
-	});
-
-	return {
-		c: function create() {
-			td = createElement("td");
-			formoutput._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(td, target, anchor);
-			formoutput._mount(td, null);
-		},
-
-		p: function update(changed, state) {
-			row = state.row;
-			each_value_1 = state.each_value_1;
-			row_index = state.row_index;
-			column = state.column;
-			each_value_2 = state.each_value_2;
-			column_index_1 = state.column_index_1;
-			var formoutput_changes = {};
-			if (changed.getField || changed.field || changed.columnsOrdered) formoutput_changes.field = state.getField(row, column);
-			if (changed.app) formoutput_changes.app = state.app;
-			if (changed.form) formoutput_changes.form = state.form;
-			if (changed.parent) formoutput_changes.parent = state.parent;
-			formoutput._set(formoutput_changes);
-		},
-
-		u: function unmount() {
-			detachNode(td);
-		},
-
-		d: function destroy$$1() {
-			formoutput.destroy(false);
-		}
-	};
-}
-
-// (11:2) {{#if map != null}}
-function create_if_block_1$3(component, state) {
-	var each_anchor;
-
-	var each_value_1 = state.field.data;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1(component, assign(assign({}, state), {
-			each_value_1: each_value_1,
-			row: each_value_1[i],
-			row_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			each_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(target, anchor);
-			}
-
-			insertNode(each_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			var each_value_1 = state.field.data;
-
-			if (changed.getRowCssClass || changed.field || changed.columnsOrdered || changed.getField || changed.app || changed.form || changed.parent) {
-				for (var i = 0; i < each_value_1.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_1: each_value_1,
-						row: each_value_1[i],
-						row_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_1(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(each_anchor.parentNode, each_anchor);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_1.length;
-			}
-		},
-
-		u: function unmount() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			detachNode(each_anchor);
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (1:0) {{#if field.data != null && field.data.length > 0}}
-function create_if_block$6(component, state) {
-	var table, thead, tr, text_2, tbody;
-
-	var each_value = state.columnsOrdered;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$3(component, assign(assign({}, state), {
-			each_value: each_value,
-			column: each_value[i],
-			column_index: i
-		}));
-	}
-
-	var if_block = (state.map != null) && create_if_block_1$3(component, state);
-
-	return {
-		c: function create() {
-			table = createElement("table");
-			thead = createElement("thead");
-			tr = createElement("tr");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			text_2 = createText("\r\n\t");
-			tbody = createElement("tbody");
-			if (if_block) if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			table.className = "table";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(table, target, anchor);
-			appendNode(thead, table);
-			appendNode(tr, thead);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(tr, null);
-			}
-
-			appendNode(text_2, table);
-			appendNode(tbody, table);
-			if (if_block) if_block.m(tbody, null);
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.columnsOrdered;
-
-			if (changed.columnsOrdered) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						column: each_value[i],
-						column_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$3(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(tr, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-
-			if (state.map != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_1$3(component, state);
-					if_block.c();
-					if_block.m(tbody, null);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(table);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			if (if_block) if_block.u();
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (24:0) {{else}}
-function create_if_block_2(component, state) {
-	var div;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			div.textContent = "No data.";
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "alert-nodata";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-		},
-
-		p: noop$1,
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$14(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-	this._recompute({ field: 1 }, this._state);
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { field: 1, columnsOrdered: 1, map: 1, getRowCssClass: 1, getField: 1, app: 1, form: 1, parent: 1 };
-		oncreate$4.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
-
-	this._fragment = create_main_fragment$14(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
-	}
-}
-
-assign(SvelteComponent$14.prototype, proto);
-
-SvelteComponent$14.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field) {
-		if (this._differs(state.columnsOrdered, (state.columnsOrdered = columnsOrdered(state.field)))) changed.columnsOrdered = true;
-	}
-};
-
-/* src\core\ui\outputs\FormLink.html generated by Svelte v1.64.1 */
-function create_main_fragment$16(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.field.data != null) && create_if_block$8(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$8(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (2:1) {{#if field.data.form != null}}
-function create_if_block_1$5(component, state) {
-	var a, text_value = state.field.data.label, text, a_href_value;
-
-	return {
-		c: function create() {
-			a = createElement("a");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = state.app.makeUrl(state.field.data.form, state.field.data.inputFieldValues);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(a, target, anchor);
-			appendNode(text, a);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.label)) {
-				text.data = text_value;
-			}
-
-			if ((changed.app || changed.field) && a_href_value !== (a_href_value = state.app.makeUrl(state.field.data.form, state.field.data.inputFieldValues))) {
-				a.href = a_href_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(a);
-		},
-
-		d: noop$1
-	};
-}
-
-// (4:1) {{else}}
-function create_if_block_2$1(component, state) {
-	var span, text_value = state.field.data.label, text;
-
-	return {
-		c: function create() {
-			span = createElement("span");
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			appendNode(text, span);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.label)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(span);
-		},
-
-		d: noop$1
-	};
-}
-
-// (1:0) {{#if field.data != null}}
-function create_if_block$8(component, state) {
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.field.data.form != null) return create_if_block_1$5;
-		return create_if_block_2$1;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-function SvelteComponent$16(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	this._fragment = create_main_fragment$16(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$16.prototype, proto);
-
-/* src\core\ui\outputs\Tabstrip.html generated by Svelte v1.64.1 */
-function getCssClass(tab, tabstrip) {
-	return tab.form == tabstrip.currentTab
-		? "active"
-		: "";
-}
-
-function add_css$4() {
-	var style = createElement("style");
-	style.id = 'svelte-o16u2-style';
-	style.textContent = ".svelte-o16u2.tabstrip,.svelte-o16u2 .tabstrip{margin:10px 0}.svelte-o16u2.tabstrip>div,.svelte-o16u2 .tabstrip>div{display:inline-block;margin-top:5px}.svelte-o16u2.tabstrip>div>a,.svelte-o16u2 .tabstrip>div>a{background:#eef3f7;border-width:1px 1px 1px 1px;border-style:solid;border-color:rgb(187, 210, 214);padding:10px 15px;margin:0 5px 0 0;display:inline-block;text-decoration:none;color:#838c98;font-weight:bold;border-radius:5px}.svelte-o16u2.tabstrip>div>a:hover,.svelte-o16u2 .tabstrip>div>a:hover{color:#f3818c}.svelte-o16u2.tabstrip>div>a.active,.svelte-o16u2 .tabstrip>div>a.active{margin-bottom:-1px;padding-bottom:11px;background:#fff;border-bottom:none;color:#3287c0;border-bottom-right-radius:3px;border-bottom-left-radius:3px}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$17(component, state) {
-	var div;
-
-	var each_value = state.field.data.tabs;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$4(component, assign(assign({}, state), {
-			each_value: each_value,
-			tab: each_value[i],
-			tab_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			div = createElement("div");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "tabstrip svelte-o16u2";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(div, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.field.data.tabs;
-
-			if (changed.app || changed.field) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						tab: each_value[i],
-						tab_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$4(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(div, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (2:1) {{#each field.data.tabs as tab}}
-function create_each_block$4(component, state) {
-	var tab = state.tab, each_value = state.each_value, tab_index = state.tab_index;
-	var div, a, text_value = tab.label, text, a_href_value, a_class_value;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			a = createElement("a");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = state.app.makeUrl(tab.form, tab.inputFieldValues);
-			a.className = a_class_value = getCssClass(tab, state.field.data);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(a, div);
-			appendNode(text, a);
-		},
-
-		p: function update(changed, state) {
-			tab = state.tab;
-			each_value = state.each_value;
-			tab_index = state.tab_index;
-			if ((changed.field) && text_value !== (text_value = tab.label)) {
-				text.data = text_value;
-			}
-
-			if ((changed.app || changed.field) && a_href_value !== (a_href_value = state.app.makeUrl(tab.form, tab.inputFieldValues))) {
-				a.href = a_href_value;
-			}
-
-			if ((changed.field) && a_class_value !== (a_class_value = getCssClass(tab, state.field.data))) {
-				a.className = a_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$17(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	if (!document.getElementById("svelte-o16u2-style")) add_css$4();
-
-	this._fragment = create_main_fragment$17(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$17.prototype, proto);
-
-/* src\core\ui\outputs\Table.html generated by Svelte v1.64.1 */
-function columnsOrdered$1(field) {
-	return field.metadata.customProperties.columns.filter(b => !b.hidden).sort((a, b) => {
-            		return a.orderIndex - b.orderIndex;
-        		});
-}
-
-function oncreate$7() {
-	var data = this.get("field").data;
-
-	if (data == null) {
-		return;
-	}
-
-	var app = this.get("app");
-	var metadata = this.get("field").metadata;
-	var rowCssClass = (metadata.customProperties || {}).rowCssClass;
-
-	// Create map, with key being the lowercase version of the property name
-	// and value being the actual property name. 
-	var map = {};
-	if (data.length > 0) {
-		let firstRow = data[0];
-
-		for (let property in firstRow) {
-			if (firstRow.hasOwnProperty(property)) {
-				map[property.toLowerCase()] = property;
-			}
-		}
-	}
-
-	this.set({
-		map: map,
-		getField: function(row, column) {
-			var data = row[map[column.id.toLowerCase()]];
-			
-			return {
-				data: data,
-				metadata: column
-			};
-		},
-		getRowCssClass: function (row) {
-			var cssClass = "";
-
-			if (rowCssClass != null)
-			{
-				cssClass = rowCssClass.cssClass || "";
-
-				if (rowCssClass.suffix != null) {
-					cssClass += row[map[rowCssClass.suffix.toLowerCase()]];
-				}
-			}
-
-			return cssClass;
-		}
-	});
-}
-
-function create_main_fragment$19(component, state) {
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.field.data != null && state.field.data.length > 0) return create_if_block$10;
-		return create_if_block_2$3;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (5:3) {{#each columnsOrdered as column}}
-function create_each_block$6(component, state) {
-	var column = state.column, each_value = state.each_value, column_index = state.column_index;
-	var th, text_value = column.label, text;
-
-	return {
-		c: function create() {
-			th = createElement("th");
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(th, target, anchor);
-			appendNode(text, th);
-		},
-
-		p: function update(changed, state) {
-			column = state.column;
-			each_value = state.each_value;
-			column_index = state.column_index;
-			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(th);
-		},
-
-		d: noop$1
-	};
-}
-
-// (12:2) {{#each field.data as row}}
-function create_each_block_1$1(component, state) {
-	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index;
-	var tr, tr_class_value;
-
-	var each_value_2 = state.columnsOrdered;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_2.length; i += 1) {
-		each_blocks[i] = create_each_block_2$1(component, assign(assign({}, state), {
-			each_value_2: each_value_2,
-			column: each_value_2[i],
-			column_index_1: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			tr = createElement("tr");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			tr.className = tr_class_value = state.getRowCssClass(row);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(tr, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(tr, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			row = state.row;
-			each_value_1 = state.each_value_1;
-			row_index = state.row_index;
-			var each_value_2 = state.columnsOrdered;
-
-			if (changed.getField || changed.field || changed.columnsOrdered || changed.app || changed.form || changed.parent) {
-				for (var i = 0; i < each_value_2.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_2: each_value_2,
-						column: each_value_2[i],
-						column_index_1: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_2$1(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(tr, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_2.length;
-			}
-
-			if ((changed.getRowCssClass || changed.field) && tr_class_value !== (tr_class_value = state.getRowCssClass(row))) {
-				tr.className = tr_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(tr);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (14:3) {{#each columnsOrdered as column}}
-function create_each_block_2$1(component, state) {
-	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index, column = state.column, each_value_2 = state.each_value_2, column_index_1 = state.column_index_1;
-	var td;
-
-	var formoutput_initial_data = {
-	 	field: state.getField(row, column),
-	 	app: state.app,
-	 	form: state.form,
-	 	parent: state.parent,
-	 	showLabel: "false"
-	 };
-	var formoutput = new SvelteComponent$15({
-		root: component.root,
-		data: formoutput_initial_data
-	});
-
-	return {
-		c: function create() {
-			td = createElement("td");
-			formoutput._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(td, target, anchor);
-			formoutput._mount(td, null);
-		},
-
-		p: function update(changed, state) {
-			row = state.row;
-			each_value_1 = state.each_value_1;
-			row_index = state.row_index;
-			column = state.column;
-			each_value_2 = state.each_value_2;
-			column_index_1 = state.column_index_1;
-			var formoutput_changes = {};
-			if (changed.getField || changed.field || changed.columnsOrdered) formoutput_changes.field = state.getField(row, column);
-			if (changed.app) formoutput_changes.app = state.app;
-			if (changed.form) formoutput_changes.form = state.form;
-			if (changed.parent) formoutput_changes.parent = state.parent;
-			formoutput._set(formoutput_changes);
-		},
-
-		u: function unmount() {
-			detachNode(td);
-		},
-
-		d: function destroy$$1() {
-			formoutput.destroy(false);
-		}
-	};
-}
-
-// (11:2) {{#if map != null}}
-function create_if_block_1$7(component, state) {
-	var each_anchor;
-
-	var each_value_1 = state.field.data;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1$1(component, assign(assign({}, state), {
-			each_value_1: each_value_1,
-			row: each_value_1[i],
-			row_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			each_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(target, anchor);
-			}
-
-			insertNode(each_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			var each_value_1 = state.field.data;
-
-			if (changed.getRowCssClass || changed.field || changed.columnsOrdered || changed.getField || changed.app || changed.form || changed.parent) {
-				for (var i = 0; i < each_value_1.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_1: each_value_1,
-						row: each_value_1[i],
-						row_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_1$1(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(each_anchor.parentNode, each_anchor);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_1.length;
-			}
-		},
-
-		u: function unmount() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			detachNode(each_anchor);
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (1:0) {{#if field.data != null && field.data.length > 0}}
-function create_if_block$10(component, state) {
-	var table, thead, tr, text_2, tbody;
-
-	var each_value = state.columnsOrdered;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$6(component, assign(assign({}, state), {
-			each_value: each_value,
-			column: each_value[i],
-			column_index: i
-		}));
-	}
-
-	var if_block = (state.map != null) && create_if_block_1$7(component, state);
-
-	return {
-		c: function create() {
-			table = createElement("table");
-			thead = createElement("thead");
-			tr = createElement("tr");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			text_2 = createText("\r\n\t");
-			tbody = createElement("tbody");
-			if (if_block) if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			table.className = "table";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(table, target, anchor);
-			appendNode(thead, table);
-			appendNode(tr, thead);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(tr, null);
-			}
-
-			appendNode(text_2, table);
-			appendNode(tbody, table);
-			if (if_block) if_block.m(tbody, null);
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.columnsOrdered;
-
-			if (changed.columnsOrdered) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						column: each_value[i],
-						column_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$6(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(tr, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-
-			if (state.map != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_1$7(component, state);
-					if_block.c();
-					if_block.m(tbody, null);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(table);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			if (if_block) if_block.u();
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (24:0) {{else}}
-function create_if_block_2$3(component, state) {
-	var div;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			div.textContent = "No data.";
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "alert-nodata";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-		},
-
-		p: noop$1,
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$19(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-	this._recompute({ field: 1 }, this._state);
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { field: 1, columnsOrdered: 1, map: 1, getRowCssClass: 1, getField: 1, app: 1, form: 1, parent: 1 };
-		oncreate$7.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
-
-	this._fragment = create_main_fragment$19(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
-	}
-}
-
-assign(SvelteComponent$19.prototype, proto);
-
-SvelteComponent$19.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field) {
-		if (this._differs(state.columnsOrdered, (state.columnsOrdered = columnsOrdered$1(state.field)))) changed.columnsOrdered = true;
-	}
-};
-
-/* src\core\ui\outputs\Paginator.html generated by Svelte v1.64.1 */
-function pages(field, form) {
-	var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
-
-	var pageCount = Math.ceil(field.data.totalCount / paginatorInput.value.pageSize);
-
-	var params = {};
-	for (let i of form.inputs) {
-		params[i.metadata.id] = i.value;
-	}
-
-	var pages = [];
-	for (let p = 1; p <= pageCount; ++p) {
-		let pageParams = Object.assign({}, params);
-		pageParams[paginatorInput.metadata.id] = Object.assign({}, pageParams[paginatorInput.metadata.id]);
-		pageParams[paginatorInput.metadata.id].pageIndex = p;
-
-		pages.push({
-			number: p,
-			params: pageParams,
-			cssClass: paginatorInput.value.pageIndex == p ? "current" : ""
-		});
-	}
-
-	return pages;
-}
-
-function data$3() {
-	return {
-		totalCount: 0
-	}
-}
-
-var methods$4 = {
-	goToPage(page) {
-		var parent = this.get("parent");
-		var form = parent.get("form");
-		var field = this.get("field");
-		
-		form.setInputFields(page.params);
-		parent.submit(null, false);
-	}
-};
-
-function oncreate$6() {
-	var field = this.get("field");
-
-	if (field.data == null) {
-		return;
-	}
-
-	var tableField = new OutputFieldValue();
-	tableField.data = field.data.results;
-	tableField.metadata = field.metadata;
-
-	var i = new SvelteComponent$19({
-		target: this.refs.container,
-		data: {
-			field: tableField,
-			app: this.get("app"),
-			form: this.get("form"),
-			parent: this.get("parent")
-		}
-	});
-}
-
-function add_css$5() {
-	var style = createElement("style");
-	style.id = 'svelte-18k5o71-style';
-	style.textContent = ".svelte-18k5o71.paginator,.svelte-18k5o71 .paginator{margin:.5rem 0;padding-left:0}.svelte-18k5o71.paginator>li,.svelte-18k5o71 .paginator>li{display:inline-block}.svelte-18k5o71.paginator>li>a,.svelte-18k5o71 .paginator>li>a,.svelte-18k5o71.paginator>li>button,.svelte-18k5o71 .paginator>li>button{padding:2px 10px;margin:1px;display:inline-block;background:#eee}.svelte-18k5o71.paginator>li>a.current,.svelte-18k5o71 .paginator>li>a.current,.svelte-18k5o71.paginator>li>button.current,.svelte-18k5o71 .paginator>li>button.current{background:#1eb1c8;color:#fff}.svelte-18k5o71.paginator>li>a:hover,.svelte-18k5o71 .paginator>li>a:hover,.svelte-18k5o71.paginator>li>button:hover,.svelte-18k5o71 .paginator>li>button:hover{color:#f3818c;text-decoration:none\r\n\t}.svelte-18k5o71.paginator-summary,.svelte-18k5o71 .paginator-summary{font-size:0.7em;opacity:0.6;margin:5px 0}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$18(component, state) {
-	var text, div;
-
-	var if_block = (state.field.data != null && state.pages.length > 1) && create_if_block$9(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			text = createText("\r\n\r\n");
-			div = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "svelte-18k5o71";
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(text, target, anchor);
-			insertNode(div, target, anchor);
-			component.refs.container = div;
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data != null && state.pages.length > 1) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$9(component, state);
-					if_block.c();
-					if_block.m(text.parentNode, text);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(text);
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-			if (component.refs.container === div) component.refs.container = null;
-		}
-	};
-}
-
-// (3:1) {{#each pages as page}}
-function create_each_block$5(component, state) {
-	var page = state.page, each_value = state.each_value, page_index = state.page_index;
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.parent.get('useUrl')) return create_if_block_1$6;
-		return create_if_block_2$2;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			page = state.page;
-			each_value = state.each_value;
-			page_index = state.page_index;
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (4:2) {{#if parent.get('useUrl')}}
-function create_if_block_1$6(component, state) {
-	var page = state.page, each_value = state.each_value, page_index = state.page_index;
-	var li, a, text_value = page.number, text, a_href_value, a_class_value;
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			a = createElement("a");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = state.app.makeUrl(state.form.metadata.id, page.params);
-			a.className = a_class_value = page.cssClass;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			appendNode(a, li);
-			appendNode(text, a);
-		},
-
-		p: function update(changed, state) {
-			page = state.page;
-			each_value = state.each_value;
-			page_index = state.page_index;
-			if ((changed.pages) && text_value !== (text_value = page.number)) {
-				text.data = text_value;
-			}
-
-			if ((changed.app || changed.form || changed.pages) && a_href_value !== (a_href_value = state.app.makeUrl(state.form.metadata.id, page.params))) {
-				a.href = a_href_value;
-			}
-
-			if ((changed.pages) && a_class_value !== (a_class_value = page.cssClass)) {
-				a.className = a_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: noop$1
-	};
-}
-
-// (6:2) {{else}}
-function create_if_block_2$2(component, state) {
-	var page = state.page, each_value = state.each_value, page_index = state.page_index;
-	var li, button, text_value = page.number, text, button_class_value;
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			button = createElement("button");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			addListener$1(button, "click", click_handler);
-			button.className = button_class_value = page.cssClass;
-
-			button._svelte = {
-				component: component,
-				each_value: state.each_value,
-				page_index: state.page_index
-			};
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			appendNode(button, li);
-			appendNode(text, button);
-		},
-
-		p: function update(changed, state) {
-			page = state.page;
-			each_value = state.each_value;
-			page_index = state.page_index;
-			if ((changed.pages) && text_value !== (text_value = page.number)) {
-				text.data = text_value;
-			}
-
-			if ((changed.pages) && button_class_value !== (button_class_value = page.cssClass)) {
-				button.className = button_class_value;
-			}
-
-			button._svelte.each_value = state.each_value;
-			button._svelte.page_index = state.page_index;
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: function destroy$$1() {
-			removeListener$1(button, "click", click_handler);
-		}
-	};
-}
-
-// (1:0) {{#if field.data != null && pages.length > 1}}
-function create_if_block$9(component, state) {
-	var ul, text, div, text_1, text_2_value = state.field.data.results.length, text_2, text_3, text_4_value = state.field.data.totalCount, text_4, text_5;
-
-	var each_value = state.pages;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$5(component, assign(assign({}, state), {
-			each_value: each_value,
-			page: each_value[i],
-			page_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			text = createText("\r\n");
-			div = createElement("div");
-			text_1 = createText("showing ");
-			text_2 = createText(text_2_value);
-			text_3 = createText(" out of ");
-			text_4 = createText(text_4_value);
-			text_5 = createText(" items");
-			this.h();
-		},
-
-		h: function hydrate() {
-			ul.className = "paginator svelte-18k5o71";
-			div.className = "paginator-summary svelte-18k5o71";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(ul, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-
-			insertNode(text, target, anchor);
-			insertNode(div, target, anchor);
-			appendNode(text_1, div);
-			appendNode(text_2, div);
-			appendNode(text_3, div);
-			appendNode(text_4, div);
-			appendNode(text_5, div);
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.pages;
-
-			if (changed.parent || changed.app || changed.form || changed.pages) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						page: each_value[i],
-						page_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$5(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-
-			if ((changed.field) && text_2_value !== (text_2_value = state.field.data.results.length)) {
-				text_2.data = text_2_value;
-			}
-
-			if ((changed.field) && text_4_value !== (text_4_value = state.field.data.totalCount)) {
-				text_4.data = text_4_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(ul);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			detachNode(text);
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-function click_handler(event) {
-	var component = this._svelte.component;
-	var each_value = this._svelte.each_value, page_index = this._svelte.page_index, page = each_value[page_index];
-	component.goToPage(page);
-}
-
-function SvelteComponent$18(options) {
-	init(this, options);
-	this.refs = {};
-	this._state = assign(data$3(), options.data);
-	this._recompute({ field: 1, form: 1 }, this._state);
-
-	if (!document.getElementById("svelte-18k5o71-style")) add_css$5();
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { field: 1, form: 1, pages: 1, parent: 1, app: 1 };
-		oncreate$6.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-	}
-
-	this._fragment = create_main_fragment$18(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		callAll(this._oncreate);
-	}
-}
-
-assign(SvelteComponent$18.prototype, proto);
-assign(SvelteComponent$18.prototype, methods$4);
-
-SvelteComponent$18.prototype._recompute = function _recompute(changed, state) {
-	if (changed.field || changed.form) {
-		if (this._differs(state.pages, (state.pages = pages(state.field, state.form)))) changed.pages = true;
-	}
-};
-
-/* src\core\ui\help\Help.html generated by Svelte v1.64.1 */
-function humanize$1(e){return e.replace(/\.[^/.]+$/, "").split(/(?=[A-Z])/).join(" ");}
-
-	function data$6(){
-	return {
-		files :[],
-		open:false,
-		modalId: ""
-	}
-}
-
-var methods$7 = {
-	open(){
-		this.set({ open: true });
-	},
-	close(response, fromBtnClick){
-		if (!fromBtnClick) {
-			this.set({ open: false });
-		}
-	}
-};
-
-function oncreate$8(){			
-	var _files =  this.get("data").files.map(function(i,e){
-		return {file:i, name: humanize$1(i)};
-	});
-	this.set({files:_files});
-	this.set({modalId:this.constructor.name});
-}
-
-function add_css$8() {
-	var style = createElement("style");
-	style.id = 'svelte-1blk72h-style';
-	style.textContent = "ul.svelte-1blk72h.help-files,.svelte-1blk72h ul.help-files{list-style:none}.svelte-1blk72h.inline-help,.svelte-1blk72h .inline-help{background:#ecf8fb;padding:10px}.svelte-1blk72h.modal-help > i,.svelte-1blk72h .modal-help > i{font-size:15pt;color:#f3818c}.svelte-1blk72h.modal-help,.svelte-1blk72h .modal-help{display:inline;margin-left:-10px}.svelte-1blk72h.help-files,.svelte-1blk72h .help-files{border-top:1px solid #d8d8d8;padding:10px;margin:10px;background:#ecf8fb}.svelte-1blk72h.help-files ul,.svelte-1blk72h .help-files ul{list-style:circle}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$22(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.data) && create_if_block$13(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.data) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$13(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (18:10) {{#each files as file}}
-function create_each_block$9(component, state) {
-	var file = state.file, each_value = state.each_value, file_index = state.file_index;
-	var li, a, text_value = file.name, text, a_href_value;
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			a = createElement("a");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = "/#/form/help?FileId=" + file.file;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			appendNode(a, li);
-			appendNode(text, a);
-		},
-
-		p: function update(changed, state) {
-			file = state.file;
-			each_value = state.each_value;
-			file_index = state.file_index;
-			if ((changed.files) && text_value !== (text_value = file.name)) {
-				text.data = text_value;
-			}
-
-			if ((changed.files) && a_href_value !== (a_href_value = "/#/form/help?FileId=" + file.file)) {
-				a.href = a_href_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: noop$1
-	};
-}
-
-// (14:7) {{ #if files && files.length >0 }}
-function create_if_block_2$6(component, state) {
-	var div, span, text_1, ul;
-
-	var each_value = state.files;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$9(component, assign(assign({}, state), {
-			each_value: each_value,
-			file: each_value[i],
-			file_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			span = createElement("span");
-			span.textContent = "For more information:";
-			text_1 = createText("\r\n\t\t\t\t\t\t\t\t\t");
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "help-files";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(span, div);
-			appendNode(text_1, div);
-			appendNode(ul, div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.files;
-
-			if (changed.files) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						file: each_value[i],
-						file_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$9(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (41:7) {{#each files as file}}
-function create_each_block_1$3(component, state) {
-	var file = state.file, each_value_1 = state.each_value_1, file_index_1 = state.file_index_1;
-	var li, a, text_value = file.name, text, a_href_value;
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			a = createElement("a");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = "/#/form/help?FileId=" + file.file;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			appendNode(a, li);
-			appendNode(text, a);
-		},
-
-		p: function update(changed, state) {
-			file = state.file;
-			each_value_1 = state.each_value_1;
-			file_index_1 = state.file_index_1;
-			if ((changed.files) && text_value !== (text_value = file.name)) {
-				text.data = text_value;
-			}
-
-			if ((changed.files) && a_href_value !== (a_href_value = "/#/form/help?FileId=" + file.file)) {
-				a.href = a_href_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: noop$1
-	};
-}
-
-// (37:3) {{ #if files && files.length >0 }}
-function create_if_block_4$1(component, state) {
-	var div, span, text_1, ul;
-
-	var each_value_1 = state.files;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1$3(component, assign(assign({}, state), {
-			each_value_1: each_value_1,
-			file: each_value_1[i],
-			file_index_1: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			span = createElement("span");
-			span.textContent = "For more information";
-			text_1 = createText("\r\n\t\t\t\t\t\t");
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "help-files";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(span, div);
-			appendNode(text_1, div);
-			appendNode(ul, div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value_1 = state.files;
-
-			if (changed.files) {
-				for (var i = 0; i < each_value_1.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_1: each_value_1,
-						file: each_value_1[i],
-						file_index_1: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_1$3(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_1.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (4:1) {{ #if data.placement == 'Hint' }}
-function create_if_block_1$10(component, state) {
-	var div, i, text, input, input_id_value, text_1, div_1, div_2, label, label_for_value, text_2, div_3, raw_value = state.data.content, raw_after, text_3;
-
-	function click_handler(event) {
-		component.open();
-	}
-
-	function input_change_handler() {
-		component.set({ open: input.checked });
-	}
-
-	function click_handler_1(event) {
-		component.close(null, true);
-	}
-
-	var if_block = (state.files && state.files.length >0) && create_if_block_2$6(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			i = createElement("i");
-			text = createText("\r\n\t\t\t\t");
-			input = createElement("input");
-			text_1 = createText("\r\n\t\t\t\t");
-			div_1 = createElement("div");
-			div_2 = createElement("div");
-			label = createElement("label");
-			text_2 = createText("\r\n\t\t\t\t\t\t");
-			div_3 = createElement("div");
-			raw_after = createElement('noscript');
-			text_3 = createText("\r\n\r\n\t\t\t\t\t\t\t");
-			if (if_block) if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			addListener$1(i, "click", click_handler);
-			i.className = "far fa-question-circle";
-			addListener$1(input, "change", input_change_handler);
-			input.id = input_id_value = "modal-" + state.modalId;
-			setAttribute(input, "type", "checkbox");
-			input.className = "hidden";
-			addListener$1(label, "click", click_handler_1);
-			label.htmlFor = label_for_value = "modal-" + state.modalId;
-			label.className = "close";
-			div_2.className = "card";
-			div_1.className = "modal";
-			div.className = "help-content modal-help svelte-1blk72h";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(i, div);
-			appendNode(text, div);
-			appendNode(input, div);
-
-			input.checked = state.open;
-
-			appendNode(text_1, div);
-			appendNode(div_1, div);
-			appendNode(div_2, div_1);
-			appendNode(label, div_2);
-			appendNode(text_2, div_2);
-			appendNode(div_3, div_2);
-			appendNode(raw_after, div_3);
-			raw_after.insertAdjacentHTML("beforebegin", raw_value);
-			appendNode(text_3, div_3);
-			if (if_block) if_block.m(div_3, null);
-			component.refs.container = div_3;
-		},
-
-		p: function update(changed, state) {
-			input.checked = state.open;
-			if ((changed.modalId) && input_id_value !== (input_id_value = "modal-" + state.modalId)) {
-				input.id = input_id_value;
-			}
-
-			if ((changed.modalId) && label_for_value !== (label_for_value = "modal-" + state.modalId)) {
-				label.htmlFor = label_for_value;
-			}
-
-			if ((changed.data) && raw_value !== (raw_value = state.data.content)) {
-				detachBefore(raw_after);
-				raw_after.insertAdjacentHTML("beforebegin", raw_value);
-			}
-
-			if (state.files && state.files.length >0) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_2$6(component, state);
-					if_block.c();
-					if_block.m(div_3, null);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			detachBefore(raw_after);
-
-			detachNode(div);
-			if (if_block) if_block.u();
-		},
-
-		d: function destroy$$1() {
-			removeListener$1(i, "click", click_handler);
-			removeListener$1(input, "change", input_change_handler);
-			removeListener$1(label, "click", click_handler_1);
-			if (if_block) if_block.d();
-			if (component.refs.container === div_3) component.refs.container = null;
-		}
-	};
-}
-
-// (32:40) 
-function create_if_block_3$1(component, state) {
-	var div, raw_value = state.data.content, raw_after, text;
-
-	var if_block = (state.files && state.files.length >0) && create_if_block_4$1(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			raw_after = createElement('noscript');
-			text = createText("\r\n\r\n\t\t\t");
-			if (if_block) if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "help-content inline-help svelte-1blk72h";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(raw_after, div);
-			raw_after.insertAdjacentHTML("beforebegin", raw_value);
-			appendNode(text, div);
-			if (if_block) if_block.m(div, null);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.data) && raw_value !== (raw_value = state.data.content)) {
-				detachBefore(raw_after);
-				raw_after.insertAdjacentHTML("beforebegin", raw_value);
-			}
-
-			if (state.files && state.files.length >0) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_4$1(component, state);
-					if_block.c();
-					if_block.m(div, null);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			detachBefore(raw_after);
-
-			detachNode(div);
-			if (if_block) if_block.u();
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (1:0) {{#if data }}
-function create_if_block$13(component, state) {
-	var if_block_anchor;
-
-	function select_block_type(state) {
-		if (state.data.placement == 'Hint') return create_if_block_1$10;
-		if (state.data.placement == 'Inline') return create_if_block_3$1;
-		return null;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type && current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if (if_block) {
-					if_block.u();
-					if_block.d();
-				}
-				if_block = current_block_type && current_block_type(component, state);
-				if (if_block) if_block.c();
-				if (if_block) if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-function SvelteComponent$22(options) {
-	init(this, options);
-	this.refs = {};
-	this._state = assign(data$6(), options.data);
-
-	if (!document.getElementById("svelte-1blk72h-style")) add_css$8();
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { data: 1, modalId: 1, open: 1, files: 1 };
-		oncreate$8.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-	}
-
-	this._fragment = create_main_fragment$22(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		callAll(this._oncreate);
-	}
-}
-
-assign(SvelteComponent$22.prototype, proto);
-assign(SvelteComponent$22.prototype, methods$7);
-
-/* src\core\ui\Form.html generated by Svelte v1.64.1 */
-let tabindex = 1;
-var openForms = [];
-
-function bindEventHandlersToCustomEvents(formComponent, eventHandlers) {
-	let formInstance = formComponent.get("form");
-	let app = formComponent.get("app");
-
-	for (let eventHandler of eventHandlers) {
-		// Don't bind default event handlers, because they are already auto-bound inside FormInstance.
-		if (eventHandler.runAt.indexOf("form:") === 0) {
-			continue;
-		}
-		
-		formComponent.on(eventHandler.runAt, e => {
-			// Augment event args with form which is firing the event. This is needed,
-			// so that event handler can know from which particular form this event is coming.
-			e.form = formComponent;
-			
-			formInstance.handleEvent(eventHandler.runAt, eventHandler, e);
-		});
-	}
-}
-
-function data$5() {
-	return {
-		disabled: false,
-		tabindex: tabindex,
-		urlData: null,
-		initialized: false,
-		responseMetadata: {},
-		useUrl: true,
-		parent: null, // Can be set if this is a nested form within another form (i.e. - InlineForm.html)
-		inputs: []
-	};
-}
-
-var methods$6 = {
-	init: async function () {
-		if (!this.get("initialized")) {
-			var form = this.get("form");
-
-			this.set({
-				self: this,
-				initialized: true,
-				visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
-				submitButtonLabel: form.metadata.getCustomProperty("submitButtonLabel") || "Submit",
-				cssClass: form.metadata.getCustomProperty("cssClass") || "",
-				documentation : form.metadata.getCustomProperty("documentation")
-			});
-
-			tabindex += 1;
-
-			var app = this.get("app");
-
-			// Subscribe all event handlers (form, inputs, outputs).
-			var formMetadata = form.metadata;
-			var handlers = [];
-			formMetadata.inputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
-			formMetadata.outputFields.forEach(t => t.eventHandlers.forEach(h => handlers.push(h)));
-			formMetadata.eventHandlers.forEach(h => handlers.push(h));
-			bindEventHandlersToCustomEvents(this, handlers);
-
-			form.fire("form:loaded", { app: app });
-
-			// Auto-submit form if necessary.
-			if (form.metadata.postOnLoad) {
-				await this.submit();
-			}
-
-			openForms.push(this);
-
-			if (this.get("parent") == null) {
-				if(this.get("responseMetadata").title == null){
-					document.title = form.metadata.label;
-				}						
-			}
-		}
-	},
-	fireAndBubbleUp(eventName, eventArgs) {
-		this.fire(eventName, eventArgs);
-		var parentFormComponent = this.get("parent");
-
-		if (parentFormComponent != null) {
-			parentFormComponent.fireAndBubbleUp(eventName, eventArgs);
-		}
-	},
-	enableForm: function() {
-		var formInstance = this.get("form");
-
-		// Hide all inputs, to re-render them. This is needed due to the way that
-		// Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
-		this.set({ visibleInputFields: [] });
-
-		this.set({
-			// Show inputs again.
-			visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
-
-			disabled: false
-		});
-	},
-	renderResponse: function(response) {
-		var formInstance = this.get("form");
-
-		// Force Svelte to re-render outputs.
-		this.set({
-			outputFieldValues: null
-		});
-
-		this.set({
-			outputFieldValues: formInstance.outputs,
-			responseMetadata: response.metadata
-		});
-
-		if(this.get("parent") == null){
-			document.title = response.metadata.title;
-		}
-	},
-	submit: async function (event, redirect) {
-		var self = this;
-		var formInstance = this.get("form");
-		var app = this.get("app");
-					
-		if (event != null) {
-			event.preventDefault();
-		}
-		
-		// If not all required inputs are filled.
-		var allRequiredInputsHaveValues = await formInstance.allRequiredInputsHaveData(redirect == null);
-		if (!allRequiredInputsHaveValues) {
-			return;
-		}
-
-		// Disable double-posts.
-		self.set({ disabled: true });
-
-		// If postOnLoad == true, then the input field values should appear in the url.
-		// Reason is that postOnLoad == true is used by "report" pages, which need
-		// their filters to be saved in the url. This does not apply to forms
-		// with postOnLoad == false, because those forms are usually for creating new data
-		// and hence should not be tracked in browser's history based on parameters.
-		if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
-			let urlParams = await formInstance.getSerializedInputValues();
-			
-			// Update url in the browser.
-			app.go(formInstance.metadata.id, urlParams);
-			
-			return;
-		}
-		
-		try {
-			var response = await formInstance.submit(app, redirect == null, { formComponent: self });
-			
-			self.enableForm();
-
-			// Signal event to child controls.
-			self.fire("form:responseHandled", {
-				form: self,
-				invokedByUser: event != null,
-				response: response
-			});
-		}
-		catch(e) {
-			self.enableForm();
-		}
-	},
-	reloadTopForm() {
-		var parentFormComponent = this.get("parent");
-		
-		if (parentFormComponent != null) {
-			parentFormComponent.reloadTopForm();
-		}
-		else {
-			let app = this.get("app");
-			let formInstance = this.get("form");
-			this.submit(null, true);
-		}
-	},
-	reloadAllForms() {				
-		for (let f of openForms) {
-			f.reloadTopForm();
-		}				
-	},
-	getInputComponent(inputId) {
-		return this.get("inputs").find(t => t.get("field").metadata.id === inputId);
-	}
-};
-
-function ondestroy() {
-	openForms = openForms.filter(f => f !== this);
-}
-
-function add_css$7() {
-	var style = createElement("style");
-	style.id = 'svelte-1rxpcdc-style';
-	style.textContent = ".svelte-1rxpcdc.response,.svelte-1rxpcdc .response{margin-top:15px;padding-left:10px;padding-right:10px}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$21(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.initialized) && create_if_block$12(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.initialized) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$12(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (8:3) {{#each  documentation as document }}
-function create_each_block$8(component, state) {
-	var document_1 = state.document, each_value = state.each_value, document_index = state.document_index;
-
-	var help_initial_data = { data: document_1 };
-	var help = new SvelteComponent$22({
-		root: component.root,
-		data: help_initial_data
-	});
-
-	return {
-		c: function create() {
-			help._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			help._mount(target, anchor);
-		},
-
-		p: function update(changed, state) {
-			document_1 = state.document;
-			each_value = state.each_value;
-			document_index = state.document_index;
-			var help_changes = {};
-			if (changed.documentation) help_changes.data = document_1;
-			help._set(help_changes);
-		},
-
-		u: function unmount() {
-			help._unmount();
-		},
-
-		d: function destroy$$1() {
-			help.destroy(false);
-		}
-	};
-}
-
-// (7:2) {{#if documentation }}
-function create_if_block_2$5(component, state) {
-	var each_anchor;
-
-	var each_value = state.documentation;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$8(component, assign(assign({}, state), {
-			each_value: each_value,
-			document: each_value[i],
-			document_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			each_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(target, anchor);
-			}
-
-			insertNode(each_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.documentation;
-
-			if (changed.documentation) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						document: each_value[i],
-						document_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$8(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(each_anchor.parentNode, each_anchor);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-
-			detachNode(each_anchor);
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (3:2) {{#if (responseMetadata.title != null && responseMetadata.title != "") || (metadata.label != null && metadata.label != "")}}
-function create_if_block_1$9(component, state) {
-	var div, h2, text_value = state.responseMetadata.title || state.metadata.label, text, text_1;
-
-	var if_block = (state.documentation) && create_if_block_2$5(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			h2 = createElement("h2");
-			text = createText(text_value);
-			text_1 = createText("\t\t \r\n\t\t\r\n\t\t");
-			if (if_block) if_block.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "form-header";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(h2, div);
-			appendNode(text, h2);
-			appendNode(text_1, div);
-			if (if_block) if_block.m(div, null);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.responseMetadata || changed.metadata) && text_value !== (text_value = state.responseMetadata.title || state.metadata.label)) {
-				text.data = text_value;
-			}
-
-			if (state.documentation) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_2$5(component, state);
-					if_block.c();
-					if_block.m(div, null);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-			if (if_block) if_block.u();
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (20:2) {{#each visibleInputFields as inputField}}
-function create_each_block_1$2(component, state) {
-	var inputField = state.inputField, each_value_1 = state.each_value_1, inputField_index = state.inputField_index;
-
-	var forminput_initial_data = {
-	 	field: inputField,
-	 	app: state.app,
-	 	tabindex: state.tabindex * 100 + inputField.metadata.orderIndex,
-	 	form: state.self
-	 };
-	var forminput = new SvelteComponent$10({
-		root: component.root,
-		data: forminput_initial_data
-	});
-
-	return {
-		c: function create() {
-			forminput._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			forminput._mount(target, anchor);
-		},
-
-		p: function update(changed, state) {
-			inputField = state.inputField;
-			each_value_1 = state.each_value_1;
-			inputField_index = state.inputField_index;
-			var forminput_changes = {};
-			if (changed.visibleInputFields) forminput_changes.field = inputField;
-			if (changed.app) forminput_changes.app = state.app;
-			if (changed.tabindex || changed.visibleInputFields) forminput_changes.tabindex = state.tabindex * 100 + inputField.metadata.orderIndex;
-			if (changed.self) forminput_changes.form = state.self;
-			forminput._set(forminput_changes);
-		},
-
-		u: function unmount() {
-			forminput._unmount();
-		},
-
-		d: function destroy$$1() {
-			forminput.destroy(false);
-		}
-	};
-}
-
-// (17:1) {{#if initialized && visibleInputFields.length > 0}}
-function create_if_block_3(component, state) {
-	var div, form, text, button;
-
-	var each_value_1 = state.visibleInputFields;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1$2(component, assign(assign({}, state), {
-			each_value_1: each_value_1,
-			inputField: each_value_1[i],
-			inputField_index: i
-		}));
-	}
-
-	function submit_handler(event) {
-		component.submit(event, true);
-	}
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			form = createElement("form");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			text = createText("\r\n\r\n\t\t");
-			button = createElement("button");
-			this.h();
-		},
-
-		h: function hydrate() {
-			button.type = "submit";
-			button.disabled = state.disabled;
-			button.tabIndex = "-1";
-			button.className = "btn btn-info";
-			addListener$1(form, "submit", submit_handler);
-			div.className = "form-body";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(form, div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(form, null);
-			}
-
-			appendNode(text, form);
-			appendNode(button, form);
-			button.innerHTML = state.submitButtonLabel;
-		},
-
-		p: function update(changed, state) {
-			var each_value_1 = state.visibleInputFields;
-
-			if (changed.visibleInputFields || changed.app || changed.tabindex || changed.self) {
-				for (var i = 0; i < each_value_1.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_1: each_value_1,
-						inputField: each_value_1[i],
-						inputField_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_1$2(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(form, text);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_1.length;
-			}
-
-			if (changed.submitButtonLabel) {
-				button.innerHTML = state.submitButtonLabel;
-			}
-
-			if (changed.disabled) {
-				button.disabled = state.disabled;
-			}
-		},
-
-		u: function unmount() {
-			button.innerHTML = '';
-
-			detachNode(div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-
-			removeListener$1(form, "submit", submit_handler);
-		}
-	};
-}
-
-// (31:2) {{#each outputFieldValues as outputField }}
-function create_each_block_2$2(component, state) {
-	var outputField = state.outputField, each_value_2 = state.each_value_2, outputField_index = state.outputField_index;
-	var if_block_anchor;
-
-	var if_block = (outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)) && create_if_block_5(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			outputField = state.outputField;
-			each_value_2 = state.each_value_2;
-			outputField_index = state.outputField_index;
-			if (outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_5(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (32:2) {{#if outputField.metadata.hidden == false && !(outputField.metadata.getCustomProperty("hideIfNull") === true && outputField.data === null)}}
-function create_if_block_5(component, state) {
-	var outputField = state.outputField, each_value_2 = state.each_value_2, outputField_index = state.outputField_index;
-
-	var formoutput_initial_data = {
-	 	field: outputField,
-	 	app: state.app,
-	 	form: state.form,
-	 	parent: state.self
-	 };
-	var formoutput = new SvelteComponent$15({
-		root: component.root,
-		data: formoutput_initial_data
-	});
-
-	return {
-		c: function create() {
-			formoutput._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			formoutput._mount(target, anchor);
-		},
-
-		p: function update(changed, state) {
-			outputField = state.outputField;
-			each_value_2 = state.each_value_2;
-			outputField_index = state.outputField_index;
-			var formoutput_changes = {};
-			if (changed.outputFieldValues) formoutput_changes.field = outputField;
-			if (changed.app) formoutput_changes.app = state.app;
-			if (changed.form) formoutput_changes.form = state.form;
-			if (changed.self) formoutput_changes.parent = state.self;
-			formoutput._set(formoutput_changes);
-		},
-
-		u: function unmount() {
-			formoutput._unmount();
-		},
-
-		d: function destroy$$1() {
-			formoutput.destroy(false);
-		}
-	};
-}
-
-// (29:1) {{#if outputFieldValues != null}}
-function create_if_block_4(component, state) {
-	var div;
-
-	var each_value_2 = state.outputFieldValues;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value_2.length; i += 1) {
-		each_blocks[i] = create_each_block_2$2(component, assign(assign({}, state), {
-			each_value_2: each_value_2,
-			outputField: each_value_2[i],
-			outputField_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			div = createElement("div");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "response";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(div, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value_2 = state.outputFieldValues;
-
-			if (changed.outputFieldValues || changed.app || changed.form || changed.self) {
-				for (var i = 0; i < each_value_2.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value_2: each_value_2,
-						outputField: each_value_2[i],
-						outputField_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block_2$2(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(div, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value_2.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (1:0) {{#if initialized}}
-function create_if_block$12(component, state) {
-	var div, text, text_1, div_class_value;
-
-	var if_block = ((state.responseMetadata.title != null && state.responseMetadata.title != "") || (state.metadata.label != null && state.metadata.label != "")) && create_if_block_1$9(component, state);
-
-	var if_block_1 = (state.initialized && state.visibleInputFields.length > 0) && create_if_block_3(component, state);
-
-	var if_block_2 = (state.outputFieldValues != null) && create_if_block_4(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			if (if_block) if_block.c();
-			text = createText("\r\n\r\n\t");
-			if (if_block_1) if_block_1.c();
-			text_1 = createText("\r\n\r\n\t");
-			if (if_block_2) if_block_2.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = div_class_value = "" + state.cssClass + " svelte-1rxpcdc";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			if (if_block) if_block.m(div, null);
-			appendNode(text, div);
-			if (if_block_1) if_block_1.m(div, null);
-			appendNode(text_1, div);
-			if (if_block_2) if_block_2.m(div, null);
-		},
-
-		p: function update(changed, state) {
-			if ((state.responseMetadata.title != null && state.responseMetadata.title != "") || (state.metadata.label != null && state.metadata.label != "")) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_1$9(component, state);
-					if_block.c();
-					if_block.m(div, text);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-
-			if (state.initialized && state.visibleInputFields.length > 0) {
-				if (if_block_1) {
-					if_block_1.p(changed, state);
-				} else {
-					if_block_1 = create_if_block_3(component, state);
-					if_block_1.c();
-					if_block_1.m(div, text_1);
-				}
-			} else if (if_block_1) {
-				if_block_1.u();
-				if_block_1.d();
-				if_block_1 = null;
-			}
-
-			if (state.outputFieldValues != null) {
-				if (if_block_2) {
-					if_block_2.p(changed, state);
-				} else {
-					if_block_2 = create_if_block_4(component, state);
-					if_block_2.c();
-					if_block_2.m(div, null);
-				}
-			} else if (if_block_2) {
-				if_block_2.u();
-				if_block_2.d();
-				if_block_2 = null;
-			}
-
-			if ((changed.cssClass) && div_class_value !== (div_class_value = "" + state.cssClass + " svelte-1rxpcdc")) {
-				div.className = div_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-			if (if_block) if_block.u();
-			if (if_block_1) if_block_1.u();
-			if (if_block_2) if_block_2.u();
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-			if (if_block_1) if_block_1.d();
-			if (if_block_2) if_block_2.d();
-		}
-	};
-}
-
 function SvelteComponent$21(options) {
 	init(this, options);
-	this._state = assign(data$5(), options.data);
+	this._state = assign({}, options.data);
 
-	this._handlers.destroy = [ondestroy];
-
-	if (!document.getElementById("svelte-1rxpcdc-style")) add_css$7();
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
+	if (!document.getElementById("svelte-ir2wwh-style")) add_css$10();
 
 	this._fragment = create_main_fragment$21(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
 		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
 	}
 }
 
 assign(SvelteComponent$21.prototype, proto);
-assign(SvelteComponent$21.prototype, methods$6);
 
 /**
  * Represents an event triggered by an action-list.
@@ -20564,12 +27849,14 @@ var ActionListEventArguments = (function (_super) {
 }(FormEventArguments));
 
 /* src\core\ui\outputs\ActionList.html generated by Svelte v1.64.1 */
+var alertify$3 = alertify$1;
+
 var modalId = 0;
 var modals = [];
 
 // https://stackoverflow.com/a/3369743/111438
 // Close topmost modal when user presses escape key.
-document.onkeydown = function(evt) {
+document.addEventListener("keydown", function (evt) {
 	evt = evt || window.event;
 	var isEscape = false;
 	if ("key" in evt) {
@@ -20583,9 +27870,9 @@ document.onkeydown = function(evt) {
 			modals[modals.length - 1].close();
 		}
 	}
-};
+});
 
-function data$4() {
+function data$6() {
 	modalId += 1;
 	return {
 		open: false,
@@ -20594,26 +27881,35 @@ function data$4() {
 	}
 }
 
-var methods$5 = {
+var methods$9 = {
 	async run(action, app) {
 		var self = this;
-
 		var formInstance = app.getFormInstance(action.form, true);
-		
+
 		// TODO: find a way to initialize from action.inputFieldValues directly.
 		var serializedInputValues = formInstance.getSerializedInputValuesFromObject(action.inputFieldValues);
 		await formInstance.initializeInputFields(serializedInputValues);
-		
+
 		var allRequiredInputsHaveData = await formInstance.allRequiredInputsHaveData(false);
-		
 		if (action.action === "run" && allRequiredInputsHaveData) {
-			var response = await formInstance.submit(this.get("app"), false);					
-			this.onActionRun(formInstance.metadata.id, response, action);
+			if (action.confirmationMessage) {
+				alertify$3.confirm("Warning",
+				action.confirmationMessage,
+				async function(){
+					var response = await formInstance.submit(self.get("app"), false);
+					self.onActionRun(formInstance.metadata.id, response, action);
+				   }, 
+				  function(){ return;});
+
+			} else {
+				var response = await formInstance.submit(this.get("app"), false);
+				this.onActionRun(formInstance.metadata.id, response, action);
+			}
 		}
 		else {
 			this.set({ open: true });
 
-			var f = new SvelteComponent$21({
+			var f = new SvelteComponent$3({
 				target: this.refs.container,
 				data: {
 					metadata: formInstance.metadata,
@@ -20632,47 +27928,35 @@ var methods$5 = {
 				}
 			});
 
-			this.set({current: f});
+			this.set({ current: f });
 
 			modals.push(self);
 		}
 	},
-	close(response, fromBtnClick) {
-		// If user clicked "close" button then the "open" would have already
-		// been set to false (because the close button is linked to the hidden input). 
-		// In such case setting "open" to false will actually result in the "open"
-		// being set to true. It is indeed very strange, but to avoid the problem we 
-		// do not set "open" to false if this is a result of the "close" button click.
-		if (!fromBtnClick) {
-			// Ensure the modal div is hidden.
-			this.set({ open: false });
-		}
+	close(response) {
+		this.set({ open: false });
 
 		// Destroy underlying form instance.
 		var modalForm = this.get("current");
-		
+
 		if (response != null) {
 			let formId = modalForm.get("metadata").id;
 			this.onActionRun(formId, response);
 		}
 
 		modalForm.destroy();
-		modals.pop(this);
+		modals.pop();
 	},
 	async onActionRun(formId, response, action) {
 		let parentForm = this.get("parent");
 		let app = parentForm.get("app");
 		let formInstance = parentForm.get("form");
 
-		if (response.metadata.handler !== "redirect") {
+		if (response.metadata.handler !== "redirect" &&
+			response.metadata.handler !== "reload") {
 			// If asked to redirect to another form, then we redirect
 			// and do not reload parent form, as that would be a wasted effort.
-			if (action != null && action.redirectTo != null) {
-				app.go(action.redirectTo.form, action.redirectTo.inputFieldValues);
-			}
-			else {
-				await parentForm.submit(null, true);
-			}
+			await parentForm.submit(null, true);
 		}
 
 		var eventArgs = new ActionListEventArguments(app, formId);
@@ -20680,17 +27964,17 @@ var methods$5 = {
 	}
 };
 
-function add_css$6() {
+function add_css$11() {
 	var style = createElement("style");
-	style.id = 'svelte-1n5622n-style';
-	style.textContent = ".svelte-1n5622n.hidden,.svelte-1n5622n .hidden{width:0;height:0;position:absolute;left:-1000px}.svelte-1n5622n.actionlist,.svelte-1n5622n .actionlist{margin:0px 0;padding:0 5px;text-align:right;background:#fff;margin-bottom:15px}.svelte-1n5622n.actionlist>li,.svelte-1n5622n .actionlist>li{list-style-type:none;display:inline-block}";
+	style.id = 'svelte-18rgmdq-style';
+	style.textContent = ".svelte-18rgmdq.hidden,.svelte-18rgmdq .hidden{width:0;height:0;position:absolute;left:-1000px}.svelte-18rgmdq.actionlist,.svelte-18rgmdq .actionlist{margin:0px 0;padding:0 5px;text-align:right;margin-bottom:15px}.svelte-18rgmdq.actionlist>li,.svelte-18rgmdq .actionlist>li{list-style-type:none;display:inline-block}";
 	appendNode(style, document.head);
 }
 
-function create_main_fragment$20(component, state) {
+function create_main_fragment$22(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null && state.field.data.actions != null && state.field.data.actions.length > 0) && create_if_block$11(component, state);
+	var if_block = (state.field.data != null && state.field.data.actions != null && state.field.data.actions.length > 0) && create_if_block$15(component, state);
 
 	return {
 		c: function create() {
@@ -20708,7 +27992,7 @@ function create_main_fragment$20(component, state) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$11(component, state);
+					if_block = create_if_block$15(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -20731,13 +28015,13 @@ function create_main_fragment$20(component, state) {
 }
 
 // (3:1) {{#each field.data.actions as action}}
-function create_each_block$7(component, state) {
+function create_each_block$8(component, state) {
 	var action = state.action, each_value = state.each_value, action_index = state.action_index;
 	var li;
 
 	function select_block_type(state) {
-		if (action.action !== "redirect") return create_if_block_1$8;
-		return create_if_block_2$4;
+		if (action.action !== "redirect") return create_if_block_1$9;
+		return create_if_block_2$8;
 	}
 
 	var current_block_type = select_block_type(state);
@@ -20781,7 +28065,7 @@ function create_each_block$7(component, state) {
 }
 
 // (5:2) {{#if action.action !== "redirect"}}
-function create_if_block_1$8(component, state) {
+function create_if_block_1$9(component, state) {
 	var action = state.action, each_value = state.each_value, action_index = state.action_index;
 	var button, raw_value = action.label, button_class_value;
 
@@ -20792,7 +28076,7 @@ function create_if_block_1$8(component, state) {
 		},
 
 		h: function hydrate() {
-			addListener$1(button, "click", click_handler$1);
+			addListener$1(button, "click", click_handler$2);
 			button.className = button_class_value = "btn btn-default " + action.cssClass;
 
 			button._svelte = {
@@ -20830,13 +28114,13 @@ function create_if_block_1$8(component, state) {
 		},
 
 		d: function destroy$$1() {
-			removeListener$1(button, "click", click_handler$1);
+			removeListener$1(button, "click", click_handler$2);
 		}
 	};
 }
 
-// (7:2) {{else}}
-function create_if_block_2$4(component, state) {
+// (7:2) {{else }}
+function create_if_block_2$8(component, state) {
 	var action = state.action, each_value = state.each_value, action_index = state.action_index;
 	var a, text_value = action.label, text, a_href_value, a_class_value;
 
@@ -20883,15 +28167,15 @@ function create_if_block_2$4(component, state) {
 }
 
 // (1:0) {{#if field.data != null && field.data.actions != null && field.data.actions.length > 0}}
-function create_if_block$11(component, state) {
-	var ul, text, input, input_id_value, text_1, div, div_1, label, label_for_value, text_2, div_2;
+function create_if_block$15(component, state) {
+	var ul, text, input, input_id_value, text_1, div, div_1, label, text_2, div_2;
 
 	var each_value = state.field.data.actions;
 
 	var each_blocks = [];
 
 	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$7(component, assign(assign({}, state), {
+		each_blocks[i] = create_each_block$8(component, assign(assign({}, state), {
 			each_value: each_value,
 			action: each_value[i],
 			action_index: i
@@ -20903,7 +28187,7 @@ function create_if_block$11(component, state) {
 	}
 
 	function click_handler_1(event) {
-		component.close(null, true);
+		component.close();
 	}
 
 	return {
@@ -20926,16 +28210,15 @@ function create_if_block$11(component, state) {
 		},
 
 		h: function hydrate() {
-			ul.className = "actionlist svelte-1n5622n";
+			ul.className = "actionlist svelte-18rgmdq";
 			addListener$1(input, "change", input_change_handler);
 			input.id = input_id_value = "modal-" + state.modalId;
 			setAttribute(input, "type", "checkbox");
-			input.className = "hidden svelte-1n5622n";
+			input.className = "hidden svelte-18rgmdq";
 			addListener$1(label, "click", click_handler_1);
-			label.htmlFor = label_for_value = "modal-" + state.modalId;
 			label.className = "close";
 			div_1.className = "card";
-			div.className = "modal svelte-1n5622n";
+			div.className = "modal svelte-18rgmdq";
 		},
 
 		m: function mount(target, anchor) {
@@ -20973,7 +28256,7 @@ function create_if_block$11(component, state) {
 					if (each_blocks[i]) {
 						each_blocks[i].p(changed, each_context);
 					} else {
-						each_blocks[i] = create_each_block$7(component, each_context);
+						each_blocks[i] = create_each_block$8(component, each_context);
 						each_blocks[i].c();
 						each_blocks[i].m(ul, null);
 					}
@@ -20989,10 +28272,6 @@ function create_if_block$11(component, state) {
 			input.checked = state.open;
 			if ((changed.modalId) && input_id_value !== (input_id_value = "modal-" + state.modalId)) {
 				input.id = input_id_value;
-			}
-
-			if ((changed.modalId) && label_for_value !== (label_for_value = "modal-" + state.modalId)) {
-				label.htmlFor = label_for_value;
 			}
 		},
 
@@ -21019,21 +28298,21 @@ function create_if_block$11(component, state) {
 	};
 }
 
-function click_handler$1(event) {
+function click_handler$2(event) {
 	var component = this._svelte.component;
 	var each_value = this._svelte.each_value, action_index = this._svelte.action_index, action = each_value[action_index];
 	var state = component.get();
 	component.run(action, state.app);
 }
 
-function SvelteComponent$20(options) {
+function SvelteComponent$22(options) {
 	init(this, options);
 	this.refs = {};
-	this._state = assign(data$4(), options.data);
+	this._state = assign(data$6(), options.data);
 
-	if (!document.getElementById("svelte-1n5622n-style")) add_css$6();
+	if (!document.getElementById("svelte-18rgmdq-style")) add_css$11();
 
-	this._fragment = create_main_fragment$20(this, this._state);
+	this._fragment = create_main_fragment$22(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -21041,169 +28320,21 @@ function SvelteComponent$20(options) {
 	}
 }
 
-assign(SvelteComponent$20.prototype, proto);
-assign(SvelteComponent$20.prototype, methods$5);
+assign(SvelteComponent$22.prototype, proto);
+assign(SvelteComponent$22.prototype, methods$9);
 
-/* src\core\ui\outputs\InlineForm.html generated by Svelte v1.64.1 */
-function oncreate$9() {
-	var app = this.get("app");
-	var field = this.get("field");
-	var parentFormComponent = this.get("parent");
-
-	var formInstance = app.getFormInstance(field.data.form, true);	
-	
-	formInstance.initializeInputFields(field.data.inputFieldValues).then(() => {
-		var f = new SvelteComponent$21({
-			target: this.refs.container,
-			data: {
-				metadata: formInstance.metadata,
-				form: formInstance,
-				app: app,
-				useUrl: false,
-				parent: parentFormComponent
-			}
-		});
-
-		f.init();
-
-		this.set({current: f});
-	});
-
-	this.get("parent").on("destroy", () => this.destroy());
-}
-
-function ondestroy$1() {
-	var form = this.get("current");
-	
-	if (form != null){
-		form.destroy();
-	}
-}
-
-function add_css$9() {
+/* src\core\ui\outputs\Alert.html generated by Svelte v1.64.1 */
+function add_css$12() {
 	var style = createElement("style");
-	style.id = 'svelte-1ugl68o-style';
-	style.textContent = ".svelte-1ugl68o.inline-form,.svelte-1ugl68o .inline-form{border-width:1px 1px 1px;border-style:solid;border-color:#bbd2d6;margin:30px 0;border-radius:5px}.svelte-1ugl68o.inline-form .form-header,.svelte-1ugl68o .inline-form .form-header{border-bottom:none;padding-top:0;padding-bottom:0;background:#eee;padding:10px 15px 15px}.svelte-1ugl68o.inline-form .response,.svelte-1ugl68o .inline-form .response{margin-top:0;padding:10px 15px}.svelte-1ugl68o.inline-form h2,.svelte-1ugl68o .inline-form h2{margin:0;font-size:15px}.svelte-1ugl68o.inline-form .response .form-header,.svelte-1ugl68o .inline-form .response .form-header{padding-top:20px;padding-bottom:10px;border-bottom:1px solid #bbd2d6;background-color:#fff\r\n\t}.svelte-1ugl68o.inline-form .response h2,.svelte-1ugl68o .inline-form .response h2{font-size:2rem}";
+	style.id = 'svelte-wlqxjg-style';
+	style.textContent = ".svelte-wlqxjg.alert,.svelte-wlqxjg .alert{margin:5px 8px;padding:10px 15px;border:1px solid #bbb}.svelte-wlqxjg.alert>.heading,.svelte-wlqxjg .alert>.heading{font-weight:bold;font-size:16px}.svelte-wlqxjg.alert.success,.svelte-wlqxjg .alert.success{background:#EBFFF8}.svelte-wlqxjg.alert.warning,.svelte-wlqxjg .alert.warning{background:#FDFFEB}.svelte-wlqxjg.alert.danger,.svelte-wlqxjg .alert.danger{background:#FFEAEA}";
 	appendNode(style, document.head);
 }
 
 function create_main_fragment$23(component, state) {
-	var div;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "inline-form svelte-1ugl68o";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			component.refs.container = div;
-		},
-
-		p: noop$1,
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: function destroy$$1() {
-			if (component.refs.container === div) component.refs.container = null;
-		}
-	};
-}
-
-function SvelteComponent$23(options) {
-	init(this, options);
-	this.refs = {};
-	this._state = assign({}, options.data);
-
-	this._handlers.destroy = [ondestroy$1];
-
-	if (!document.getElementById("svelte-1ugl68o-style")) add_css$9();
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = {  };
-		oncreate$9.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-	}
-
-	this._fragment = create_main_fragment$23(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		callAll(this._oncreate);
-	}
-}
-
-assign(SvelteComponent$23.prototype, proto);
-
-/* src\core\ui\outputs\TextValue.html generated by Svelte v1.64.1 */
-function create_main_fragment$24(component, state) {
-	var text_value = state.field.data.value, text;
-
-	return {
-		c: function create() {
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.value)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$24(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	this._fragment = create_main_fragment$24(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$24.prototype, proto);
-
-/* src\core\ui\outputs\TextValueMultiline.html generated by Svelte v1.64.1 */
-function add_css$10() {
-	var style = createElement("style");
-	style.id = 'svelte-1255lu1-style';
-	style.textContent = "div.svelte-1255lu1,.svelte-1255lu1 div{white-space:pre;margin:0 0px 5px 0px;padding:5px 15px}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$25(component, state) {
 	var if_block_anchor;
 
-	var if_block = ((state.field.data || {}).value != null) && create_if_block$14(component, state);
+	var if_block = (state.field.data != null) && create_if_block$16(component, state);
 
 	return {
 		c: function create() {
@@ -21217,11 +28348,11 @@ function create_main_fragment$25(component, state) {
 		},
 
 		p: function update(changed, state) {
-			if ((state.field.data || {}).value != null) {
+			if (state.field.data != null) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$14(component, state);
+					if_block = create_if_block$16(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -21243,9 +28374,9 @@ function create_main_fragment$25(component, state) {
 	};
 }
 
-// (1:0) {{#if (field.data || {}).value != null}}
-function create_if_block$14(component, state) {
-	var div, text_value = state.field.data.value, text;
+// (3:1) {{#if field.data.heading != null}}
+function create_if_block_1$10(component, state) {
+	var div, text_value = state.field.data.heading, text;
 
 	return {
 		c: function create() {
@@ -21255,7 +28386,7 @@ function create_if_block$14(component, state) {
 		},
 
 		h: function hydrate() {
-			div.className = "svelte-1255lu1";
+			div.className = "heading";
 		},
 
 		m: function mount(target, anchor) {
@@ -21264,7 +28395,7 @@ function create_if_block$14(component, state) {
 		},
 
 		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.value)) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.heading)) {
 				text.data = text_value;
 			}
 		},
@@ -21277,11 +28408,929 @@ function create_if_block$14(component, state) {
 	};
 }
 
-function SvelteComponent$25(options) {
+// (7:1) {{#if field.data.message != null}}
+function create_if_block_2$9(component, state) {
+	var div, raw_value = state.field.data.message;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "body";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			div.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && raw_value !== (raw_value = state.field.data.message)) {
+				div.innerHTML = raw_value;
+			}
+		},
+
+		u: function unmount() {
+			div.innerHTML = '';
+
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+// (1:0) {{#if field.data != null}}
+function create_if_block$16(component, state) {
+	var div, text, div_class_value;
+
+	var if_block = (state.field.data.heading != null) && create_if_block_1$10(component, state);
+
+	var if_block_1 = (state.field.data.message != null) && create_if_block_2$9(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n\t");
+			if (if_block_1) if_block_1.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = div_class_value = "alert " + state.field.data.style + " svelte-wlqxjg";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			if (if_block) if_block.m(div, null);
+			appendNode(text, div);
+			if (if_block_1) if_block_1.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data.heading != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$10(component, state);
+					if_block.c();
+					if_block.m(div, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.field.data.message != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_2$9(component, state);
+					if_block_1.c();
+					if_block_1.m(div, null);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+
+			if ((changed.field) && div_class_value !== (div_class_value = "alert " + state.field.data.style + " svelte-wlqxjg")) {
+				div.className = div_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+			if (if_block_1) if_block_1.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+function SvelteComponent$23(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	if (!document.getElementById("svelte-1255lu1-style")) add_css$10();
+	if (!document.getElementById("svelte-wlqxjg-style")) add_css$12();
+
+	this._fragment = create_main_fragment$23(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$23.prototype, proto);
+
+/* src\core\ui\outputs\Conversation.html generated by Svelte v1.64.1 */
+var axios$6 = index;
+
+function format$1(date) {
+	return hooks(date).format("D MMM YYYY HH:mm A");
+}
+
+var methods$10 = {
+	deleteComment: async function (key, id) {
+		var field = this.get().field;
+		if (confirm("Are you sure you want to delete the comment?")) {
+			axios$6.post("/api/form/run", JSON.stringify([
+				{
+					Form: "delete-comment",
+					RequestId: 1,
+					InputFieldValues: {
+						Key: key,
+						Id: id
+					}
+				}]),
+				{
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+				.then((response) => {
+					var indexToRemove = field.data.comments.findIndex(function (e) { return e.id == id });
+					if (indexToRemove > -1) {
+						field.data.comments.splice(indexToRemove, 1);
+						this.set({ field });
+					}
+				})
+				.catch((error) => {
+					var app = this.get("app");
+					app.showError(error.response.data.error);
+				});
+		}
+	},
+	postComment: async function (key, commentText) {
+		var field = this.get().field;
+		commentText = commentText.replace(/\n/g, '<br />');
+		var userName = field.data.userName;
+		axios$6.post("/api/form/run", JSON.stringify([
+			{
+				Form: "add-comment",
+				RequestId: 1,
+				InputFieldValues: {
+					Key: key,
+					Text: commentText
+				}
+			}]),
+			{
+				headers: {
+					"Content-Type": "application/json"
+				}
+			})
+			.then((response) => {
+				field.data.comments.push(response.data[0].data.comment);
+				this.set({
+					field: field,
+					commentText: null
+				});
+			})
+			.catch((error) => {
+				var app = this.get("app");
+				app.showError(error.response.data.error);
+			});
+	}
+};
+
+function oncreate$15() {
+	this.set({commentText: ""});
+}
+
+function add_css$13() {
+	var style = createElement("style");
+	style.id = 'svelte-1c4xtcs-style';
+	style.textContent = "a.svelte-1c4xtcs,.svelte-1c4xtcs a{color:#82b440;text-decoration:none}.svelte-1c4xtcs.blog-comment::before,.svelte-1c4xtcs .blog-comment::before,.svelte-1c4xtcs.blog-comment::after,.svelte-1c4xtcs .blog-comment::after,.svelte-1c4xtcs.blog-comment-form::before,.svelte-1c4xtcs .blog-comment-form::before,.svelte-1c4xtcs.blog-comment-form::after,.svelte-1c4xtcs .blog-comment-form::after{content:\"\";display:table;clear:both}.svelte-1c4xtcs.blog-comment ul,.svelte-1c4xtcs .blog-comment ul{list-style-type:none;padding:0}.svelte-1c4xtcs.blog-comment img,.svelte-1c4xtcs .blog-comment img{opacity:1;filter:Alpha(opacity=100);-webkit-border-radius:4px;-moz-border-radius:4px;-o-border-radius:4px;border-radius:4px}.svelte-1c4xtcs.blog-comment .post-comments,.svelte-1c4xtcs .blog-comment .post-comments{border:1px solid #eee;margin-bottom:5px;margin-right:0px;padding:10px 20px;position:relative;-webkit-border-radius:4px;-moz-border-radius:4px;-o-border-radius:4px;border-radius:4px;background:#fff;color:#6b6e80;position:relative}.svelte-1c4xtcs.blog-comment .meta,.svelte-1c4xtcs .blog-comment .meta{font-size:13px;color:#aaaaaa;padding-bottom:8px;margin-bottom:10px !important;border-bottom:1px solid #eee}.svelte-1c4xtcs.blog-comment ul.comments ul,.svelte-1c4xtcs .blog-comment ul.comments ul{list-style-type:none;padding:0;margin-left:85px}.svelte-1c4xtcs.blog-comment-form,.svelte-1c4xtcs .blog-comment-form{padding-left:15%;padding-right:15%;padding-top:40px}.svelte-1c4xtcs.blog-comment h3,.svelte-1c4xtcs .blog-comment h3,.svelte-1c4xtcs.blog-comment-form h3,.svelte-1c4xtcs .blog-comment-form h3{margin-bottom:40px;font-size:26px;line-height:30px;font-weight:800}.svelte-1c4xtcs.participants ul,.svelte-1c4xtcs .participants ul{list-style:none;display:inline-block;padding-left:0px;margin-left:0px}.svelte-1c4xtcs.participants ul li,.svelte-1c4xtcs .participants ul li{display:inline;background-color:#dff0d8;padding:2px 5px;margin:0px 2px;font-size:9pt;border-radius:5px}.svelte-1c4xtcs.form,.svelte-1c4xtcs .form{margin-left:8px;margin-right:8px}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$24(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$17(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$17(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (7:3) {{#each field.data.participants as participant}}
+function create_each_block$9(component, state) {
+	var participant = state.participant, each_value = state.each_value, participant_index = state.participant_index;
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (participant.description != "") return create_if_block_2$10;
+		return create_if_block_3$7;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			participant = state.participant;
+			each_value = state.each_value;
+			participant_index = state.participant_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (7:52) {{#if participant.description != ""}}
+function create_if_block_2$10(component, state) {
+	var participant = state.participant, each_value = state.each_value, participant_index = state.participant_index;
+	var li, text_value = participant.name, text, li_data_tooltip_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			li.dataset.tooltip = li_data_tooltip_value = participant.description;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(text, li);
+		},
+
+		p: function update(changed, state) {
+			participant = state.participant;
+			each_value = state.each_value;
+			participant_index = state.participant_index;
+			if ((changed.field) && text_value !== (text_value = participant.name)) {
+				text.data = text_value;
+			}
+
+			if ((changed.field) && li_data_tooltip_value !== (li_data_tooltip_value = participant.description)) {
+				li.dataset.tooltip = li_data_tooltip_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (9:3) {{ else }}
+function create_if_block_3$7(component, state) {
+	var participant = state.participant, each_value = state.each_value, participant_index = state.participant_index;
+	var li, text_value = participant.name, text;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(text, li);
+		},
+
+		p: function update(changed, state) {
+			participant = state.participant;
+			each_value = state.each_value;
+			participant_index = state.participant_index;
+			if ((changed.field) && text_value !== (text_value = participant.name)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (2:1) {{#if field.data.participants != null }}
+function create_if_block_1$11(component, state) {
+	var div, span, text, ul;
+
+	var each_value = state.field.data.participants;
+
+	var each_blocks = [];
+
+	for (var i_1 = 0; i_1 < each_value.length; i_1 += 1) {
+		each_blocks[i_1] = create_each_block$9(component, assign(assign({}, state), {
+			each_value: each_value,
+			participant: each_value[i_1],
+			participant_index: i_1
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			span = createElement("span");
+			span.innerHTML = "<i class=\"fa fa-info-circle\"></i>";
+			text = createText("\r\n\t\t");
+			ul = createElement("ul");
+
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.dataset.tooltip = "All participants will be notified by email for each new comment in this conversation";
+			div.className = "participants pull-right svelte-1c4xtcs";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(span, div);
+			appendNode(text, div);
+			appendNode(ul, div);
+
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.field.data.participants;
+
+			if (changed.field) {
+				for (var i_1 = 0; i_1 < each_value.length; i_1 += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						participant: each_value[i_1],
+						participant_index: i_1
+					});
+
+					if (each_blocks[i_1]) {
+						each_blocks[i_1].p(changed, each_context);
+					} else {
+						each_blocks[i_1] = create_each_block$9(component, each_context);
+						each_blocks[i_1].c();
+						each_blocks[i_1].m(ul, null);
+					}
+				}
+
+				for (; i_1 < each_blocks.length; i_1 += 1) {
+					each_blocks[i_1].u();
+					each_blocks[i_1].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i_1 = 0; i_1 < each_blocks.length; i_1 += 1) {
+				each_blocks[i_1].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (18:3) {{#each field.data.comments as comment}}
+function create_each_block_1$3(component, state) {
+	var comment = state.comment, each_value_1 = state.each_value_1, comment_index = state.comment_index;
+	var li, div, p, a, text_value = comment.author, text, text_1, small, text_2_value = format$1(comment.postedOn), text_2, text_3, text_5, p_1, raw_value = comment.text;
+
+	var if_block = (comment.canDelete) && create_if_block_5$2(component, state);
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			div = createElement("div");
+			p = createElement("p");
+			a = createElement("a");
+			text = createText(text_value);
+			text_1 = createText("\r\n\t\t\t\t\t\t");
+			small = createElement("small");
+			text_2 = createText(text_2_value);
+			text_3 = createText("\r\n\t\t\t\t\t\t");
+			if (if_block) if_block.c();
+			text_5 = createText("\r\n\t\t\t\t\t");
+			p_1 = createElement("p");
+			this.h();
+		},
+
+		h: function hydrate() {
+			p.className = "meta";
+			div.className = "post-comments";
+			li.className = "clearfix";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(div, li);
+			appendNode(p, div);
+			appendNode(a, p);
+			appendNode(text, a);
+			appendNode(text_1, p);
+			appendNode(small, p);
+			appendNode(text_2, small);
+			appendNode(text_3, p);
+			if (if_block) if_block.m(p, null);
+			appendNode(text_5, div);
+			appendNode(p_1, div);
+			p_1.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			comment = state.comment;
+			each_value_1 = state.each_value_1;
+			comment_index = state.comment_index;
+			if ((changed.field) && text_value !== (text_value = comment.author)) {
+				text.data = text_value;
+			}
+
+			if ((changed.field) && text_2_value !== (text_2_value = format$1(comment.postedOn))) {
+				text_2.data = text_2_value;
+			}
+
+			if (comment.canDelete) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_5$2(component, state);
+					if_block.c();
+					if_block.m(p, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if ((changed.field) && raw_value !== (raw_value = comment.text)) {
+				p_1.innerHTML = raw_value;
+			}
+		},
+
+		u: function unmount() {
+			p_1.innerHTML = '';
+
+			detachNode(li);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (24:6) {{#if comment.canDelete }}
+function create_if_block_5$2(component, state) {
+	var comment = state.comment, each_value_1 = state.each_value_1, comment_index = state.comment_index;
+	var i;
+
+	return {
+		c: function create() {
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(i, "click", click_handler$3);
+			i.className = "pull-right fa fa-times";
+
+			i._svelte = {
+				component: component,
+				each_value_1: state.each_value_1,
+				comment_index: state.comment_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(i, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			comment = state.comment;
+			each_value_1 = state.each_value_1;
+			comment_index = state.comment_index;
+			i._svelte.each_value_1 = state.each_value_1;
+			i._svelte.comment_index = state.comment_index;
+		},
+
+		u: function unmount() {
+			detachNode(i);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(i, "click", click_handler$3);
+		}
+	};
+}
+
+// (16:2) {{#if field.data.comments != null }}
+function create_if_block_4$5(component, state) {
+	var ul;
+
+	var each_value_1 = state.field.data.comments;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$3(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			comment: each_value_1[i],
+			comment_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "comments";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value_1 = state.field.data.comments;
+
+			if (changed.field) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						comment: each_value_1[i],
+						comment_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$3(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (35:1) {{#if field.data.canAddComments }}
+function create_if_block_6$1(component, state) {
+	var div, div_1, textarea, textarea_updating = false, text_1, div_2, button;
+
+	function textarea_input_handler() {
+		textarea_updating = true;
+		component.set({ commentText: textarea.value });
+		textarea_updating = false;
+	}
+
+	function click_handler_1(event) {
+		var state = component.get();
+		component.postComment(state.field.data.key, state.commentText);
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div_1 = createElement("div");
+			textarea = createElement("textarea");
+			text_1 = createText("\r\n\t\t");
+			div_2 = createElement("div");
+			button = createElement("button");
+			button.textContent = "Post comment";
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(textarea, "input", textarea_input_handler);
+			textarea.className = "form-control";
+			div_1.className = "form-group";
+			addListener$1(button, "click", click_handler_1);
+			button.className = "btn btn-default";
+			div_2.className = "form-group";
+			div.className = "form svelte-1c4xtcs";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(div_1, div);
+			appendNode(textarea, div_1);
+
+			textarea.value = state.commentText;
+
+			appendNode(text_1, div);
+			appendNode(div_2, div);
+			appendNode(button, div_2);
+		},
+
+		p: function update(changed, state) {
+			if (!textarea_updating) textarea.value = state.commentText;
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(textarea, "input", textarea_input_handler);
+			removeListener$1(button, "click", click_handler_1);
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null }}
+function create_if_block$17(component, state) {
+	var text, div, text_2, if_block_2_anchor;
+
+	var if_block = (state.field.data.participants != null) && create_if_block_1$11(component, state);
+
+	var if_block_1 = (state.field.data.comments != null) && create_if_block_4$5(component, state);
+
+	var if_block_2 = (state.field.data.canAddComments) && create_if_block_6$1(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			text = createText("\r\n\t");
+			div = createElement("div");
+			if (if_block_1) if_block_1.c();
+			text_2 = createText("\r\n\t");
+			if (if_block_2) if_block_2.c();
+			if_block_2_anchor = createComment();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "blog-comment svelte-1c4xtcs";
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(div, target, anchor);
+			if (if_block_1) if_block_1.m(div, null);
+			insertNode(text_2, target, anchor);
+			if (if_block_2) if_block_2.m(target, anchor);
+			insertNode(if_block_2_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data.participants != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$11(component, state);
+					if_block.c();
+					if_block.m(text.parentNode, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.field.data.comments != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_4$5(component, state);
+					if_block_1.c();
+					if_block_1.m(div, null);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+
+			if (state.field.data.canAddComments) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_6$1(component, state);
+					if_block_2.c();
+					if_block_2.m(if_block_2_anchor.parentNode, if_block_2_anchor);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(text);
+			detachNode(div);
+			if (if_block_1) if_block_1.u();
+			detachNode(text_2);
+			if (if_block_2) if_block_2.u();
+			detachNode(if_block_2_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+			if (if_block_2) if_block_2.d();
+		}
+	};
+}
+
+function click_handler$3(event) {
+	var component = this._svelte.component;
+	var state = component.get();
+	var each_value_1 = this._svelte.each_value_1, comment_index = this._svelte.comment_index, comment = each_value_1[comment_index];
+	component.deleteComment(state.field.data.key,comment.id);
+}
+
+function SvelteComponent$24(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-1c4xtcs-style")) add_css$13();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, commentText: 1 };
+		oncreate$15.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$24(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$24.prototype, proto);
+assign(SvelteComponent$24.prototype, methods$10);
+
+/* src\core\ui\outputs\Datetime.html generated by Svelte v1.64.1 */
+function format$2(field) {
+	 if(field.data != null){
+		 var dateTimeStyle = field.metadata.getCustomProperty("dateTimeStyle");
+		 var format ="D MMM YYYY";
+		 if(dateTimeStyle == "dateTime"){
+			format = "D MMM YYYY HH:mm A";
+		 }else if(dateTimeStyle == "time"){
+			 format = "HH:mm";
+		 }
+		 return hooks(field.data).format(format);
+	 }
+	return "";
+
+}
+
+function create_main_fragment$25(component, state) {
+	var text_value = format$2(state.field), text;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = format$2(state.field))) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$25(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
 
 	this._fragment = create_main_fragment$25(this, this._state);
 
@@ -21345,216 +29394,6 @@ function SvelteComponent$26(options) {
 
 assign(SvelteComponent$26.prototype, proto);
 
-/* src\core\ui\outputs\Alert.html generated by Svelte v1.64.1 */
-function add_css$11() {
-	var style = createElement("style");
-	style.id = 'svelte-wlqxjg-style';
-	style.textContent = ".svelte-wlqxjg.alert,.svelte-wlqxjg .alert{margin:5px 8px;padding:10px 15px;border:1px solid #bbb}.svelte-wlqxjg.alert>.heading,.svelte-wlqxjg .alert>.heading{font-weight:bold;font-size:16px}.svelte-wlqxjg.alert.success,.svelte-wlqxjg .alert.success{background:#EBFFF8}.svelte-wlqxjg.alert.warning,.svelte-wlqxjg .alert.warning{background:#FDFFEB}.svelte-wlqxjg.alert.danger,.svelte-wlqxjg .alert.danger{background:#FFEAEA}";
-	appendNode(style, document.head);
-}
-
-function create_main_fragment$27(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.field.data != null) && create_if_block$15(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$15(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (3:1) {{#if field.data.heading != null}}
-function create_if_block_1$11(component, state) {
-	var div, text_value = state.field.data.heading, text;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "heading";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(text, div);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.heading)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-// (7:1) {{#if field.data.message != null}}
-function create_if_block_2$7(component, state) {
-	var div, text_value = state.field.data.message, text;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "body";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			appendNode(text, div);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.field) && text_value !== (text_value = state.field.data.message)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-// (1:0) {{#if field.data != null}}
-function create_if_block$15(component, state) {
-	var div, text, div_class_value;
-
-	var if_block = (state.field.data.heading != null) && create_if_block_1$11(component, state);
-
-	var if_block_1 = (state.field.data.message != null) && create_if_block_2$7(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			if (if_block) if_block.c();
-			text = createText("\r\n\r\n\t");
-			if (if_block_1) if_block_1.c();
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = div_class_value = "alert " + state.field.data.style + " svelte-wlqxjg";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			if (if_block) if_block.m(div, null);
-			appendNode(text, div);
-			if (if_block_1) if_block_1.m(div, null);
-		},
-
-		p: function update(changed, state) {
-			if (state.field.data.heading != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block_1$11(component, state);
-					if_block.c();
-					if_block.m(div, text);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-
-			if (state.field.data.message != null) {
-				if (if_block_1) {
-					if_block_1.p(changed, state);
-				} else {
-					if_block_1 = create_if_block_2$7(component, state);
-					if_block_1.c();
-					if_block_1.m(div, null);
-				}
-			} else if (if_block_1) {
-				if_block_1.u();
-				if_block_1.d();
-				if_block_1 = null;
-			}
-
-			if ((changed.field) && div_class_value !== (div_class_value = "alert " + state.field.data.style + " svelte-wlqxjg")) {
-				div.className = div_class_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-			if (if_block) if_block.u();
-			if (if_block_1) if_block_1.u();
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-			if (if_block_1) if_block_1.d();
-		}
-	};
-}
-
-function SvelteComponent$27(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	if (!document.getElementById("svelte-wlqxjg-style")) add_css$11();
-
-	this._fragment = create_main_fragment$27(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$27.prototype, proto);
-
 /* src\core\ui\outputs\FileSize.html generated by Svelte v1.64.1 */
 function filesize(bytes) {
 	var si = true;
@@ -21577,7 +29416,7 @@ function filesize(bytes) {
 	return bytes.toFixed(1) + ' ' + units[u];
 }
 
-function create_main_fragment$28(component, state) {
+function create_main_fragment$27(component, state) {
 	var text_value = filesize(state.field.data.bytes), text;
 
 	return {
@@ -21603,11 +29442,11 @@ function create_main_fragment$28(component, state) {
 	};
 }
 
-function SvelteComponent$28(options) {
+function SvelteComponent$27(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	this._fragment = create_main_fragment$28(this, this._state);
+	this._fragment = create_main_fragment$27(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -21615,13 +29454,20 @@ function SvelteComponent$28(options) {
 	}
 }
 
-assign(SvelteComponent$28.prototype, proto);
+assign(SvelteComponent$27.prototype, proto);
 
-/* src\core\ui\outputs\Image.html generated by Svelte v1.64.1 */
-function create_main_fragment$29(component, state) {
+/* src\core\ui\outputs\FormInstance.html generated by Svelte v1.64.1 */
+function add_css$14() {
+	var style = createElement("style");
+	style.id = 'svelte-1sr43qe-style';
+	style.textContent = ".svelte-1sr43qe.icon,.svelte-1sr43qe .icon{margin-bottom:8px;font-size:19px}.svelte-1sr43qe.text,.svelte-1sr43qe .text{font-size:0.9rem}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$28(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null) && create_if_block$16(component, state);
+	var if_block = (state.field.data != null) && create_if_block$18(component, state);
 
 	return {
 		c: function create() {
@@ -21639,7 +29485,648 @@ function create_main_fragment$29(component, state) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$16(component, state);
+					if_block = create_if_block$18(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (3:1) {{#if field.data.isFormCompleted}}
+function create_if_block_1$12(component, state) {
+	var span, text, span_1;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			span.innerHTML = "<i class=\"fa fa-check-circle icon icon-success\"></i>";
+			text = createText("\r\n\t");
+			span_1 = createElement("span");
+			span_1.textContent = "Form completed";
+			this.h();
+		},
+
+		h: function hydrate() {
+			span_1.className = "font-italic";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(span_1, target, anchor);
+		},
+
+		u: function unmount() {
+			detachNode(span);
+			detachNode(text);
+			detachNode(span_1);
+		},
+
+		d: noop$1
+	};
+}
+
+// (6:1) {{else}}
+function create_if_block_2$11(component, state) {
+	var span, text, span_1;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			span.innerHTML = "<i class=\"fa fa-times-circle icon icon-danger\"></i>";
+			text = createText("\r\n\t");
+			span_1 = createElement("span");
+			span_1.textContent = "Form not completed";
+			this.h();
+		},
+
+		h: function hydrate() {
+			span_1.className = "font-italic";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(span_1, target, anchor);
+		},
+
+		u: function unmount() {
+			detachNode(span);
+			detachNode(text);
+			detachNode(span_1);
+		},
+
+		d: noop$1
+	};
+}
+
+// (13:0) {{#each field.data.values as input}}
+function create_each_block$10(component, state) {
+	var input = state.input, each_value = state.each_value, input_index = state.input_index;
+	var div, strong, text_value = input.label, text, text_1, text_2;
+
+	var if_block = (input.value != null) && create_if_block_4$6(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			strong = createElement("strong");
+			text = createText(text_value);
+			text_1 = createText(":");
+			text_2 = createText("\r\n\t");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			strong.className = "text";
+			setStyle(div, "padding-left", "30px");
+			div.className = "svelte-1sr43qe";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(strong, div);
+			appendNode(text, strong);
+			appendNode(text_1, strong);
+			appendNode(text_2, div);
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			input = state.input;
+			each_value = state.each_value;
+			input_index = state.input_index;
+			if ((changed.field) && text_value !== (text_value = input.label)) {
+				text.data = text_value;
+			}
+
+			if (input.value != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_4$6(component, state);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (16:1) {{#if input.value != null}}
+function create_if_block_4$6(component, state) {
+	var input = state.input, each_value = state.each_value, input_index = state.input_index;
+	var span, text_value = input.value, text;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			appendNode(text, span);
+		},
+
+		p: function update(changed, state) {
+			input = state.input;
+			each_value = state.each_value;
+			input_index = state.input_index;
+			if ((changed.field) && text_value !== (text_value = input.value)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(span);
+		},
+
+		d: noop$1
+	};
+}
+
+// (12:0) {{#if field.data.values != null}}
+function create_if_block_3$8(component, state) {
+	var each_anchor;
+
+	var each_value = state.field.data.values;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$10(component, assign(assign({}, state), {
+			each_value: each_value,
+			input: each_value[i],
+			input_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.field.data.values;
+
+			if (changed.field) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						input: each_value[i],
+						input_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$10(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null}}
+function create_if_block$18(component, state) {
+	var div, text_1, if_block_1_anchor;
+
+	function select_block_type(state) {
+		if (state.field.data.isFormCompleted) return create_if_block_1$12;
+		return create_if_block_2$11;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	var if_block_1 = (state.field.data.values != null) && create_if_block_3$8(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if_block.c();
+			text_1 = createText("\r\n");
+			if (if_block_1) if_block_1.c();
+			if_block_1_anchor = createComment();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "svelte-1sr43qe";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			if_block.m(div, null);
+			insertNode(text_1, target, anchor);
+			if (if_block_1) if_block_1.m(target, anchor);
+			insertNode(if_block_1_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type !== (current_block_type = select_block_type(state))) {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(div, null);
+			}
+
+			if (state.field.data.values != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_3$8(component, state);
+					if_block_1.c();
+					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if_block.u();
+			detachNode(text_1);
+			if (if_block_1) if_block_1.u();
+			detachNode(if_block_1_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+function SvelteComponent$28(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-1sr43qe-style")) add_css$14();
+
+	this._fragment = create_main_fragment$28(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$28.prototype, proto);
+
+/* src\core\ui\outputs\FormLink.html generated by Svelte v1.64.1 */
+function create_main_fragment$29(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$19(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$19(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (2:1) {{#if field.data.form != null}}
+function create_if_block_1$13(component, state) {
+	var a, text_value = state.field.data.label, text, a_href_value;
+
+	return {
+		c: function create() {
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.app.makeUrl(state.field.data.form, state.field.data.inputFieldValues);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(a, target, anchor);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.label)) {
+				text.data = text_value;
+			}
+
+			if ((changed.app || changed.field) && a_href_value !== (a_href_value = state.app.makeUrl(state.field.data.form, state.field.data.inputFieldValues))) {
+				a.href = a_href_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(a);
+		},
+
+		d: noop$1
+	};
+}
+
+// (4:1) {{else}}
+function create_if_block_2$12(component, state) {
+	var span, text_value = state.field.data.label, text;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			appendNode(text, span);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(span);
+		},
+
+		d: noop$1
+	};
+}
+
+// (1:0) {{#if field.data != null}}
+function create_if_block$19(component, state) {
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.field.data.form != null) return create_if_block_1$13;
+		return create_if_block_2$12;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+function SvelteComponent$29(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$29(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$29.prototype, proto);
+
+/* src\core\ui\outputs\HtmlString.html generated by Svelte v1.64.1 */
+function create_main_fragment$30(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null && state.field.data.value != null) && create_if_block$20(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null && state.field.data.value != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$20(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null && field.data.value != null}}
+function create_if_block$20(component, state) {
+	var raw_value = state.field.data.value, raw_before, raw_after;
+
+	return {
+		c: function create() {
+			raw_before = createElement('noscript');
+			raw_after = createElement('noscript');
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(raw_before, target, anchor);
+			raw_before.insertAdjacentHTML("afterend", raw_value);
+			insertNode(raw_after, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && raw_value !== (raw_value = state.field.data.value)) {
+				detachBetween(raw_before, raw_after);
+				raw_before.insertAdjacentHTML("afterend", raw_value);
+			}
+		},
+
+		u: function unmount() {
+			detachBetween(raw_before, raw_after);
+
+			detachNode(raw_before);
+			detachNode(raw_after);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$30(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$30(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$30.prototype, proto);
+
+/* src\core\ui\outputs\Image.html generated by Svelte v1.64.1 */
+function create_main_fragment$31(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$21(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$21(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -21662,7 +30149,7 @@ function create_main_fragment$29(component, state) {
 }
 
 // (1:0) {{#if field.data != null}}
-function create_if_block$16(component, state) {
+function create_if_block$21(component, state) {
 	var img, img_src_value;
 
 	return {
@@ -21694,11 +30181,11 @@ function create_if_block$16(component, state) {
 	};
 }
 
-function SvelteComponent$29(options) {
+function SvelteComponent$31(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	this._fragment = create_main_fragment$29(this, this._state);
+	this._fragment = create_main_fragment$31(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -21706,13 +30193,120 @@ function SvelteComponent$29(options) {
 	}
 }
 
-assign(SvelteComponent$29.prototype, proto);
+assign(SvelteComponent$31.prototype, proto);
+
+/* src\core\ui\outputs\InlineForm.html generated by Svelte v1.64.1 */
+function oncreate$16() {
+	var app = this.get("app");
+	var field = this.get("field");
+	var parentFormComponent = this.get("parent");
+
+	var formInstance = app.getFormInstance(field.data.form, true);	
+	
+	formInstance.initializeInputFields(field.data.inputFieldValues).then(() => {
+		var f = new SvelteComponent$3({
+			target: this.refs.container,
+			data: {
+				metadata: formInstance.metadata,
+				form: formInstance,
+				app: app,
+				useUrl: false,
+				parent: parentFormComponent
+			}
+		});
+
+		f.init();
+
+		this.set({current: f});
+	});
+
+	this.get("parent").on("destroy", () => this.destroy());
+}
+
+function ondestroy$1() {
+	var form = this.get("current");
+	
+	if (form != null){
+		form.destroy();
+	}
+}
+
+function add_css$15() {
+	var style = createElement("style");
+	style.id = 'svelte-zkggwq-style';
+	style.textContent = ".svelte-zkggwq.inline-form,.svelte-zkggwq .inline-form{border-width:1px 1px 1px;border-style:solid;border-color:#bbd2d6;margin:30px 0;border-radius:5px}.svelte-zkggwq.inline-form .form-header,.svelte-zkggwq .inline-form .form-header{border-bottom:none;padding-top:0;padding-bottom:0;background:#eee}.svelte-zkggwq.inline-form .response,.svelte-zkggwq .inline-form .response{margin-top:0;padding:10px 15px}.svelte-zkggwq.inline-form h2,.svelte-zkggwq .inline-form h2{margin:0;font-size:15px;padding:10px 15px 15px}.svelte-zkggwq.inline-form .response .form-header,.svelte-zkggwq .inline-form .response .form-header{padding-top:10px;border-bottom:1px solid #bbd2d6;background-color:#fff\r\n\t}.svelte-zkggwq.inline-form .response h2,.svelte-zkggwq .inline-form .response h2{font-size:2rem}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$32(component, state) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "inline-form svelte-zkggwq";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			component.refs.container = div;
+		},
+
+		p: noop$1,
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			if (component.refs.container === div) component.refs.container = null;
+		}
+	};
+}
+
+function SvelteComponent$32(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign({}, options.data);
+
+	this._handlers.destroy = [ondestroy$1];
+
+	if (!document.getElementById("svelte-zkggwq-style")) add_css$15();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = {  };
+		oncreate$16.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+	}
+
+	this._fragment = create_main_fragment$32(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$32.prototype, proto);
 
 /* src\core\ui\outputs\Link.html generated by Svelte v1.64.1 */
-function create_main_fragment$30(component, state) {
+function create_main_fragment$33(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null) && create_if_block$17(component, state);
+	var if_block = (state.field.data != null) && create_if_block$22(component, state);
 
 	return {
 		c: function create() {
@@ -21730,7 +30324,7 @@ function create_main_fragment$30(component, state) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$17(component, state);
+					if_block = create_if_block$22(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -21753,8 +30347,8 @@ function create_main_fragment$30(component, state) {
 }
 
 // (1:0) {{#if field.data != null}}
-function create_if_block$17(component, state) {
-	var a, text_value = state.field.data.anchor, text, a_href_value;
+function create_if_block$22(component, state) {
+	var a, text_value = state.field.data.anchor, text, a_href_value, a_class_value;
 
 	return {
 		c: function create() {
@@ -21765,6 +30359,7 @@ function create_if_block$17(component, state) {
 
 		h: function hydrate() {
 			a.href = a_href_value = state.field.data.url;
+			a.className = a_class_value = state.field.data.cssClass;
 		},
 
 		m: function mount(target, anchor) {
@@ -21780,6 +30375,10 @@ function create_if_block$17(component, state) {
 			if ((changed.field) && a_href_value !== (a_href_value = state.field.data.url)) {
 				a.href = a_href_value;
 			}
+
+			if ((changed.field) && a_class_value !== (a_class_value = state.field.data.cssClass)) {
+				a.className = a_class_value;
+			}
 		},
 
 		u: function unmount() {
@@ -21790,11 +30389,11 @@ function create_if_block$17(component, state) {
 	};
 }
 
-function SvelteComponent$30(options) {
+function SvelteComponent$33(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	this._fragment = create_main_fragment$30(this, this._state);
+	this._fragment = create_main_fragment$33(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -21802,10 +30401,1549 @@ function SvelteComponent$30(options) {
 	}
 }
 
-assign(SvelteComponent$30.prototype, proto);
+assign(SvelteComponent$33.prototype, proto);
 
-/* src\core\ui\outputs\DynamicOutput.html generated by Svelte v1.64.1 */
-function oncreate$10() {
+/* src\core\ui\outputs\Money.html generated by Svelte v1.64.1 */
+function formatted(field) {
+	if (field.data == null) {
+		return "";
+	}
+
+	return field.data.amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
+function add_css$16() {
+	var style = createElement("style");
+	style.id = 'svelte-8nkr0j-style';
+	style.textContent = "span.svelte-8nkr0j,.svelte-8nkr0j span{opacity:0.8;font-weight:bold;font-size:0.8em}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$34(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$23(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$23(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null}}
+function create_if_block$23(component, state) {
+	var span, text_value = state.field.data.currencySymbol, text, text_1;
+
+	return {
+		c: function create() {
+			span = createElement("span");
+			text = createText(text_value);
+			text_1 = createText(state.formatted);
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = "svelte-8nkr0j";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(span, target, anchor);
+			appendNode(text, span);
+			insertNode(text_1, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.currencySymbol)) {
+				text.data = text_value;
+			}
+
+			if (changed.formatted) {
+				text_1.data = state.formatted;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(span);
+			detachNode(text_1);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$34(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+	this._recompute({ field: 1 }, this._state);
+
+	if (!document.getElementById("svelte-8nkr0j-style")) add_css$16();
+
+	this._fragment = create_main_fragment$34(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$34.prototype, proto);
+
+SvelteComponent$34.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.formatted, (state.formatted = formatted(state.field)))) changed.formatted = true;
+	}
+};
+
+/* src\core\ui\outputs\ActionList.html generated by Svelte v1.64.1 */
+var alertify$4 = alertify$1;
+
+var modalId$1 = 0;
+var modals$1 = [];
+
+// https://stackoverflow.com/a/3369743/111438
+// Close topmost modal when user presses escape key.
+document.addEventListener("keydown", function (evt) {
+	evt = evt || window.event;
+	var isEscape = false;
+	if ("key" in evt) {
+		isEscape = (evt.key == "Escape" || evt.key == "Esc");
+	} else {
+		isEscape = (evt.keyCode == 27);
+	}
+	if (isEscape) {
+		if (modals$1.length > 0) {
+			// Close topmost modal.
+			modals$1[modals$1.length - 1].close();
+		}
+	}
+});
+
+function data$7() {
+	modalId$1 += 1;
+	return {
+		open: false,
+		current: null,
+		modalId: modalId$1
+	}
+}
+
+var methods$12 = {
+	async run(action, app) {
+		var self = this;
+		var formInstance = app.getFormInstance(action.form, true);
+
+		// TODO: find a way to initialize from action.inputFieldValues directly.
+		var serializedInputValues = formInstance.getSerializedInputValuesFromObject(action.inputFieldValues);
+		await formInstance.initializeInputFields(serializedInputValues);
+
+		var allRequiredInputsHaveData = await formInstance.allRequiredInputsHaveData(false);
+		if (action.action === "run" && allRequiredInputsHaveData) {
+			if (action.confirmationMessage) {
+				alertify$4.confirm("Warning",
+				action.confirmationMessage,
+				async function(){
+					var response = await formInstance.submit(self.get("app"), false);
+					self.onActionRun(formInstance.metadata.id, response, action);
+				   }, 
+				  function(){ return;});
+
+			} else {
+				var response = await formInstance.submit(this.get("app"), false);
+				this.onActionRun(formInstance.metadata.id, response, action);
+			}
+		}
+		else {
+			this.set({ open: true });
+
+			var f = new SvelteComponent$3({
+				target: this.refs.container,
+				data: {
+					metadata: formInstance.metadata,
+					form: formInstance,
+					app: app,
+					useUrl: false
+				}
+			});
+
+			f.init();
+
+			var self = this;
+			f.on("form:responseHandled", e => {
+				if (e.invokedByUser && formInstance.metadata.closeOnPostIfModal) {
+					self.close(e.response);
+				}
+			});
+
+			this.set({ current: f });
+
+			modals$1.push(self);
+		}
+	},
+	close(response) {
+		this.set({ open: false });
+
+		// Destroy underlying form instance.
+		var modalForm = this.get("current");
+
+		if (response != null) {
+			let formId = modalForm.get("metadata").id;
+			this.onActionRun(formId, response);
+		}
+
+		modalForm.destroy();
+		modals$1.pop();
+	},
+	async onActionRun(formId, response, action) {
+		let parentForm = this.get("parent");
+		let app = parentForm.get("app");
+		let formInstance = parentForm.get("form");
+
+		if (response.metadata.handler !== "redirect" &&
+			response.metadata.handler !== "reload") {
+			// If asked to redirect to another form, then we redirect
+			// and do not reload parent form, as that would be a wasted effort.
+			await parentForm.submit(null, true);
+		}
+
+		var eventArgs = new ActionListEventArguments(app, formId);
+		parentForm.fireAndBubbleUp(`action-list:run`, eventArgs);
+	}
+};
+
+function add_css$18() {
+	var style = createElement("style");
+	style.id = 'svelte-18rgmdq-style';
+	style.textContent = ".svelte-18rgmdq.hidden,.svelte-18rgmdq .hidden{width:0;height:0;position:absolute;left:-1000px}.svelte-18rgmdq.actionlist,.svelte-18rgmdq .actionlist{margin:0px 0;padding:0 5px;text-align:right;margin-bottom:15px}.svelte-18rgmdq.actionlist>li,.svelte-18rgmdq .actionlist>li{list-style-type:none;display:inline-block}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$36(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null && state.field.data.actions != null && state.field.data.actions.length > 0) && create_if_block$25(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null && state.field.data.actions != null && state.field.data.actions.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$25(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (3:1) {{#each field.data.actions as action}}
+function create_each_block$12(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var li;
+
+	function select_block_type(state) {
+		if (action.action !== "redirect") return create_if_block_1$15;
+		return create_if_block_2$14;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			if_block.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			if_block.m(li, null);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(li, null);
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (5:2) {{#if action.action !== "redirect"}}
+function create_if_block_1$15(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var button, raw_value = action.label, button_class_value;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler$5);
+			button.className = button_class_value = "btn btn-default " + action.cssClass;
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				action_index: state.action_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			button.innerHTML = raw_value;
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.field) && raw_value !== (raw_value = action.label)) {
+				button.innerHTML = raw_value;
+			}
+
+			if ((changed.field) && button_class_value !== (button_class_value = "btn btn-default " + action.cssClass)) {
+				button.className = button_class_value;
+			}
+
+			button._svelte.each_value = state.each_value;
+			button._svelte.action_index = state.action_index;
+		},
+
+		u: function unmount() {
+			button.innerHTML = '';
+
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler$5);
+		}
+	};
+}
+
+// (7:2) {{else }}
+function create_if_block_2$14(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var a, text_value = action.label, text, a_href_value, a_class_value;
+
+	return {
+		c: function create() {
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.app.makeUrl(action.form, action.inputFieldValues);
+			a.className = a_class_value = "btn btn-default " + action.cssClass;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(a, target, anchor);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.field) && text_value !== (text_value = action.label)) {
+				text.data = text_value;
+			}
+
+			if ((changed.app || changed.field) && a_href_value !== (a_href_value = state.app.makeUrl(action.form, action.inputFieldValues))) {
+				a.href = a_href_value;
+			}
+
+			if ((changed.field) && a_class_value !== (a_class_value = "btn btn-default " + action.cssClass)) {
+				a.className = a_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(a);
+		},
+
+		d: noop$1
+	};
+}
+
+// (1:0) {{#if field.data != null && field.data.actions != null && field.data.actions.length > 0}}
+function create_if_block$25(component, state) {
+	var ul, text, input, input_id_value, text_1, div, div_1, label, text_2, div_2;
+
+	var each_value = state.field.data.actions;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$12(component, assign(assign({}, state), {
+			each_value: each_value,
+			action: each_value[i],
+			action_index: i
+		}));
+	}
+
+	function input_change_handler() {
+		component.set({ open: input.checked });
+	}
+
+	function click_handler_1(event) {
+		component.close();
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text = createText("\r\n\r\n");
+			input = createElement("input");
+			text_1 = createText("\r\n");
+			div = createElement("div");
+			div_1 = createElement("div");
+			label = createElement("label");
+			text_2 = createText("\r\n\t\t");
+			div_2 = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "actionlist svelte-18rgmdq";
+			addListener$1(input, "change", input_change_handler);
+			input.id = input_id_value = "modal-" + state.modalId;
+			setAttribute(input, "type", "checkbox");
+			input.className = "hidden svelte-18rgmdq";
+			addListener$1(label, "click", click_handler_1);
+			label.className = "close";
+			div_1.className = "card";
+			div.className = "modal svelte-18rgmdq";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+
+			insertNode(text, target, anchor);
+			insertNode(input, target, anchor);
+
+			input.checked = state.open;
+
+			insertNode(text_1, target, anchor);
+			insertNode(div, target, anchor);
+			appendNode(div_1, div);
+			appendNode(label, div_1);
+			appendNode(text_2, div_1);
+			appendNode(div_2, div_1);
+			component.refs.container = div_2;
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.field.data.actions;
+
+			if (changed.field || changed.app) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						action: each_value[i],
+						action_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$12(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			input.checked = state.open;
+			if ((changed.modalId) && input_id_value !== (input_id_value = "modal-" + state.modalId)) {
+				input.id = input_id_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(text);
+			detachNode(input);
+			detachNode(text_1);
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+
+			removeListener$1(input, "change", input_change_handler);
+			removeListener$1(label, "click", click_handler_1);
+			if (component.refs.container === div_2) component.refs.container = null;
+		}
+	};
+}
+
+function click_handler$5(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, action_index = this._svelte.action_index, action = each_value[action_index];
+	var state = component.get();
+	component.run(action, state.app);
+}
+
+function SvelteComponent$36(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$7(), options.data);
+
+	if (!document.getElementById("svelte-18rgmdq-style")) add_css$18();
+
+	this._fragment = create_main_fragment$36(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$36.prototype, proto);
+assign(SvelteComponent$36.prototype, methods$12);
+
+/* src\core\ui\outputs\Notifications.html generated by Svelte v1.64.1 */
+function humanize$3(e) {
+			return e.replace(/\.[^/.]+$/, "")
+				.split(/(?=[A-Z])/)
+				.join(" ");
+		}
+
+	function notifications(field) {
+	return field.data.items.results;
+}
+
+function pages(field, form, parent) {
+	var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.paginator);
+
+	var pageCount = Math.ceil(field.data.items.totalCount / paginatorInput.value.pageSize);
+
+	var params = {};
+	for (let i of form.inputs) {
+		params[i.metadata.id] = i.value;
+	}
+
+	if(pageCount > 0){
+	var pages =[];
+
+	if (pageCount < paginatorInput.value.pageIndex) {
+			paginatorInput.value.pageIndex = 1;
+			form.setInputFields(params);
+			parent.submit(null, false);
+		}
+		
+	for (let p = 1; p <= pageCount; ++p) {
+		let pageParams = Object.assign({}, params);
+		pageParams[paginatorInput.metadata.id] = Object.assign({}, pageParams[paginatorInput.metadata.id]);
+		pageParams[paginatorInput.metadata.id].pageIndex = p;
+
+		pages.push({
+			text: p,
+			params: pageParams,
+			cssClass: paginatorInput.value.pageIndex == p ? "current" : ""
+		});
+	}
+
+	let firstParams = Object.assign({}, params);
+		firstParams[paginatorInput.metadata.id] = Object.assign({}, firstParams[paginatorInput.metadata.id]);
+		firstParams[paginatorInput.metadata.id].pageIndex = 1;
+
+		var first = {
+			text: "First",
+			params: firstParams,
+			cssClass: paginatorInput.value.pageIndex == 1 ? "btn disabled" : ""
+		};
+		let prevParams = Object.assign({}, params);
+		prevParams[paginatorInput.metadata.id] = Object.assign({}, prevParams[paginatorInput.metadata.id]);
+		prevParams[paginatorInput.metadata.id].pageIndex = paginatorInput.value.pageIndex - 1;
+
+		var previous = {
+			text: "Previous",
+			params: prevParams,
+			cssClass: paginatorInput.value.pageIndex == 1 ? "btn disabled" : ""
+		};
+
+		let nextParams = Object.assign({}, params);
+		nextParams[paginatorInput.metadata.id] = Object.assign({}, nextParams[paginatorInput.metadata.id]);
+		nextParams[paginatorInput.metadata.id].pageIndex = paginatorInput.value.pageIndex + 1;
+
+		var next = {
+			text: "Next",
+			params: nextParams,
+			cssClass: paginatorInput.value.pageIndex == pageCount ? "btn disabled" : ""
+		};
+
+		let lastParams = Object.assign({}, params);
+		lastParams[paginatorInput.metadata.id] = Object.assign({}, lastParams[paginatorInput.metadata.id]);
+		lastParams[paginatorInput.metadata.id].pageIndex = pageCount;
+
+		var last = {
+			text: "Last",
+			params: lastParams,
+			cssClass: paginatorInput.value.pageIndex == pageCount ? "btn disabled" : ""
+		};
+
+		var from = paginatorInput.value.pageIndex;
+		var to = paginatorInput.value.pageIndex;
+
+		if (from < 5) {
+			from = 0; to = 10;
+		} else if (from > pageCount - 5 && pageCount > 10) {
+			to = pageCount; from = pageCount - 10;
+		} else {
+			from -= 5;
+			to += 5;
+		}
+
+		var innerPages = pages.slice(from, to);
+		innerPages.unshift(previous);
+		innerPages.unshift(first);
+		innerPages.push(next);
+		innerPages.push(last);
+		return innerPages;
+	}
+	return [];
+}
+
+function dateFormat(date) {
+	var d = new Date(date),
+		month = '' + (d.getMonth() + 1),
+		day = '' + d.getDate(),
+		year = d.getFullYear();
+
+	if (month.length < 2) month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+
+	return [year, month, day].join('-');
+}
+
+function getField(node) {
+	var result = {
+		data: node.actions
+	};
+	return result;
+}
+
+function parseSummary(notification, app) {
+	var contextTypeParts = notification.contextType.split(".");
+	var url = app.makeUrl(notification.link.form, notification.link.inputFieldValues);
+	
+	var entityName = humanize$3(contextTypeParts[contextTypeParts.length - 1]) + " #" + notification.contextId;
+	return notification.summary.replace(entityName, `<a href='${url}'>${entityName}</a>`);
+}
+
+var methods$11 = {
+		goToPage(page) {
+			var parent = this.get("parent");
+			var form = parent.get("form");
+			var field = this.get("field");
+
+			form.setInputFields(page.params);
+			parent.submit(null, false);
+		},
+		changePageSize: function () {
+			var parent = this.get("parent");
+			var form = parent.get("form");
+			var field = this.get("field");
+
+			var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.paginator);
+			paginatorInput.value.pageSize = field.pageSize;
+			paginatorInput.value.pageIndex = 1;
+			var params = {};
+			for (let i of form.inputs) {
+				params[i.metadata.id] = i.value;
+			}
+			form.setInputFields(params);
+			parent.submit(null, false);
+	}
+	};
+
+function oncreate$17() {
+	var field = this.get("field");
+	var form = this.get("form");
+	if (field.data == null) {
+		return;
+	}
+	var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.paginator);
+	field.pageSize = paginatorInput.value.pageSize;
+	this.set({
+		pageSize: field.pageSize
+	});
+}
+
+function add_css$17() {
+	var style = createElement("style");
+	style.id = 'svelte-1vqr5ys-style';
+	style.textContent = ".svelte-1vqr5ys.notification-date,.svelte-1vqr5ys .notification-date{display:inline-block;margin-right:10px}.svelte-1vqr5ys.notification-space,.svelte-1vqr5ys .notification-space{margin-bottom:30px}.svelte-1vqr5ys.notification-space h6,.svelte-1vqr5ys .notification-space h6{display:inline-block}.svelte-1vqr5ys.notification-space p,.svelte-1vqr5ys .notification-space p{margin-left:0;display:inline-block}.svelte-1vqr5ys.notification-space .actionlist,.svelte-1vqr5ys .notification-space .actionlist{float:right;background:none\r\n}.svelte-1vqr5ys.description,.svelte-1vqr5ys .description{text-overflow:ellipsis;max-width:50%;white-space:nowrap;overflow:hidden;display:inline-block;position:relative;top:10px}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$35(component, state) {
+	var text, if_block_1_anchor;
+
+	var if_block = (state.field.data != null && state.pages.length > 0) && create_if_block$24(component, state);
+
+	var if_block_1 = (state.field.data != null) && create_if_block_3$9(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			text = createText("\r\n");
+			if (if_block_1) if_block_1.c();
+			if_block_1_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(text, target, anchor);
+			if (if_block_1) if_block_1.m(target, anchor);
+			insertNode(if_block_1_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null && state.pages.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$24(component, state);
+					if_block.c();
+					if_block.m(text.parentNode, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.field.data != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_3$9(component, state);
+					if_block_1.c();
+					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(text);
+			if (if_block_1) if_block_1.u();
+			detachNode(if_block_1_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+// (10:1) {{#each pages as page}}
+function create_each_block$11(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.parent.get('useUrl')) return create_if_block_1$14;
+		return create_if_block_2$13;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (11:1) {{#if parent.get('useUrl')}}
+function create_if_block_1$14(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var li, a, text_value = page.text, text, a_href_value, a_class_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.app.makeUrl(state.form.metadata.id, page.params);
+			a.className = a_class_value = "" + page.cssClass + " page-link";
+			li.className = "page-item";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(a, li);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if ((changed.pages) && text_value !== (text_value = page.text)) {
+				text.data = text_value;
+			}
+
+			if ((changed.app || changed.form || changed.pages) && a_href_value !== (a_href_value = state.app.makeUrl(state.form.metadata.id, page.params))) {
+				a.href = a_href_value;
+			}
+
+			if ((changed.pages) && a_class_value !== (a_class_value = "" + page.cssClass + " page-link")) {
+				a.className = a_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (13:1) {{else}}
+function create_if_block_2$13(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var li, button, text_value = page.text, text, button_class_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler$4);
+			button.className = button_class_value = "" + page.cssClass + " page-link";
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				page_index: state.page_index
+			};
+
+			li.className = "page-item";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(button, li);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if ((changed.pages) && text_value !== (text_value = page.text)) {
+				text.data = text_value;
+			}
+
+			if ((changed.pages) && button_class_value !== (button_class_value = "" + page.cssClass + " page-link")) {
+				button.className = button_class_value;
+			}
+
+			button._svelte.each_value = state.each_value;
+			button._svelte.page_index = state.page_index;
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler$4);
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null && pages.length > 0}}
+function create_if_block$24(component, state) {
+	var div, select, option, text, option_1, text_1, option_2, text_2, option_3, text_3, select_updating = false, text_4, ul, text_6, div_1, text_7, text_8_value = state.field.data.items.results.length, text_8, text_9, text_10_value = state.field.data.items.totalCount, text_10, text_11;
+
+	function select_change_handler() {
+		var state = component.get();
+		select_updating = true;
+		state.field.pageSize = selectValue(select);
+		component.set({ field: state.field });
+		select_updating = false;
+	}
+
+	function change_handler(event) {
+		component.changePageSize();
+	}
+
+	var each_value = state.pages;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$11(component, assign(assign({}, state), {
+			each_value: each_value,
+			page: each_value[i],
+			page_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			select = createElement("select");
+			option = createElement("option");
+			text = createText("10");
+			option_1 = createElement("option");
+			text_1 = createText("20");
+			option_2 = createElement("option");
+			text_2 = createText("50");
+			option_3 = createElement("option");
+			text_3 = createText("100");
+			text_4 = createText("\r\n");
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text_6 = createText("\r\n");
+			div_1 = createElement("div");
+			text_7 = createText("showing ");
+			text_8 = createText(text_8_value);
+			text_9 = createText(" out of ");
+			text_10 = createText(text_10_value);
+			text_11 = createText(" items");
+			this.h();
+		},
+
+		h: function hydrate() {
+			option.__value = "10";
+			option.value = option.__value;
+			option_1.__value = "20";
+			option_1.value = option_1.__value;
+			option_2.__value = "50";
+			option_2.value = option_2.__value;
+			option_3.__value = "100";
+			option_3.value = option_3.__value;
+			addListener$1(select, "change", select_change_handler);
+			if (!('field' in state)) component.root._beforecreate.push(select_change_handler);
+			addListener$1(select, "change", change_handler);
+			select.className = "pagination-size input-sm";
+			ul.className = "pagination pagination-sm";
+			div.className = "svelte-1vqr5ys";
+			div_1.className = "paginator-summary svelte-1vqr5ys";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(select, div);
+			appendNode(option, select);
+			appendNode(text, option);
+			appendNode(option_1, select);
+			appendNode(text_1, option_1);
+			appendNode(option_2, select);
+			appendNode(text_2, option_2);
+			appendNode(option_3, select);
+			appendNode(text_3, option_3);
+
+			selectOption(select, state.field.pageSize);
+
+			appendNode(text_4, div);
+			appendNode(ul, div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+
+			insertNode(text_6, target, anchor);
+			insertNode(div_1, target, anchor);
+			appendNode(text_7, div_1);
+			appendNode(text_8, div_1);
+			appendNode(text_9, div_1);
+			appendNode(text_10, div_1);
+			appendNode(text_11, div_1);
+		},
+
+		p: function update(changed, state) {
+			if (!select_updating) selectOption(select, state.field.pageSize);
+
+			var each_value = state.pages;
+
+			if (changed.parent || changed.app || changed.form || changed.pages) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						page: each_value[i],
+						page_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$11(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if ((changed.field) && text_8_value !== (text_8_value = state.field.data.items.results.length)) {
+				text_8.data = text_8_value;
+			}
+
+			if ((changed.field) && text_10_value !== (text_10_value = state.field.data.items.totalCount)) {
+				text_10.data = text_10_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(text_6);
+			detachNode(div_1);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(select, "change", select_change_handler);
+			removeListener$1(select, "change", change_handler);
+
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (22:0) {{#each notifications as notification}}
+function create_each_block_1$4(component, state) {
+	var notification = state.notification, each_value_1 = state.each_value_1, notification_index = state.notification_index;
+	var div, small, text_value = dateFormat(notification.createdOn), text, text_1, h6, raw_value = parseSummary(notification, state.app), text_2, p, text_3_value = notification.description, text_3, p_data_tooltip_value, text_4;
+
+	var if_block = (notification.actions != null) && create_if_block_4$7(component, state);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			small = createElement("small");
+			text = createText(text_value);
+			text_1 = createText("\r\n\t");
+			h6 = createElement("h6");
+			text_2 = createText("\r\n\t");
+			p = createElement("p");
+			text_3 = createText(text_3_value);
+			text_4 = createText("\r\n\t");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			small.className = "notification-date";
+			h6.className = "mb-1";
+			p.className = "mb-1 description";
+			p.dataset.tooltip = p_data_tooltip_value = notification.description;
+			div.className = "list-group-item list-group-item-action flex-column align-items-start";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(small, div);
+			appendNode(text, small);
+			appendNode(text_1, div);
+			appendNode(h6, div);
+			h6.innerHTML = raw_value;
+			appendNode(text_2, div);
+			appendNode(p, div);
+			appendNode(text_3, p);
+			appendNode(text_4, div);
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state) {
+			notification = state.notification;
+			each_value_1 = state.each_value_1;
+			notification_index = state.notification_index;
+			if ((changed.notifications) && text_value !== (text_value = dateFormat(notification.createdOn))) {
+				text.data = text_value;
+			}
+
+			if ((changed.notifications || changed.app) && raw_value !== (raw_value = parseSummary(notification, state.app))) {
+				h6.innerHTML = raw_value;
+			}
+
+			if ((changed.notifications) && text_3_value !== (text_3_value = notification.description)) {
+				text_3.data = text_3_value;
+			}
+
+			if ((changed.notifications) && p_data_tooltip_value !== (p_data_tooltip_value = notification.description)) {
+				p.dataset.tooltip = p_data_tooltip_value;
+			}
+
+			if (notification.actions != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_4$7(component, state);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			h6.innerHTML = '';
+
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (27:1) {{#if notification.actions != null}}
+function create_if_block_4$7(component, state) {
+	var notification = state.notification, each_value_1 = state.each_value_1, notification_index = state.notification_index;
+
+	var actionlist_initial_data = {
+	 	field: getField(notification),
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var actionlist = new SvelteComponent$36({
+		root: component.root,
+		data: actionlist_initial_data
+	});
+
+	return {
+		c: function create() {
+			actionlist._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			actionlist._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			notification = state.notification;
+			each_value_1 = state.each_value_1;
+			notification_index = state.notification_index;
+			var actionlist_changes = {};
+			if (changed.notifications) actionlist_changes.field = getField(notification);
+			if (changed.app) actionlist_changes.app = state.app;
+			if (changed.form) actionlist_changes.form = state.form;
+			if (changed.parent) actionlist_changes.parent = state.parent;
+			actionlist._set(actionlist_changes);
+		},
+
+		u: function unmount() {
+			actionlist._unmount();
+		},
+
+		d: function destroy$$1() {
+			actionlist.destroy(false);
+		}
+	};
+}
+
+// (20:0) {{#if field.data != null}}
+function create_if_block_3$9(component, state) {
+	var div;
+
+	var each_value_1 = state.notifications;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$4(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			notification: each_value_1[i],
+			notification_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "list-group notification-space svelte-1vqr5ys";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value_1 = state.notifications;
+
+			if (changed.notifications || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						notification: each_value_1[i],
+						notification_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$4(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(div, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+function click_handler$4(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, page_index = this._svelte.page_index, page = each_value[page_index];
+	component.goToPage(page);
+}
+
+function SvelteComponent$35(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+	this._recompute({ field: 1, form: 1, parent: 1 }, this._state);
+
+	if (!document.getElementById("svelte-1vqr5ys-style")) add_css$17();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, form: 1, parent: 1, pages: 1, app: 1, notifications: 1 };
+		oncreate$17.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$35(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$35.prototype, proto);
+assign(SvelteComponent$35.prototype, methods$11);
+
+SvelteComponent$35.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.notifications, (state.notifications = notifications(state.field)))) changed.notifications = true;
+	}
+
+	if (changed.field || changed.form || changed.parent) {
+		if (this._differs(state.pages, (state.pages = pages(state.field, state.form, state.parent)))) changed.pages = true;
+	}
+};
+
+/* src\core\ui\outputs\Number.html generated by Svelte v1.64.1 */
+function formatted$1(field) {
+	if (field.data == null) {
+		return "";
+	}
+
+	var x = field.data;
+	var parts = x.toString().split(".");
+	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	
+	return parts.join(".");
+}
+
+function create_main_fragment$37(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$26(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$26(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null}}
+function create_if_block$26(component, state) {
+	var text;
+
+	return {
+		c: function create() {
+			text = createText(state.formatted);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (changed.formatted) {
+				text.data = state.formatted;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$37(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+	this._recompute({ field: 1 }, this._state);
+
+	this._fragment = create_main_fragment$37(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$37.prototype, proto);
+
+SvelteComponent$37.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.formatted, (state.formatted = formatted$1(state.field)))) changed.formatted = true;
+	}
+};
+
+/* src\core\ui\outputs\ObjectList.html generated by Svelte v1.64.1 */
+function oncreate$18() {
 	var field = this.get("field");
 	if (field.data == null || field.data.metadata == null) {
 		return;
@@ -21821,7 +31959,7 @@ function oncreate$10() {
 
 	var items = [];
 	for (let item of field.data.items) {
-		items.push(FormInstance.getOutputFieldValues(formMetadata.outputFields, item));
+		items.push(FormInstance$$1.getOutputFieldValues(formMetadata.outputFields, item));
 	}
 
 	this.set({
@@ -21830,17 +31968,17 @@ function oncreate$10() {
 	});
 }
 
-function add_css$12() {
+function add_css$19() {
 	var style = createElement("style");
 	style.id = 'svelte-482oal-style';
 	style.textContent = ".svelte-482oal.object-list-item,.svelte-482oal .object-list-item{margin:10px 0;border-bottom:1px solid #eee;padding:10px 0}";
 	appendNode(style, document.head);
 }
 
-function create_main_fragment$31(component, state) {
+function create_main_fragment$38(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null && state.items != null) && create_if_block$18(component, state);
+	var if_block = (state.field.data != null && state.items != null) && create_if_block$27(component, state);
 
 	return {
 		c: function create() {
@@ -21858,7 +31996,7 @@ function create_main_fragment$31(component, state) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$18(component, state);
+					if_block = create_if_block$27(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -21881,7 +32019,7 @@ function create_main_fragment$31(component, state) {
 }
 
 // (2:0) {{#each items as itemFields}}
-function create_each_block$10(component, state) {
+function create_each_block$13(component, state) {
 	var itemFields = state.itemFields, each_value = state.each_value, itemFields_index = state.itemFields_index;
 	var div, div_class_value;
 
@@ -21890,7 +32028,7 @@ function create_each_block$10(component, state) {
 	var each_blocks = [];
 
 	for (var i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1$4(component, assign(assign({}, state), {
+		each_blocks[i] = create_each_block_1$5(component, assign(assign({}, state), {
 			each_value_1: each_value_1,
 			itemField: each_value_1[i],
 			itemField_index: i
@@ -21936,7 +32074,7 @@ function create_each_block$10(component, state) {
 					if (each_blocks[i]) {
 						each_blocks[i].p(changed, each_context);
 					} else {
-						each_blocks[i] = create_each_block_1$4(component, each_context);
+						each_blocks[i] = create_each_block_1$5(component, each_context);
 						each_blocks[i].c();
 						each_blocks[i].m(div, null);
 					}
@@ -21969,11 +32107,11 @@ function create_each_block$10(component, state) {
 }
 
 // (4:2) {{#each itemFields as itemField}}
-function create_each_block_1$4(component, state) {
+function create_each_block_1$5(component, state) {
 	var itemFields = state.itemFields, each_value = state.each_value, itemFields_index = state.itemFields_index, itemField = state.itemField, each_value_1 = state.each_value_1, itemField_index = state.itemField_index;
 	var if_block_anchor;
 
-	var if_block = (itemField.metadata.hidden == false) && create_if_block_1$12(component, state);
+	var if_block = (itemField.metadata.hidden == false && !(itemField.metadata.getCustomProperty("hideIfNull") === true && itemField.data === null)) && create_if_block_1$16(component, state);
 
 	return {
 		c: function create() {
@@ -21993,11 +32131,11 @@ function create_each_block_1$4(component, state) {
 			itemField = state.itemField;
 			each_value_1 = state.each_value_1;
 			itemField_index = state.itemField_index;
-			if (itemField.metadata.hidden == false) {
+			if (itemField.metadata.hidden == false && !(itemField.metadata.getCustomProperty("hideIfNull") === true && itemField.data === null)) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block_1$12(component, state);
+					if_block = create_if_block_1$16(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -22019,8 +32157,8 @@ function create_each_block_1$4(component, state) {
 	};
 }
 
-// (5:2) {{#if itemField.metadata.hidden == false}}
-function create_if_block_1$12(component, state) {
+// (5:2) {{#if itemField.metadata.hidden == false && !(itemField.metadata.getCustomProperty("hideIfNull") === true && itemField.data === null)}}
+function create_if_block_1$16(component, state) {
 	var itemFields = state.itemFields, each_value = state.each_value, itemFields_index = state.itemFields_index, itemField = state.itemField, each_value_1 = state.each_value_1, itemField_index = state.itemField_index;
 
 	var formoutput_initial_data = {
@@ -22029,7 +32167,7 @@ function create_if_block_1$12(component, state) {
 	 	form: state.form,
 	 	parent: state.parent
 	 };
-	var formoutput = new SvelteComponent$15({
+	var formoutput = new SvelteComponent$6({
 		root: component.root,
 		data: formoutput_initial_data
 	});
@@ -22069,7 +32207,7 @@ function create_if_block_1$12(component, state) {
 }
 
 // (1:0) {{#if field.data != null && items != null}}
-function create_if_block$18(component, state) {
+function create_if_block$27(component, state) {
 	var each_anchor;
 
 	var each_value = state.items;
@@ -22077,7 +32215,7 @@ function create_if_block$18(component, state) {
 	var each_blocks = [];
 
 	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$10(component, assign(assign({}, state), {
+		each_blocks[i] = create_each_block$13(component, assign(assign({}, state), {
 			each_value: each_value,
 			itemFields: each_value[i],
 			itemFields_index: i
@@ -22115,7 +32253,7 @@ function create_if_block$18(component, state) {
 					if (each_blocks[i]) {
 						each_blocks[i].p(changed, each_context);
 					} else {
-						each_blocks[i] = create_each_block$10(component, each_context);
+						each_blocks[i] = create_each_block$13(component, each_context);
 						each_blocks[i].c();
 						each_blocks[i].m(each_anchor.parentNode, each_anchor);
 					}
@@ -22143,16 +32281,16 @@ function create_if_block$18(component, state) {
 	};
 }
 
-function SvelteComponent$31(options) {
+function SvelteComponent$38(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
 
-	if (!document.getElementById("svelte-482oal-style")) add_css$12();
+	if (!document.getElementById("svelte-482oal-style")) add_css$19();
 
 	var self = this;
 	var _oncreate = function() {
 		var changed = { field: 1, items: 1, cssClass: 1, app: 1, form: 1, parent: 1 };
-		oncreate$10.call(self);
+		oncreate$18.call(self);
 		self.fire("update", { changed: changed, current: self._state });
 	};
 
@@ -22162,7 +32300,7 @@ function SvelteComponent$31(options) {
 		this._aftercreate = [];
 	}
 
-	this._fragment = create_main_fragment$31(this, this._state);
+	this._fragment = create_main_fragment$38(this, this._state);
 
 	this.root._oncreate.push(_oncreate);
 
@@ -22178,175 +32316,1087 @@ function SvelteComponent$31(options) {
 	}
 }
 
-assign(SvelteComponent$31.prototype, proto);
+assign(SvelteComponent$38.prototype, proto);
 
-/* src\core\ui\outputs\FormInstance.html generated by Svelte v1.64.1 */
-function add_css$13() {
+/* src\core\ui\outputs\Table.html generated by Svelte v1.64.1 */
+function buildFilter$2(currentFormInstance, parameters) {
+	var promise;
+
+	var filter = {};
+	if (parameters != null && parameters.length > 0) {
+		promise = currentFormInstance.getSerializedInputValues().then(data => {
+			for (let p of parameters) {
+				filter[p] = data[p];
+			}
+
+			return filter;
+		});
+	}
+	else {
+		promise = Promise.resolve(filter);
+	}
+
+	return promise;
+}
+
+var modals$2 = [];
+
+// https://stackoverflow.com/a/3369743/111438
+// Close topmost modal when user presses escape key.
+document.addEventListener("keydown", function(evt) {
+	evt = evt || window.event;
+	var isEscape = false;
+	if ("key" in evt) {
+		isEscape = (evt.key == "Escape" || evt.key == "Esc");
+	} else {
+		isEscape = (evt.keyCode == 27);
+	}
+	if (isEscape) {
+		if (modals$2.length > 0) {
+			// Close topmost modal.
+			modals$2[modals$2.length - 1].closeBulkActionModal();
+		}
+	}
+});
+
+function columnsOrdered(field) {
+	return field.metadata.customProperties.columns.filter(b => !b.hidden).sort((a, b) => {
+            		return a.orderIndex - b.orderIndex;
+        		});
+}
+
+var methods$14 = {
+	async runBulkAction(action) {
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		var map = this.get("map");
+		var selectedItemIds = selectedItems.map(t => t[map[action.itemIdentifierField.toLowerCase()]]);
+
+		this.set({
+			isBulkActionModalOpen: true
+		});
+
+		var app = this.get("app");
+		var formInstance = app.getFormInstance(action.formId, true);
+
+		var inputFieldValues = {
+			Items: {
+				items: selectedItemIds
+			}
+		};
+
+		var filter = await buildFilter$2(this.get("form"), action.parameters);
+		filter.Items = { items: selectedItemIds };
+		formInstance.setInputFields(filter);
+
+		var f = new SvelteComponent$3({
+			target: this.refs.bulkActionContainer,
+			data: {
+				metadata: formInstance.metadata,
+				form: formInstance,
+				app: app,
+				useUrl: false
+			}
+		});
+
+		f.init();
+
+		var self = this;
+		f.on("form:responseHandled", e => {
+			self.closeBulkActionModal(e.response);
+		});
+
+		this.set({
+			currentBulkActionForm: f
+		});
+
+		modals$2.push(this);
+	},
+	async closeBulkActionModal(response) {
+		var currentBulkActionForm = this.get("currentBulkActionForm");
+
+		this.set({
+			isBulkActionModalOpen: false,
+			currentBulkActionForm: null
+		});
+
+		currentBulkActionForm.destroy();
+
+		var parentFormComponent = this.get("parent");
+
+		if (response != null &&
+			response.metadata.handler !== "redirect" &&
+			response.metadata.handler !== "reload") {
+			// If asked to redirect to another form, then we redirect
+			// and do not reload parent form, as that would be a wasted effort.
+			await parentFormComponent.submit(null, true);
+		}
+
+		modals$2.pop();
+	},
+	selectItem(checkboxElement, row) {
+		row.__selected = checkboxElement.checked;
+		
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		this.set({"selectedItemsCount":selectedItems.length});
+	},
+	selectAllItems(checkboxElement) {
+		for (var row of this.get("field").data) {
+			row.__selected = checkboxElement.checked;
+		}
+
+		var checkboxes = this.refs.table.querySelectorAll(`tbody>tr>td .checkbox`);
+
+		for (var checkbox of checkboxes) {
+			checkbox.checked = checkboxElement.checked;
+		}
+
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		this.set({"selectedItemsCount":selectedItems.length});
+	},
+	sortData(column, columns) {
+			var parent = this.get("parent");
+			var form = parent.get("form");
+			var field = this.get("field");
+			var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+			if(paginatorInput != null){
+				paginatorInput.value.orderBy = column.customProperties["sortableBy"];
+				for (let i of columns) {
+					i.ascending = false;
+				}
+				column.ascending = paginatorInput.value.ascending = !paginatorInput.value.ascending;
+				
+				var params = {};
+				for (let i of form.inputs) {
+					params[i.metadata.id] = i.value;
+				}
+				form.setInputFields(params);
+				parent.submit(null, false);
+			}
+		},
+};
+
+function oncreate$20() {
+	var data = this.get("field").data;
+
+	if (data == null) {
+		return;
+	}
+
+	var app = this.get("app");
+	var metadata = this.get("field").metadata;
+	var rowCssClass = (metadata.customProperties || {}).rowCssClass;
+
+	// Create map, with key being the lowercase version of the property name
+	// and value being the actual property name.
+	var map = {};
+	if (data.length > 0) {
+		let firstRow = data[0];
+
+		for (let property in firstRow) {
+			if (firstRow.hasOwnProperty(property)) {
+				map[property.toLowerCase()] = property;
+			}
+		}
+	}
+
+	this.set({
+		// Show table only after the `oncreate` method has run.
+		visible: true,
+		bulkActions: (metadata.customProperties || {}).bulkAction || [],
+		map: map,
+		getField: function(row, column) {
+			var data = row[map[column.id.toLowerCase()]];
+
+			return {
+				data: data,
+				metadata: column
+			};
+		},
+		getRowCssClass: function (row) {
+			var cssClass = "";
+
+			if (rowCssClass != null)
+			{
+				cssClass = rowCssClass.cssClass || "";
+
+				if (rowCssClass.suffix != null) {
+					cssClass += row[map[rowCssClass.suffix.toLowerCase()]];
+				}
+			}
+
+			return cssClass;
+		},
+		selectedItemsCount:0
+	});
+}
+
+function add_css$20() {
 	var style = createElement("style");
-	style.id = 'svelte-1sr43qe-style';
-	style.textContent = ".svelte-1sr43qe.icon,.svelte-1sr43qe .icon{margin-bottom:8px;font-size:19px}.svelte-1sr43qe.text,.svelte-1sr43qe .text{font-size:0.9rem}";
+	style.id = 'svelte-1g2buad-style';
+	style.textContent = ".svelte-1g2buad.btn-row,.svelte-1g2buad .btn-row{text-align:right}.svelte-1g2buad.checkbox,.svelte-1g2buad .checkbox{clip:unset;clip-path:unset;position:unset;width:15px;height:15px}.svelte-1g2buad.sortable-column,.svelte-1g2buad .sortable-column{cursor:pointer\r\n\t}";
 	appendNode(style, document.head);
 }
 
-function create_main_fragment$32(component, state) {
+function create_main_fragment$40(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null) && create_if_block$19(component, state);
+	function select_block_type_4(state) {
+		if (state.visible && state.field.data != null && state.field.data.length > 0) return create_if_block$29;
+		return create_if_block_15;
+	}
+
+	var current_block_type = select_block_type_4(state);
+	var if_block = current_block_type(component, state);
 
 	return {
 		c: function create() {
-			if (if_block) if_block.c();
+			if_block.c();
 			if_block_anchor = createComment();
 		},
 
 		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
+			if_block.m(target, anchor);
 			insertNode(if_block_anchor, target, anchor);
 		},
 
 		p: function update(changed, state) {
-			if (state.field.data != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$19(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
+			if (current_block_type === (current_block_type = select_block_type_4(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
 				if_block.u();
 				if_block.d();
-				if_block = null;
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
 			}
 		},
 
 		u: function unmount() {
-			if (if_block) if_block.u();
+			if_block.u();
 			detachNode(if_block_anchor);
 		},
 
 		d: function destroy$$1() {
-			if (if_block) if_block.d();
+			if_block.d();
 		}
 	};
 }
 
-// (3:1) {{#if field.data.isFormCompleted}}
-function create_if_block_1$13(component, state) {
-	var span, text, span_1;
+// (7:5) {{#each bulkActions as action}}
+function create_each_block$15(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.selectedItemsCount > 0) return create_if_block_2$16;
+		return create_if_block_3$10;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
 
 	return {
 		c: function create() {
-			span = createElement("span");
-			span.innerHTML = "<i class=\"fa fa-check-circle icon icon-success\"></i>";
-			text = createText("\r\n\t");
-			span_1 = createElement("span");
-			span_1.textContent = "Form completed";
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (8:6) {{#if selectedItemsCount > 0 }}
+function create_if_block_2$16(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var button, text_value = action.label, text, text_1, small, text_2, text_3, text_4;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			small = createElement("small");
+			text_2 = createText("(");
+			text_3 = createText(state.selectedItemsCount);
+			text_4 = createText(")");
 			this.h();
 		},
 
 		h: function hydrate() {
-			span_1.className = "font-italic";
+			addListener$1(button, "click", click_handler$7);
+			button.className = "btn btn-default";
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				action_index: state.action_index
+			};
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			insertNode(text, target, anchor);
-			insertNode(span_1, target, anchor);
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+			appendNode(text_1, button);
+			appendNode(small, button);
+			appendNode(text_2, small);
+			appendNode(text_3, small);
+			appendNode(text_4, small);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.bulkActions) && text_value !== (text_value = action.label)) {
+				text.data = text_value;
+			}
+
+			if (changed.selectedItemsCount) {
+				text_3.data = state.selectedItemsCount;
+			}
+
+			button._svelte.each_value = state.each_value;
+			button._svelte.action_index = state.action_index;
 		},
 
 		u: function unmount() {
-			detachNode(span);
-			detachNode(text);
-			detachNode(span_1);
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler$7);
+		}
+	};
+}
+
+// (10:6) {{else}}
+function create_if_block_3$10(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var button, text_value = action.label, text;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			button.className = "btn btn-default";
+			button.disabled = true;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.bulkActions) && text_value !== (text_value = action.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(button);
 		},
 
 		d: noop$1
 	};
 }
 
-// (6:1) {{else}}
-function create_if_block_2$8(component, state) {
-	var span, text, span_1;
+// (4:3) {{#if bulkActions.length > 0 }}
+function create_if_block_1$18(component, state) {
+	var tr, td, td_colspan_value;
+
+	var each_value = state.bulkActions;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$15(component, assign(assign({}, state), {
+			each_value: each_value,
+			action: each_value[i],
+			action_index: i
+		}));
+	}
 
 	return {
 		c: function create() {
-			span = createElement("span");
-			span.innerHTML = "<i class=\"fa fa-times-circle icon icon-danger\"></i>";
-			text = createText("\r\n\t");
-			span_1 = createElement("span");
-			span_1.textContent = "Form not completed";
+			tr = createElement("tr");
+			td = createElement("td");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
 			this.h();
 		},
 
 		h: function hydrate() {
-			span_1.className = "font-italic";
+			td.colSpan = td_colspan_value = state.columnsOrdered.length + 1;
+			td.className = "btn-row";
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			insertNode(text, target, anchor);
-			insertNode(span_1, target, anchor);
+			insertNode(tr, target, anchor);
+			appendNode(td, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(td, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.bulkActions;
+
+			if (changed.selectedItemsCount || changed.bulkActions) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						action: each_value[i],
+						action_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$15(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(td, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if ((changed.columnsOrdered) && td_colspan_value !== (td_colspan_value = state.columnsOrdered.length + 1)) {
+				td.colSpan = td_colspan_value;
+			}
 		},
 
 		u: function unmount() {
-			detachNode(span);
-			detachNode(text);
-			detachNode(span_1);
+			detachNode(tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
 		},
 
-		d: noop$1
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
 	};
 }
 
-// (13:0) {{#each field.data.values as input}}
-function create_each_block$11(component, state) {
-	var input = state.input, each_value = state.each_value, input_index = state.input_index;
-	var div, strong, text_value = input.label, text, text_1, text_2;
+// (18:4) {{#if bulkActions.length > 0}}
+function create_if_block_4$8(component, state) {
+	var th, input;
 
-	var if_block = (input.value != null) && create_if_block_4$2(component, state);
+	function change_handler(event) {
+		component.selectAllItems(input);
+	}
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler);
+			setAttribute(input, "type", "checkbox");
+			input.className = "checkbox";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(input, th);
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler);
+		}
+	};
+}
+
+// (24:4) {{#each columnsOrdered as column}}
+function create_each_block_1$6(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var if_block_anchor;
+
+	function select_block_type_3(state) {
+		if (column.customProperties != null && column.customProperties["sortableBy"] != null) return create_if_block_5$3;
+		return create_if_block_8;
+	}
+
+	var current_block_type = select_block_type_3(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_3(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (26:5) {{#if column.ascending}}
+function create_if_block_6$2(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th, text_value = column.label, text, text_1, i;
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "fa fa-sort-down";
+			addListener$1(th, "click", click_handler_1$1);
+			th.className = "sortable-column";
+
+			th._svelte = {
+				component: component,
+				each_value_1: state.each_value_1,
+				column_index: state.column_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(text, th);
+			appendNode(text_1, th);
+			appendNode(i, th);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+
+			th._svelte.each_value_1 = state.each_value_1;
+			th._svelte.column_index = state.column_index;
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(th, "click", click_handler_1$1);
+		}
+	};
+}
+
+// (28:5) {{else}}
+function create_if_block_7(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th, text_value = column.label, text, text_1, i;
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "fa fa-sort-up";
+			addListener$1(th, "click", click_handler_2);
+			th.className = "sortable-column";
+
+			th._svelte = {
+				component: component,
+				each_value_1: state.each_value_1,
+				column_index: state.column_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(text, th);
+			appendNode(text_1, th);
+			appendNode(i, th);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+
+			th._svelte.each_value_1 = state.each_value_1;
+			th._svelte.column_index = state.column_index;
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(th, "click", click_handler_2);
+		}
+	};
+}
+
+// (33:5) {{#if column.customProperties != null && column.customProperties["documentation"] != null}}
+function create_if_block_9(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var div, text_value = column.label, text, text_1;
+
+	var tooltip_initial_data = { data: column.customProperties.documentation[0] };
+	var tooltip = new SvelteComponent$5({
+		root: component.root,
+		data: tooltip_initial_data
+	});
 
 	return {
 		c: function create() {
 			div = createElement("div");
-			strong = createElement("strong");
 			text = createText(text_value);
-			text_1 = createText(":");
-			text_2 = createText("\r\n\t");
-			if (if_block) if_block.c();
+			text_1 = createText("\r\n\t\t\t\t\t\t");
+			tooltip._fragment.c();
 			this.h();
 		},
 
 		h: function hydrate() {
-			strong.className = "text";
-			setStyle(div, "padding-left", "30px");
-			div.className = "svelte-1sr43qe";
+			div.className = "help-tooltip";
 		},
 
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
-			appendNode(strong, div);
-			appendNode(text, strong);
-			appendNode(text_1, strong);
-			appendNode(text_2, div);
-			if (if_block) if_block.m(div, null);
+			appendNode(text, div);
+			appendNode(text_1, div);
+			tooltip._mount(div, null);
 		},
 
 		p: function update(changed, state) {
-			input = state.input;
-			each_value = state.each_value;
-			input_index = state.input_index;
-			if ((changed.field) && text_value !== (text_value = input.label)) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
 				text.data = text_value;
 			}
 
-			if (input.value != null) {
+			var tooltip_changes = {};
+			if (changed.columnsOrdered) tooltip_changes.data = column.customProperties.documentation[0];
+			tooltip._set(tooltip_changes);
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			tooltip.destroy(false);
+		}
+	};
+}
+
+// (37:5) {{else}}
+function create_if_block_10(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var text_value = column.label, text;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+// (25:4) {{#if column.customProperties != null && column.customProperties["sortableBy"] != null}}
+function create_if_block_5$3(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (column.ascending) return create_if_block_6$2;
+		return create_if_block_7;
+	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (31:4) {{else}}
+function create_if_block_8(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th;
+
+	function select_block_type_2(state) {
+		if (column.customProperties != null && column.customProperties["documentation"] != null) return create_if_block_9;
+		return create_if_block_10;
+	}
+
+	var current_block_type = select_block_type_2(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			if_block.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			if_block.m(th, null);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_2(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(th, null);
+			}
+		},
+
+		u: function unmount() {
+			detachNode(th);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (47:3) {{#each field.data as row}}
+function create_each_block_2$2(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index;
+	var tr, text, tr_class_value;
+
+	var if_block = (state.bulkActions.length > 0) && create_if_block_12(component, state);
+
+	var each_value_3 = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_3.length; i += 1) {
+		each_blocks[i] = create_each_block_3$1(component, assign(assign({}, state), {
+			each_value_3: each_value_3,
+			column: each_value_3[i],
+			column_index_1: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			tr = createElement("tr");
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n\t\t\t\t");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			tr.className = tr_class_value = state.getRowCssClass(row);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tr, target, anchor);
+			if (if_block) if_block.m(tr, null);
+			appendNode(text, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			if (state.bulkActions.length > 0) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block_4$2(component, state);
+					if_block = create_if_block_12(component, state);
 					if_block.c();
-					if_block.m(div, null);
+					if_block.m(tr, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			var each_value_3 = state.columnsOrdered;
+
+			if (changed.getField || changed.field || changed.columnsOrdered || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_3.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_3: each_value_3,
+						column: each_value_3[i],
+						column_index_1: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_3$1(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_3.length;
+			}
+
+			if ((changed.getRowCssClass || changed.field) && tr_class_value !== (tr_class_value = state.getRowCssClass(row))) {
+				tr.className = tr_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tr);
+			if (if_block) if_block.u();
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (49:4) {{#if bulkActions.length > 0}}
+function create_if_block_12(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index;
+	var td, div, input;
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			div = createElement("div");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler$1);
+			setAttribute(input, "type", "checkbox");
+			input.className = "checkbox";
+
+			input._svelte = {
+				component: component,
+				each_value_2: state.each_value_2,
+				row_index: state.row_index
+			};
+
+			div.className = "form-group form-check";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			appendNode(div, td);
+			appendNode(input, div);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			input._svelte.each_value_2 = state.each_value_2;
+			input._svelte.row_index = state.row_index;
+		},
+
+		u: function unmount() {
+			detachNode(td);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler$1);
+		}
+	};
+}
+
+// (57:4) {{#each columnsOrdered as column}}
+function create_each_block_3$1(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index, column = state.column, each_value_3 = state.each_value_3, column_index_1 = state.column_index_1;
+	var td;
+
+	var if_block = (!(state.getField(row, column).metadata.getCustomProperty("hideIfNull") === true && state.getField(row, column).data === null)) && create_if_block_13(component, state);
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			if (if_block) if_block.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			if (if_block) if_block.m(td, null);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_1 = state.column_index_1;
+			if (!(state.getField(row, column).metadata.getCustomProperty("hideIfNull") === true && state.getField(row, column).data === null)) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_13(component, state);
+					if_block.c();
+					if_block.m(td, null);
 				}
 			} else if (if_block) {
 				if_block.u();
@@ -22356,7 +33406,7 @@ function create_each_block$11(component, state) {
 		},
 
 		u: function unmount() {
-			detachNode(div);
+			detachNode(td);
 			if (if_block) if_block.u();
 		},
 
@@ -22366,52 +33416,69 @@ function create_each_block$11(component, state) {
 	};
 }
 
-// (16:1) {{#if input.value != null}}
-function create_if_block_4$2(component, state) {
-	var input = state.input, each_value = state.each_value, input_index = state.input_index;
-	var span, text_value = input.value, text;
+// (59:5) {{#if !(getField(row, column).metadata.getCustomProperty("hideIfNull") === true && getField(row, column).data === null)}}
+function create_if_block_13(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index, column = state.column, each_value_3 = state.each_value_3, column_index_1 = state.column_index_1;
+
+	var formoutput_initial_data = {
+	 	field: state.getField(row, column),
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var formoutput = new SvelteComponent$6({
+		root: component.root,
+		data: formoutput_initial_data
+	});
 
 	return {
 		c: function create() {
-			span = createElement("span");
-			text = createText(text_value);
+			formoutput._fragment.c();
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(span, target, anchor);
-			appendNode(text, span);
+			formoutput._mount(target, anchor);
 		},
 
 		p: function update(changed, state) {
-			input = state.input;
-			each_value = state.each_value;
-			input_index = state.input_index;
-			if ((changed.field) && text_value !== (text_value = input.value)) {
-				text.data = text_value;
-			}
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_1 = state.column_index_1;
+			var formoutput_changes = {};
+			if (changed.getField || changed.field || changed.columnsOrdered) formoutput_changes.field = state.getField(row, column);
+			if (changed.app) formoutput_changes.app = state.app;
+			if (changed.form) formoutput_changes.form = state.form;
+			if (changed.parent) formoutput_changes.parent = state.parent;
+			formoutput._set(formoutput_changes);
 		},
 
 		u: function unmount() {
-			detachNode(span);
+			formoutput._unmount();
 		},
 
-		d: noop$1
+		d: function destroy$$1() {
+			formoutput.destroy(false);
+		}
 	};
 }
 
-// (12:0) {{#if field.data.values != null}}
-function create_if_block_3$2(component, state) {
+// (46:3) {{#if map != null}}
+function create_if_block_11(component, state) {
 	var each_anchor;
 
-	var each_value = state.field.data.values;
+	var each_value_2 = state.field.data;
 
 	var each_blocks = [];
 
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$11(component, assign(assign({}, state), {
-			each_value: each_value,
-			input: each_value[i],
-			input_index: i
+	for (var i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2$2(component, assign(assign({}, state), {
+			each_value_2: each_value_2,
+			row: each_value_2[i],
+			row_index: i
 		}));
 	}
 
@@ -22433,20 +33500,20 @@ function create_if_block_3$2(component, state) {
 		},
 
 		p: function update(changed, state) {
-			var each_value = state.field.data.values;
+			var each_value_2 = state.field.data;
 
-			if (changed.field) {
-				for (var i = 0; i < each_value.length; i += 1) {
+			if (changed.getRowCssClass || changed.field || changed.bulkActions || changed.columnsOrdered || changed.getField || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_2.length; i += 1) {
 					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						input: each_value[i],
-						input_index: i
+						each_value_2: each_value_2,
+						row: each_value_2[i],
+						row_index: i
 					});
 
 					if (each_blocks[i]) {
 						each_blocks[i].p(changed, each_context);
 					} else {
-						each_blocks[i] = create_each_block$11(component, each_context);
+						each_blocks[i] = create_each_block_2$2(component, each_context);
 						each_blocks[i].c();
 						each_blocks[i].m(each_anchor.parentNode, each_anchor);
 					}
@@ -22456,7 +33523,7 @@ function create_if_block_3$2(component, state) {
 					each_blocks[i].u();
 					each_blocks[i].d();
 				}
-				each_blocks.length = each_value.length;
+				each_blocks.length = each_value_2.length;
 			}
 		},
 
@@ -22474,96 +33541,925 @@ function create_if_block_3$2(component, state) {
 	};
 }
 
-// (1:0) {{#if field.data != null}}
-function create_if_block$19(component, state) {
-	var div, text_1, if_block_1_anchor;
+// (70:1) {{#if bulkActions.length > 0}}
+function create_if_block_14(component, state) {
+	var input, text, div, div_1, label, text_1, div_2;
 
-	function select_block_type(state) {
-		if (state.field.data.isFormCompleted) return create_if_block_1$13;
-		return create_if_block_2$8;
+	function input_change_handler() {
+		component.set({ isBulkActionModalOpen: input.checked });
 	}
 
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	var if_block_1 = (state.field.data.values != null) && create_if_block_3$2(component, state);
+	function click_handler_3(event) {
+		component.closeBulkActionModal(null);
+	}
 
 	return {
 		c: function create() {
+			input = createElement("input");
+			text = createText("\r\n\t\t");
 			div = createElement("div");
-			if_block.c();
-			text_1 = createText("\r\n");
-			if (if_block_1) if_block_1.c();
-			if_block_1_anchor = createComment();
+			div_1 = createElement("div");
+			label = createElement("label");
+			text_1 = createText("\r\n\t\t\t\t");
+			div_2 = createElement("div");
 			this.h();
 		},
 
 		h: function hydrate() {
-			div.className = "svelte-1sr43qe";
+			addListener$1(input, "change", input_change_handler);
+			setAttribute(input, "type", "checkbox");
+			input.className = "hidden svelte-1g2buad";
+			addListener$1(label, "click", click_handler_3);
+			label.className = "close";
+			div_1.className = "card";
+			div.className = "modal svelte-1g2buad";
 		},
 
 		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+
+			input.checked = state.isBulkActionModalOpen;
+
+			insertNode(text, target, anchor);
 			insertNode(div, target, anchor);
-			if_block.m(div, null);
-			insertNode(text_1, target, anchor);
-			if (if_block_1) if_block_1.m(target, anchor);
-			insertNode(if_block_1_anchor, target, anchor);
+			appendNode(div_1, div);
+			appendNode(label, div_1);
+			appendNode(text_1, div_1);
+			appendNode(div_2, div_1);
+			component.refs.bulkActionContainer = div_2;
 		},
 
 		p: function update(changed, state) {
-			if (current_block_type !== (current_block_type = select_block_type(state))) {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(div, null);
+			input.checked = state.isBulkActionModalOpen;
+		},
+
+		u: function unmount() {
+			detachNode(input);
+			detachNode(text);
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", input_change_handler);
+			removeListener$1(label, "click", click_handler_3);
+			if (component.refs.bulkActionContainer === div_2) component.refs.bulkActionContainer = null;
+		}
+	};
+}
+
+// (1:0) {{#if visible && field.data != null && field.data.length > 0}}
+function create_if_block$29(component, state) {
+	var table, thead, text, tr, text_1, text_4, tbody, text_7, if_block_3_anchor;
+
+	var if_block = (state.bulkActions.length > 0) && create_if_block_1$18(component, state);
+
+	var if_block_1 = (state.bulkActions.length > 0) && create_if_block_4$8(component, state);
+
+	var each_value_1 = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$6(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			column: each_value_1[i],
+			column_index: i
+		}));
+	}
+
+	var if_block_2 = (state.map != null) && create_if_block_11(component, state);
+
+	var if_block_3 = (state.bulkActions.length > 0) && create_if_block_14(component, state);
+
+	return {
+		c: function create() {
+			table = createElement("table");
+			thead = createElement("thead");
+			if (if_block) if_block.c();
+			text = createText("\r\n\t\t\t");
+			tr = createElement("tr");
+			if (if_block_1) if_block_1.c();
+			text_1 = createText("\r\n\r\n\t\t\t\t");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
 			}
 
-			if (state.field.data.values != null) {
-				if (if_block_1) {
-					if_block_1.p(changed, state);
+			text_4 = createText("\r\n\t\t");
+			tbody = createElement("tbody");
+			if (if_block_2) if_block_2.c();
+			text_7 = createText("\r\n\r\n\t");
+			if (if_block_3) if_block_3.c();
+			if_block_3_anchor = createComment();
+			this.h();
+		},
+
+		h: function hydrate() {
+			table.className = "table svelte-1g2buad";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(table, target, anchor);
+			appendNode(thead, table);
+			if (if_block) if_block.m(thead, null);
+			appendNode(text, thead);
+			appendNode(tr, thead);
+			if (if_block_1) if_block_1.m(tr, null);
+			appendNode(text_1, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+
+			appendNode(text_4, table);
+			appendNode(tbody, table);
+			if (if_block_2) if_block_2.m(tbody, null);
+			component.refs.table = table;
+			insertNode(text_7, target, anchor);
+			if (if_block_3) if_block_3.m(target, anchor);
+			insertNode(if_block_3_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.bulkActions.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
 				} else {
-					if_block_1 = create_if_block_3$2(component, state);
+					if_block = create_if_block_1$18(component, state);
+					if_block.c();
+					if_block.m(thead, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.bulkActions.length > 0) {
+				if (!if_block_1) {
+					if_block_1 = create_if_block_4$8(component, state);
 					if_block_1.c();
-					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
+					if_block_1.m(tr, text_1);
 				}
 			} else if (if_block_1) {
 				if_block_1.u();
 				if_block_1.d();
 				if_block_1 = null;
 			}
+
+			var each_value_1 = state.columnsOrdered;
+
+			if (changed.columnsOrdered) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						column: each_value_1[i],
+						column_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$6(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+
+			if (state.map != null) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_11(component, state);
+					if_block_2.c();
+					if_block_2.m(tbody, null);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+
+			if (state.bulkActions.length > 0) {
+				if (if_block_3) {
+					if_block_3.p(changed, state);
+				} else {
+					if_block_3 = create_if_block_14(component, state);
+					if_block_3.c();
+					if_block_3.m(if_block_3_anchor.parentNode, if_block_3_anchor);
+				}
+			} else if (if_block_3) {
+				if_block_3.u();
+				if_block_3.d();
+				if_block_3 = null;
+			}
 		},
 
 		u: function unmount() {
-			detachNode(div);
-			if_block.u();
-			detachNode(text_1);
+			detachNode(table);
+			if (if_block) if_block.u();
 			if (if_block_1) if_block_1.u();
-			detachNode(if_block_1_anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			if (if_block_2) if_block_2.u();
+			detachNode(text_7);
+			if (if_block_3) if_block_3.u();
+			detachNode(if_block_3_anchor);
 		},
 
 		d: function destroy$$1() {
-			if_block.d();
+			if (if_block) if_block.d();
 			if (if_block_1) if_block_1.d();
+
+			destroyEach(each_blocks);
+
+			if (if_block_2) if_block_2.d();
+			if (component.refs.table === table) component.refs.table = null;
+			if (if_block_3) if_block_3.d();
 		}
 	};
 }
 
-function SvelteComponent$32(options) {
+// (79:0) {{else}}
+function create_if_block_15(component, state) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div.textContent = "No data.";
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "alert-nodata svelte-1g2buad";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+		},
+
+		p: noop$1,
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function click_handler$7(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, action_index = this._svelte.action_index, action = each_value[action_index];
+	component.runBulkAction(action);
+}
+
+function click_handler_1$1(event) {
+	var component = this._svelte.component;
+	var each_value_1 = this._svelte.each_value_1, column_index = this._svelte.column_index, column = each_value_1[column_index];
+	var state = component.get();
+	component.sortData(column,state.columnsOrdered);
+}
+
+function click_handler_2(event) {
+	var component = this._svelte.component;
+	var each_value_1 = this._svelte.each_value_1, column_index = this._svelte.column_index, column = each_value_1[column_index];
+	var state = component.get();
+	component.sortData(column,state.columnsOrdered);
+}
+
+function change_handler$1(event) {
+	var component = this._svelte.component;
+	var each_value_2 = this._svelte.each_value_2, row_index = this._svelte.row_index, row = each_value_2[row_index];
+	component.selectItem(this, row);
+}
+
+function SvelteComponent$40(options) {
 	init(this, options);
+	this.refs = {};
 	this._state = assign({}, options.data);
+	this._recompute({ field: 1 }, this._state);
 
-	if (!document.getElementById("svelte-1sr43qe-style")) add_css$13();
+	if (!document.getElementById("svelte-1g2buad-style")) add_css$20();
 
-	this._fragment = create_main_fragment$32(this, this._state);
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, visible: 1, bulkActions: 1, columnsOrdered: 1, selectedItemsCount: 1, map: 1, getRowCssClass: 1, getField: 1, app: 1, form: 1, parent: 1, isBulkActionModalOpen: 1 };
+		oncreate$20.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$40(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
 
 	if (options.target) {
 		this._fragment.c();
 		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
 	}
 }
 
-assign(SvelteComponent$32.prototype, proto);
+assign(SvelteComponent$40.prototype, proto);
+assign(SvelteComponent$40.prototype, methods$14);
+
+SvelteComponent$40.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.columnsOrdered, (state.columnsOrdered = columnsOrdered(state.field)))) changed.columnsOrdered = true;
+	}
+};
+
+/* src\core\ui\outputs\Paginator.html generated by Svelte v1.64.1 */
+function pages$1(field, form, parent) {
+	
+	var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+
+	var pageCount = Math.ceil(field.data.totalCount / paginatorInput.value.pageSize);
+
+	var params = {};
+		for (let i of form.inputs) {
+			params[i.metadata.id] = i.value;
+		}	
+
+
+	if (pageCount > 0){
+
+		if (pageCount < paginatorInput.value.pageIndex) {
+			paginatorInput.value.pageIndex = 1;
+			form.setInputFields(params);
+			parent.submit(null, false);
+		}
+		var pages =[];
+
+		for (let p = 1; p <= pageCount; ++p) {
+			let pageParams = Object.assign({}, params);
+			pageParams[paginatorInput.metadata.id] = Object.assign({}, pageParams[paginatorInput.metadata.id]);
+			pageParams[paginatorInput.metadata.id].pageIndex = p;
+
+			pages.push({
+				text: p,
+				params: pageParams,
+				cssClass: paginatorInput.value.pageIndex == p ? "current" : ""
+			});
+		}
+
+		let firstParams = Object.assign({}, params);
+		firstParams[paginatorInput.metadata.id] = Object.assign({}, firstParams[paginatorInput.metadata.id]);
+		firstParams[paginatorInput.metadata.id].pageIndex = 1;
+
+		var first = {
+			text: "First",
+			params: firstParams,
+			cssClass: paginatorInput.value.pageIndex == 1 ? "btn disabled" : ""
+		};
+		let prevParams = Object.assign({}, params);
+		prevParams[paginatorInput.metadata.id] = Object.assign({}, prevParams[paginatorInput.metadata.id]);
+		prevParams[paginatorInput.metadata.id].pageIndex = paginatorInput.value.pageIndex - 1;
+
+		var previous = {
+			text: "Previous",
+			params: prevParams,
+			cssClass: paginatorInput.value.pageIndex == 1 ? "btn disabled" : ""
+		};
+
+		let nextParams = Object.assign({}, params);
+		nextParams[paginatorInput.metadata.id] = Object.assign({}, nextParams[paginatorInput.metadata.id]);
+		nextParams[paginatorInput.metadata.id].pageIndex = paginatorInput.value.pageIndex + 1;
+
+		var next = {
+			text: "Next",
+			params: nextParams,
+			cssClass: paginatorInput.value.pageIndex == pageCount ? "btn disabled" : ""
+		};
+
+		let lastParams = Object.assign({}, params);
+			lastParams[paginatorInput.metadata.id] = Object.assign({}, lastParams[paginatorInput.metadata.id]);
+			lastParams[paginatorInput.metadata.id].pageIndex = pageCount;
+
+			var last = {
+				text: "Last",
+				params: lastParams,
+				cssClass: paginatorInput.value.pageIndex == pageCount ? "btn disabled" : ""
+			};
+
+		var from = paginatorInput.value.pageIndex;
+		var to = paginatorInput.value.pageIndex;
+
+		if (from < 5) {
+			from = 0; to = 10;
+		} else if (from > pageCount - 5 && pageCount > 10) {
+			to = pageCount; from = pageCount - 10;
+		} else {
+			from -= 5;
+			to += 5;
+		}
+
+		var innerPages = pages.slice(from, to);
+		innerPages.unshift(previous);
+		innerPages.unshift(first);
+		innerPages.push(next);
+		innerPages.push(last);
+		return innerPages;
+	}
+
+	return [];
+}
+
+function data$8() {
+	return {
+		totalCount: 0
+	}
+}
+
+var methods$13 = {
+	goToPage(page) {
+		var parent = this.get("parent");
+		var form = parent.get("form");
+		var field = this.get("field");
+
+		form.setInputFields(page.params);
+		parent.submit(null, false);
+	},
+	changePageSize : function(){
+		var parent = this.get("parent");
+		var form = parent.get("form");
+		var field = this.get("field");
+
+		var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+		paginatorInput.value.pageSize = field.pageSize;
+		paginatorInput.value.pageIndex = 1;
+		var params = {};
+		for (let i of form.inputs) {
+			params[i.metadata.id] = i.value;
+		}
+		form.setInputFields(params);
+		parent.submit(null, false);
+	}
+};
+
+function oncreate$19() {
+	var field = this.get("field");
+	var form = this.get("form");
+
+	if (field.data == null) {
+		return;
+	}
+
+	var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+	field.pageSize = paginatorInput.value.pageSize;
+	this.set({
+		pageSize : field.pageSize
+	});
+	var tableField = new OutputFieldValue();
+	tableField.data = field.data.results;
+	tableField.metadata = field.metadata;
+
+	var i = new SvelteComponent$40({
+		target: this.refs.container,
+		data: {
+			field: tableField,
+			app: this.get("app"),
+			form: form,
+			parent: this.get("parent")
+		}
+	});
+}
+
+function create_main_fragment$39(component, state) {
+	var text, div;
+
+	var if_block = (state.field.data != null && state.pages.length > 0) && create_if_block$28(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n");
+			div = createElement("div");
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(text, target, anchor);
+			insertNode(div, target, anchor);
+			component.refs.container = div;
+		},
+
+		p: function update(changed, state) {
+			if (state.field.data != null && state.pages.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$28(component, state);
+					if_block.c();
+					if_block.m(text.parentNode, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(text);
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (component.refs.container === div) component.refs.container = null;
+		}
+	};
+}
+
+// (11:2) {{#each pages as page}}
+function create_each_block$14(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.parent.get('useUrl')) return create_if_block_1$17;
+		return create_if_block_2$15;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (12:3) {{#if parent.get('useUrl')}}
+function create_if_block_1$17(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var li, a, text_value = page.text, text, a_href_value, a_class_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.app.makeUrl(state.form.metadata.id, page.params);
+			a.className = a_class_value = "" + page.cssClass + " page-link";
+			li.className = "page-item";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(a, li);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if ((changed.pages) && text_value !== (text_value = page.text)) {
+				text.data = text_value;
+			}
+
+			if ((changed.app || changed.form || changed.pages) && a_href_value !== (a_href_value = state.app.makeUrl(state.form.metadata.id, page.params))) {
+				a.href = a_href_value;
+			}
+
+			if ((changed.pages) && a_class_value !== (a_class_value = "" + page.cssClass + " page-link")) {
+				a.className = a_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: noop$1
+	};
+}
+
+// (14:3) {{else}}
+function create_if_block_2$15(component, state) {
+	var page = state.page, each_value = state.each_value, page_index = state.page_index;
+	var li, button, text_value = page.text, text, button_class_value;
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler$6);
+			button.className = button_class_value = "" + page.cssClass + " page-link";
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				page_index: state.page_index
+			};
+
+			li.className = "page-item";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(button, li);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state) {
+			page = state.page;
+			each_value = state.each_value;
+			page_index = state.page_index;
+			if ((changed.pages) && text_value !== (text_value = page.text)) {
+				text.data = text_value;
+			}
+
+			if ((changed.pages) && button_class_value !== (button_class_value = "" + page.cssClass + " page-link")) {
+				button.className = button_class_value;
+			}
+
+			button._svelte.each_value = state.each_value;
+			button._svelte.page_index = state.page_index;
+		},
+
+		u: function unmount() {
+			detachNode(li);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler$6);
+		}
+	};
+}
+
+// (1:0) {{#if field.data != null && pages.length > 0}}
+function create_if_block$28(component, state) {
+	var div, select, option, text, option_1, text_1, option_2, text_2, option_3, text_3, select_updating = false, text_4, ul, text_6, div_1, text_7, text_8_value = state.field.data.results.length, text_8, text_9, text_10_value = state.field.data.totalCount, text_10, text_11;
+
+	function select_change_handler() {
+		var state = component.get();
+		select_updating = true;
+		state.field.pageSize = selectValue(select);
+		component.set({ field: state.field });
+		select_updating = false;
+	}
+
+	function change_handler(event) {
+		component.changePageSize();
+	}
+
+	var each_value = state.pages;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$14(component, assign(assign({}, state), {
+			each_value: each_value,
+			page: each_value[i],
+			page_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			select = createElement("select");
+			option = createElement("option");
+			text = createText("10");
+			option_1 = createElement("option");
+			text_1 = createText("20");
+			option_2 = createElement("option");
+			text_2 = createText("50");
+			option_3 = createElement("option");
+			text_3 = createText("100");
+			text_4 = createText("\r\n\r\n\t");
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text_6 = createText("\r\n");
+			div_1 = createElement("div");
+			text_7 = createText("showing ");
+			text_8 = createText(text_8_value);
+			text_9 = createText(" out of ");
+			text_10 = createText(text_10_value);
+			text_11 = createText(" items");
+			this.h();
+		},
+
+		h: function hydrate() {
+			option.__value = "10";
+			option.value = option.__value;
+			option_1.__value = "20";
+			option_1.value = option_1.__value;
+			option_2.__value = "50";
+			option_2.value = option_2.__value;
+			option_3.__value = "100";
+			option_3.value = option_3.__value;
+			addListener$1(select, "change", select_change_handler);
+			if (!('field' in state)) component.root._beforecreate.push(select_change_handler);
+			addListener$1(select, "change", change_handler);
+			select.className = "pagination-size input-sm";
+			ul.className = "pagination pagination-sm";
+			div_1.className = "paginator-summary";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(select, div);
+			appendNode(option, select);
+			appendNode(text, option);
+			appendNode(option_1, select);
+			appendNode(text_1, option_1);
+			appendNode(option_2, select);
+			appendNode(text_2, option_2);
+			appendNode(option_3, select);
+			appendNode(text_3, option_3);
+
+			selectOption(select, state.field.pageSize);
+
+			appendNode(text_4, div);
+			appendNode(ul, div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+
+			insertNode(text_6, target, anchor);
+			insertNode(div_1, target, anchor);
+			appendNode(text_7, div_1);
+			appendNode(text_8, div_1);
+			appendNode(text_9, div_1);
+			appendNode(text_10, div_1);
+			appendNode(text_11, div_1);
+		},
+
+		p: function update(changed, state) {
+			if (!select_updating) selectOption(select, state.field.pageSize);
+
+			var each_value = state.pages;
+
+			if (changed.parent || changed.app || changed.form || changed.pages) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						page: each_value[i],
+						page_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$14(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if ((changed.field) && text_8_value !== (text_8_value = state.field.data.results.length)) {
+				text_8.data = text_8_value;
+			}
+
+			if ((changed.field) && text_10_value !== (text_10_value = state.field.data.totalCount)) {
+				text_10.data = text_10_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(text_6);
+			detachNode(div_1);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(select, "change", select_change_handler);
+			removeListener$1(select, "change", change_handler);
+
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+function click_handler$6(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, page_index = this._svelte.page_index, page = each_value[page_index];
+	component.goToPage(page);
+}
+
+function SvelteComponent$39(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign(data$8(), options.data);
+	this._recompute({ field: 1, form: 1, parent: 1 }, this._state);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, form: 1, parent: 1, pages: 1, app: 1 };
+		oncreate$19.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+	}
+
+	this._fragment = create_main_fragment$39(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+	}
+}
+
+assign(SvelteComponent$39.prototype, proto);
+assign(SvelteComponent$39.prototype, methods$13);
+
+SvelteComponent$39.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field || changed.form || changed.parent) {
+		if (this._differs(state.pages, (state.pages = pages$1(state.field, state.form, state.parent)))) changed.pages = true;
+	}
+};
 
 var ascending = function(a, b) {
   return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
@@ -22810,7 +34706,7 @@ Dispatch.prototype = dispatch.prototype = {
 
     // If no callback was specified, return the callback of the given type and name.
     if (arguments.length < 2) {
-      while (++i < n) if ((t = (typename = T[i]).type) && (t = get$4(_[t], typename.name))) return t;
+      while (++i < n) if ((t = (typename = T[i]).type) && (t = get$5(_[t], typename.name))) return t;
       return;
     }
 
@@ -22840,7 +34736,7 @@ Dispatch.prototype = dispatch.prototype = {
   }
 };
 
-function get$4(type, name) {
+function get$5(type, name) {
   for (var i = 0, n = type.length, c; i < n; ++i) {
     if ((c = type[i]).name === name) {
       return c.value;
@@ -23759,7 +35655,7 @@ var define = function(constructor, factory, prototype) {
   prototype.constructor = constructor;
 };
 
-function extend$2(parent, definition) {
+function extend$3(parent, definition) {
   var prototype = Object.create(parent.prototype);
   for (var key in definition) prototype[key] = definition[key];
   return prototype;
@@ -23985,7 +35881,7 @@ function Rgb(r, g, b, opacity) {
   this.opacity = +opacity;
 }
 
-define(Rgb, rgb, extend$2(Color, {
+define(Rgb, rgb, extend$3(Color, {
   brighter: function(k) {
     k = k == null ? brighter : Math.pow(brighter, k);
     return new Rgb(this.r * k, this.g * k, this.b * k, this.opacity);
@@ -24057,7 +35953,7 @@ function Hsl(h, s, l, opacity) {
   this.opacity = +opacity;
 }
 
-define(Hsl, hsl, extend$2(Color, {
+define(Hsl, hsl, extend$3(Color, {
   brighter: function(k) {
     k = k == null ? brighter : Math.pow(brighter, k);
     return new Hsl(this.h, this.s, this.l * k, this.opacity);
@@ -24133,7 +36029,7 @@ function Lab(l, a, b, opacity) {
   this.opacity = +opacity;
 }
 
-define(Lab, lab, extend$2(Color, {
+define(Lab, lab, extend$3(Color, {
   brighter: function(k) {
     return new Lab(this.l + Kn * (k == null ? 1 : k), this.a, this.b, this.opacity);
   },
@@ -24190,7 +36086,7 @@ function Hcl(h, c, l, opacity) {
   this.opacity = +opacity;
 }
 
-define(Hcl, hcl, extend$2(Color, {
+define(Hcl, hcl, extend$3(Color, {
   brighter: function(k) {
     return new Hcl(this.h, this.c, this.l + Kn * (k == null ? 1 : k), this.opacity);
   },
@@ -24236,7 +36132,7 @@ function Cubehelix(h, s, l, opacity) {
   this.opacity = +opacity;
 }
 
-define(Cubehelix, cubehelix, extend$2(Color, {
+define(Cubehelix, cubehelix, extend$3(Color, {
   brighter: function(k) {
     k = k == null ? brighter : Math.pow(brighter, k);
     return new Cubehelix(this.h, this.s, this.l * k, this.opacity);
@@ -24747,18 +36643,18 @@ var schedule = function(node, name, id, index, group, timing) {
 };
 
 function init$1(node, id) {
-  var schedule = get$5(node, id);
+  var schedule = get$6(node, id);
   if (schedule.state > CREATED) throw new Error("too late; already scheduled");
   return schedule;
 }
 
 function set$4(node, id) {
-  var schedule = get$5(node, id);
+  var schedule = get$6(node, id);
   if (schedule.state > STARTING) throw new Error("too late; already started");
   return schedule;
 }
 
-function get$5(node, id) {
+function get$6(node, id) {
   var schedule = node.__transition;
   if (!schedule || !(schedule = schedule[id])) throw new Error("transition not found");
   return schedule;
@@ -24953,7 +36849,7 @@ var transition_tween = function(name, value) {
   name += "";
 
   if (arguments.length < 2) {
-    var tween = get$5(this.node(), id).tween;
+    var tween = get$6(this.node(), id).tween;
     for (var i = 0, n = tween.length, t; i < n; ++i) {
       if ((t = tween[i]).name === name) {
         return t.value;
@@ -24974,7 +36870,7 @@ function tweenValue(transition, name, value) {
   });
 
   return function(node) {
-    return get$5(node, id).value[name];
+    return get$6(node, id).value[name];
   };
 }
 
@@ -25106,7 +37002,7 @@ var transition_delay = function(value) {
       ? this.each((typeof value === "function"
           ? delayFunction
           : delayConstant)(id, value))
-      : get$5(this.node(), id).delay;
+      : get$6(this.node(), id).delay;
 };
 
 function durationFunction(id, value) {
@@ -25128,7 +37024,7 @@ var transition_duration = function(value) {
       ? this.each((typeof value === "function"
           ? durationFunction
           : durationConstant)(id, value))
-      : get$5(this.node(), id).duration;
+      : get$6(this.node(), id).duration;
 };
 
 function easeConstant(id, value) {
@@ -25143,7 +37039,7 @@ var transition_ease = function(value) {
 
   return arguments.length
       ? this.each(easeConstant(id, value))
-      : get$5(this.node(), id).ease;
+      : get$6(this.node(), id).ease;
 };
 
 var transition_filter = function(match) {
@@ -25205,7 +37101,7 @@ var transition_on = function(name, listener) {
   var id = this._id;
 
   return arguments.length < 2
-      ? get$5(this.node(), id).on.on(name)
+      ? get$6(this.node(), id).on.on(name)
       : this.each(onFunction(id, name, listener));
 };
 
@@ -25232,7 +37128,7 @@ var transition_select = function(select$$1) {
       if ((node = group[i]) && (subnode = select$$1.call(node, node.__data__, i, group))) {
         if ("__data__" in node) subnode.__data__ = node.__data__;
         subgroup[i] = subnode;
-        schedule(subgroup[i], name, id, i, subgroup, get$5(node, id));
+        schedule(subgroup[i], name, id, i, subgroup, get$6(node, id));
       }
     }
   }
@@ -25249,7 +37145,7 @@ var transition_selectAll = function(select$$1) {
   for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
-        for (var children = select$$1.call(node, node.__data__, i, group), child, inherit = get$5(node, id), k = 0, l = children.length; k < l; ++k) {
+        for (var children = select$$1.call(node, node.__data__, i, group), child, inherit = get$6(node, id), k = 0, l = children.length; k < l; ++k) {
           if (child = children[k]) {
             schedule(child, name, id, k, children, inherit);
           }
@@ -25369,7 +37265,7 @@ var transition_transition = function() {
   for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
-        var inherit = get$5(node, id0);
+        var inherit = get$6(node, id0);
         schedule(node, name, id1, i, group, {
           time: inherit.time + inherit.delay + inherit.duration,
           delay: 0,
@@ -25383,7 +37279,7 @@ var transition_transition = function() {
   return new Transition(groups, this._parents, name, id1);
 };
 
-var id = 0;
+var id$1 = 0;
 
 function Transition(groups, parents, name, id) {
   this._groups = groups;
@@ -25397,7 +37293,7 @@ function transition(name) {
 }
 
 function newId() {
-  return ++id;
+  return ++id$1;
 }
 
 var selection_prototype = selection.prototype;
@@ -25999,10 +37895,10 @@ var tsv = dsv("\t");
 var tree_add = function(d) {
   var x = +this._x.call(null, d),
       y = +this._y.call(null, d);
-  return add$2(this.cover(x, y), x, y, d);
+  return add$3(this.cover(x, y), x, y, d);
 };
 
-function add$2(tree, x, y, d) {
+function add$3(tree, x, y, d) {
   if (isNaN(x) || isNaN(y)) return tree; // ignore invalid points
 
   var parent,
@@ -26076,7 +37972,7 @@ function addAll(data) {
 
   // Add the new points.
   for (i = 0; i < n; ++i) {
-    add$2(this, xz[i], yz[i], data[i]);
+    add$3(this, xz[i], yz[i], data[i]);
   }
 
   return this;
@@ -26703,7 +38599,7 @@ var formatLocale = function(locale) {
 };
 
 var locale$2;
-var format$2;
+var format$3;
 var formatPrefix;
 
 defaultLocale({
@@ -26715,7 +38611,7 @@ defaultLocale({
 
 function defaultLocale(definition) {
   locale$2 = formatLocale(definition);
-  format$2 = locale$2.format;
+  format$3 = locale$2.format;
   formatPrefix = locale$2.formatPrefix;
   return locale$2;
 }
@@ -26742,8 +38638,8 @@ Adder.prototype = {
     this.t = 0; // exact error
   },
   add: function(y) {
-    add$3(temp, y, this.t);
-    add$3(this, temp.s, this.s);
+    add$4(temp, y, this.t);
+    add$4(this, temp.s, this.s);
     if (this.s) this.t += temp.t;
     else this.s = temp.t;
   },
@@ -26754,7 +38650,7 @@ Adder.prototype = {
 
 var temp = new Adder;
 
-function add$3(adder, a, b) {
+function add$4(adder, a, b) {
   var x = adder.s = a + b,
       bv = x - a,
       av = x - bv;
@@ -29461,7 +41357,7 @@ function triangleArea(a, b, c) {
 }
 
 /* src\core\ui\outputs\PieGraph.html generated by Svelte v1.64.1 */
-function oncreate$11() {
+function oncreate$21() {
 	var data = this.get("field").data;
 	data = data.data.map(d => { return { presses: d.data, letter: d.label } });
 	var width = 400,
@@ -29518,14 +41414,14 @@ function oncreate$11() {
 		.style("fill", "#fff");
 }
 
-function add_css$14() {
+function add_css$21() {
 	var style = createElement("style");
 	style.id = 'svelte-10hl0oc-style';
 	style.textContent = "div.svelte-10hl0oc,.svelte-10hl0oc div{max-width:400px}.svelte-10hl0oc.tooltip,.svelte-10hl0oc .tooltip{position:absolute;padding:8px 15px;background:black;border:0px;border-radius:8px;color:white;display:inline-block}";
 	appendNode(style, document.head);
 }
 
-function create_main_fragment$33(component, state) {
+function create_main_fragment$41(component, state) {
 	var div;
 
 	return {
@@ -29555,17 +41451,17 @@ function create_main_fragment$33(component, state) {
 	};
 }
 
-function SvelteComponent$33(options) {
+function SvelteComponent$41(options) {
 	init(this, options);
 	this.refs = {};
 	this._state = assign({}, options.data);
 
-	if (!document.getElementById("svelte-10hl0oc-style")) add_css$14();
+	if (!document.getElementById("svelte-10hl0oc-style")) add_css$21();
 
 	var self = this;
 	var _oncreate = function() {
 		var changed = {  };
-		oncreate$11.call(self);
+		oncreate$21.call(self);
 		self.fire("update", { changed: changed, current: self._state });
 	};
 
@@ -29573,7 +41469,7 @@ function SvelteComponent$33(options) {
 		this._oncreate = [];
 	}
 
-	this._fragment = create_main_fragment$33(this, this._state);
+	this._fragment = create_main_fragment$41(this, this._state);
 
 	this.root._oncreate.push(_oncreate);
 
@@ -29585,13 +41481,2601 @@ function SvelteComponent$33(options) {
 	}
 }
 
-assign(SvelteComponent$33.prototype, proto);
+assign(SvelteComponent$41.prototype, proto);
 
-/* src\core\ui\outputs\HtmlString.html generated by Svelte v1.64.1 */
-function create_main_fragment$34(component, state) {
+/* src\core\ui\outputs\Table.html generated by Svelte v1.64.1 */
+function buildFilter$3(currentFormInstance, parameters) {
+	var promise;
+
+	var filter = {};
+	if (parameters != null && parameters.length > 0) {
+		promise = currentFormInstance.getSerializedInputValues().then(data => {
+			for (let p of parameters) {
+				filter[p] = data[p];
+			}
+
+			return filter;
+		});
+	}
+	else {
+		promise = Promise.resolve(filter);
+	}
+
+	return promise;
+}
+
+var modals$3 = [];
+
+// https://stackoverflow.com/a/3369743/111438
+// Close topmost modal when user presses escape key.
+document.addEventListener("keydown", function(evt) {
+	evt = evt || window.event;
+	var isEscape = false;
+	if ("key" in evt) {
+		isEscape = (evt.key == "Escape" || evt.key == "Esc");
+	} else {
+		isEscape = (evt.keyCode == 27);
+	}
+	if (isEscape) {
+		if (modals$3.length > 0) {
+			// Close topmost modal.
+			modals$3[modals$3.length - 1].closeBulkActionModal();
+		}
+	}
+});
+
+function columnsOrdered$1(field) {
+	return field.metadata.customProperties.columns.filter(b => !b.hidden).sort((a, b) => {
+            		return a.orderIndex - b.orderIndex;
+        		});
+}
+
+var methods$15 = {
+	async runBulkAction(action) {
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		var map = this.get("map");
+		var selectedItemIds = selectedItems.map(t => t[map[action.itemIdentifierField.toLowerCase()]]);
+
+		this.set({
+			isBulkActionModalOpen: true
+		});
+
+		var app = this.get("app");
+		var formInstance = app.getFormInstance(action.formId, true);
+
+		var inputFieldValues = {
+			Items: {
+				items: selectedItemIds
+			}
+		};
+
+		var filter = await buildFilter$3(this.get("form"), action.parameters);
+		filter.Items = { items: selectedItemIds };
+		formInstance.setInputFields(filter);
+
+		var f = new SvelteComponent$3({
+			target: this.refs.bulkActionContainer,
+			data: {
+				metadata: formInstance.metadata,
+				form: formInstance,
+				app: app,
+				useUrl: false
+			}
+		});
+
+		f.init();
+
+		var self = this;
+		f.on("form:responseHandled", e => {
+			self.closeBulkActionModal(e.response);
+		});
+
+		this.set({
+			currentBulkActionForm: f
+		});
+
+		modals$3.push(this);
+	},
+	async closeBulkActionModal(response) {
+		var currentBulkActionForm = this.get("currentBulkActionForm");
+
+		this.set({
+			isBulkActionModalOpen: false,
+			currentBulkActionForm: null
+		});
+
+		currentBulkActionForm.destroy();
+
+		var parentFormComponent = this.get("parent");
+
+		if (response != null &&
+			response.metadata.handler !== "redirect" &&
+			response.metadata.handler !== "reload") {
+			// If asked to redirect to another form, then we redirect
+			// and do not reload parent form, as that would be a wasted effort.
+			await parentFormComponent.submit(null, true);
+		}
+
+		modals$3.pop();
+	},
+	selectItem(checkboxElement, row) {
+		row.__selected = checkboxElement.checked;
+		
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		this.set({"selectedItemsCount":selectedItems.length});
+	},
+	selectAllItems(checkboxElement) {
+		for (var row of this.get("field").data) {
+			row.__selected = checkboxElement.checked;
+		}
+
+		var checkboxes = this.refs.table.querySelectorAll(`tbody>tr>td .checkbox`);
+
+		for (var checkbox of checkboxes) {
+			checkbox.checked = checkboxElement.checked;
+		}
+
+		var selectedItems = this.get("field").data.filter(t => t.__selected === true);
+		this.set({"selectedItemsCount":selectedItems.length});
+	},
+	sortData(column, columns) {
+			var parent = this.get("parent");
+			var form = parent.get("form");
+			var field = this.get("field");
+			var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+			if(paginatorInput != null){
+				paginatorInput.value.orderBy = column.customProperties["sortableBy"];
+				for (let i of columns) {
+					i.ascending = false;
+				}
+				column.ascending = paginatorInput.value.ascending = !paginatorInput.value.ascending;
+				
+				var params = {};
+				for (let i of form.inputs) {
+					params[i.metadata.id] = i.value;
+				}
+				form.setInputFields(params);
+				parent.submit(null, false);
+			}
+		},
+};
+
+function oncreate$22() {
+	var data = this.get("field").data;
+
+	if (data == null) {
+		return;
+	}
+
+	var app = this.get("app");
+	var metadata = this.get("field").metadata;
+	var rowCssClass = (metadata.customProperties || {}).rowCssClass;
+
+	// Create map, with key being the lowercase version of the property name
+	// and value being the actual property name.
+	var map = {};
+	if (data.length > 0) {
+		let firstRow = data[0];
+
+		for (let property in firstRow) {
+			if (firstRow.hasOwnProperty(property)) {
+				map[property.toLowerCase()] = property;
+			}
+		}
+	}
+
+	this.set({
+		// Show table only after the `oncreate` method has run.
+		visible: true,
+		bulkActions: (metadata.customProperties || {}).bulkAction || [],
+		map: map,
+		getField: function(row, column) {
+			var data = row[map[column.id.toLowerCase()]];
+
+			return {
+				data: data,
+				metadata: column
+			};
+		},
+		getRowCssClass: function (row) {
+			var cssClass = "";
+
+			if (rowCssClass != null)
+			{
+				cssClass = rowCssClass.cssClass || "";
+
+				if (rowCssClass.suffix != null) {
+					cssClass += row[map[rowCssClass.suffix.toLowerCase()]];
+				}
+			}
+
+			return cssClass;
+		},
+		selectedItemsCount:0
+	});
+}
+
+function add_css$22() {
+	var style = createElement("style");
+	style.id = 'svelte-1g2buad-style';
+	style.textContent = ".svelte-1g2buad.btn-row,.svelte-1g2buad .btn-row{text-align:right}.svelte-1g2buad.checkbox,.svelte-1g2buad .checkbox{clip:unset;clip-path:unset;position:unset;width:15px;height:15px}.svelte-1g2buad.sortable-column,.svelte-1g2buad .sortable-column{cursor:pointer\r\n\t}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$42(component, state) {
 	var if_block_anchor;
 
-	var if_block = (state.field.data != null && state.field.data.value != null) && create_if_block$20(component, state);
+	function select_block_type_4(state) {
+		if (state.visible && state.field.data != null && state.field.data.length > 0) return create_if_block$30;
+		return create_if_block_15$1;
+	}
+
+	var current_block_type = select_block_type_4(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type_4(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (7:5) {{#each bulkActions as action}}
+function create_each_block$16(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var if_block_anchor;
+
+	function select_block_type(state) {
+		if (state.selectedItemsCount > 0) return create_if_block_2$17;
+		return create_if_block_3$11;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (8:6) {{#if selectedItemsCount > 0 }}
+function create_if_block_2$17(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var button, text_value = action.label, text, text_1, small, text_2, text_3, text_4;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			small = createElement("small");
+			text_2 = createText("(");
+			text_3 = createText(state.selectedItemsCount);
+			text_4 = createText(")");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(button, "click", click_handler$8);
+			button.className = "btn btn-default";
+
+			button._svelte = {
+				component: component,
+				each_value: state.each_value,
+				action_index: state.action_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+			appendNode(text_1, button);
+			appendNode(small, button);
+			appendNode(text_2, small);
+			appendNode(text_3, small);
+			appendNode(text_4, small);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.bulkActions) && text_value !== (text_value = action.label)) {
+				text.data = text_value;
+			}
+
+			if (changed.selectedItemsCount) {
+				text_3.data = state.selectedItemsCount;
+			}
+
+			button._svelte.each_value = state.each_value;
+			button._svelte.action_index = state.action_index;
+		},
+
+		u: function unmount() {
+			detachNode(button);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(button, "click", click_handler$8);
+		}
+	};
+}
+
+// (10:6) {{else}}
+function create_if_block_3$11(component, state) {
+	var action = state.action, each_value = state.each_value, action_index = state.action_index;
+	var button, text_value = action.label, text;
+
+	return {
+		c: function create() {
+			button = createElement("button");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			button.className = "btn btn-default";
+			button.disabled = true;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(button, target, anchor);
+			appendNode(text, button);
+		},
+
+		p: function update(changed, state) {
+			action = state.action;
+			each_value = state.each_value;
+			action_index = state.action_index;
+			if ((changed.bulkActions) && text_value !== (text_value = action.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(button);
+		},
+
+		d: noop$1
+	};
+}
+
+// (4:3) {{#if bulkActions.length > 0 }}
+function create_if_block_1$19(component, state) {
+	var tr, td, td_colspan_value;
+
+	var each_value = state.bulkActions;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$16(component, assign(assign({}, state), {
+			each_value: each_value,
+			action: each_value[i],
+			action_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			tr = createElement("tr");
+			td = createElement("td");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			td.colSpan = td_colspan_value = state.columnsOrdered.length + 1;
+			td.className = "btn-row";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tr, target, anchor);
+			appendNode(td, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(td, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.bulkActions;
+
+			if (changed.selectedItemsCount || changed.bulkActions) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						action: each_value[i],
+						action_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$16(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(td, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if ((changed.columnsOrdered) && td_colspan_value !== (td_colspan_value = state.columnsOrdered.length + 1)) {
+				td.colSpan = td_colspan_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (18:4) {{#if bulkActions.length > 0}}
+function create_if_block_4$9(component, state) {
+	var th, input;
+
+	function change_handler(event) {
+		component.selectAllItems(input);
+	}
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler);
+			setAttribute(input, "type", "checkbox");
+			input.className = "checkbox";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(input, th);
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler);
+		}
+	};
+}
+
+// (24:4) {{#each columnsOrdered as column}}
+function create_each_block_1$7(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var if_block_anchor;
+
+	function select_block_type_3(state) {
+		if (column.customProperties != null && column.customProperties["sortableBy"] != null) return create_if_block_5$4;
+		return create_if_block_8$1;
+	}
+
+	var current_block_type = select_block_type_3(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_3(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (26:5) {{#if column.ascending}}
+function create_if_block_6$3(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th, text_value = column.label, text, text_1, i;
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "fa fa-sort-down";
+			addListener$1(th, "click", click_handler_1$2);
+			th.className = "sortable-column";
+
+			th._svelte = {
+				component: component,
+				each_value_1: state.each_value_1,
+				column_index: state.column_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(text, th);
+			appendNode(text_1, th);
+			appendNode(i, th);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+
+			th._svelte.each_value_1 = state.each_value_1;
+			th._svelte.column_index = state.column_index;
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(th, "click", click_handler_1$2);
+		}
+	};
+}
+
+// (28:5) {{else}}
+function create_if_block_7$1(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th, text_value = column.label, text, text_1, i;
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			text = createText(text_value);
+			text_1 = createText(" ");
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "fa fa-sort-up";
+			addListener$1(th, "click", click_handler_2$1);
+			th.className = "sortable-column";
+
+			th._svelte = {
+				component: component,
+				each_value_1: state.each_value_1,
+				column_index: state.column_index
+			};
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(text, th);
+			appendNode(text_1, th);
+			appendNode(i, th);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+
+			th._svelte.each_value_1 = state.each_value_1;
+			th._svelte.column_index = state.column_index;
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(th, "click", click_handler_2$1);
+		}
+	};
+}
+
+// (33:5) {{#if column.customProperties != null && column.customProperties["documentation"] != null}}
+function create_if_block_9$1(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var div, text_value = column.label, text, text_1;
+
+	var tooltip_initial_data = { data: column.customProperties.documentation[0] };
+	var tooltip = new SvelteComponent$5({
+		root: component.root,
+		data: tooltip_initial_data
+	});
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			text = createText(text_value);
+			text_1 = createText("\r\n\t\t\t\t\t\t");
+			tooltip._fragment.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "help-tooltip";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(text, div);
+			appendNode(text_1, div);
+			tooltip._mount(div, null);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+
+			var tooltip_changes = {};
+			if (changed.columnsOrdered) tooltip_changes.data = column.customProperties.documentation[0];
+			tooltip._set(tooltip_changes);
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			tooltip.destroy(false);
+		}
+	};
+}
+
+// (37:5) {{else}}
+function create_if_block_10$1(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var text_value = column.label, text;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+// (25:4) {{#if column.customProperties != null && column.customProperties["sortableBy"] != null}}
+function create_if_block_5$4(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (column.ascending) return create_if_block_6$3;
+		return create_if_block_7$1;
+	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (31:4) {{else}}
+function create_if_block_8$1(component, state) {
+	var column = state.column, each_value_1 = state.each_value_1, column_index = state.column_index;
+	var th;
+
+	function select_block_type_2(state) {
+		if (column.customProperties != null && column.customProperties["documentation"] != null) return create_if_block_9$1;
+		return create_if_block_10$1;
+	}
+
+	var current_block_type = select_block_type_2(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			if_block.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			if_block.m(th, null);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_1 = state.each_value_1;
+			column_index = state.column_index;
+			if (current_block_type === (current_block_type = select_block_type_2(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(th, null);
+			}
+		},
+
+		u: function unmount() {
+			detachNode(th);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (47:3) {{#each field.data as row}}
+function create_each_block_2$3(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index;
+	var tr, text, tr_class_value;
+
+	var if_block = (state.bulkActions.length > 0) && create_if_block_12$1(component, state);
+
+	var each_value_3 = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_3.length; i += 1) {
+		each_blocks[i] = create_each_block_3$2(component, assign(assign({}, state), {
+			each_value_3: each_value_3,
+			column: each_value_3[i],
+			column_index_1: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			tr = createElement("tr");
+			if (if_block) if_block.c();
+			text = createText("\r\n\r\n\t\t\t\t");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			tr.className = tr_class_value = state.getRowCssClass(row);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tr, target, anchor);
+			if (if_block) if_block.m(tr, null);
+			appendNode(text, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			if (state.bulkActions.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_12$1(component, state);
+					if_block.c();
+					if_block.m(tr, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			var each_value_3 = state.columnsOrdered;
+
+			if (changed.getField || changed.field || changed.columnsOrdered || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_3.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_3: each_value_3,
+						column: each_value_3[i],
+						column_index_1: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_3$2(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_3.length;
+			}
+
+			if ((changed.getRowCssClass || changed.field) && tr_class_value !== (tr_class_value = state.getRowCssClass(row))) {
+				tr.className = tr_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tr);
+			if (if_block) if_block.u();
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (49:4) {{#if bulkActions.length > 0}}
+function create_if_block_12$1(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index;
+	var td, div, input;
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			div = createElement("div");
+			input = createElement("input");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", change_handler$2);
+			setAttribute(input, "type", "checkbox");
+			input.className = "checkbox";
+
+			input._svelte = {
+				component: component,
+				each_value_2: state.each_value_2,
+				row_index: state.row_index
+			};
+
+			div.className = "form-group form-check";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			appendNode(div, td);
+			appendNode(input, div);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			input._svelte.each_value_2 = state.each_value_2;
+			input._svelte.row_index = state.row_index;
+		},
+
+		u: function unmount() {
+			detachNode(td);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", change_handler$2);
+		}
+	};
+}
+
+// (57:4) {{#each columnsOrdered as column}}
+function create_each_block_3$2(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index, column = state.column, each_value_3 = state.each_value_3, column_index_1 = state.column_index_1;
+	var td;
+
+	var if_block = (!(state.getField(row, column).metadata.getCustomProperty("hideIfNull") === true && state.getField(row, column).data === null)) && create_if_block_13$1(component, state);
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			if (if_block) if_block.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			if (if_block) if_block.m(td, null);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_1 = state.column_index_1;
+			if (!(state.getField(row, column).metadata.getCustomProperty("hideIfNull") === true && state.getField(row, column).data === null)) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_13$1(component, state);
+					if_block.c();
+					if_block.m(td, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(td);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (59:5) {{#if !(getField(row, column).metadata.getCustomProperty("hideIfNull") === true && getField(row, column).data === null)}}
+function create_if_block_13$1(component, state) {
+	var row = state.row, each_value_2 = state.each_value_2, row_index = state.row_index, column = state.column, each_value_3 = state.each_value_3, column_index_1 = state.column_index_1;
+
+	var formoutput_initial_data = {
+	 	field: state.getField(row, column),
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var formoutput = new SvelteComponent$6({
+		root: component.root,
+		data: formoutput_initial_data
+	});
+
+	return {
+		c: function create() {
+			formoutput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			formoutput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_2 = state.each_value_2;
+			row_index = state.row_index;
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_1 = state.column_index_1;
+			var formoutput_changes = {};
+			if (changed.getField || changed.field || changed.columnsOrdered) formoutput_changes.field = state.getField(row, column);
+			if (changed.app) formoutput_changes.app = state.app;
+			if (changed.form) formoutput_changes.form = state.form;
+			if (changed.parent) formoutput_changes.parent = state.parent;
+			formoutput._set(formoutput_changes);
+		},
+
+		u: function unmount() {
+			formoutput._unmount();
+		},
+
+		d: function destroy$$1() {
+			formoutput.destroy(false);
+		}
+	};
+}
+
+// (46:3) {{#if map != null}}
+function create_if_block_11$1(component, state) {
+	var each_anchor;
+
+	var each_value_2 = state.field.data;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2$3(component, assign(assign({}, state), {
+			each_value_2: each_value_2,
+			row: each_value_2[i],
+			row_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			var each_value_2 = state.field.data;
+
+			if (changed.getRowCssClass || changed.field || changed.bulkActions || changed.columnsOrdered || changed.getField || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_2.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_2: each_value_2,
+						row: each_value_2[i],
+						row_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_2$3(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_2.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (70:1) {{#if bulkActions.length > 0}}
+function create_if_block_14$1(component, state) {
+	var input, text, div, div_1, label, text_1, div_2;
+
+	function input_change_handler() {
+		component.set({ isBulkActionModalOpen: input.checked });
+	}
+
+	function click_handler_3(event) {
+		component.closeBulkActionModal(null);
+	}
+
+	return {
+		c: function create() {
+			input = createElement("input");
+			text = createText("\r\n\t\t");
+			div = createElement("div");
+			div_1 = createElement("div");
+			label = createElement("label");
+			text_1 = createText("\r\n\t\t\t\t");
+			div_2 = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			addListener$1(input, "change", input_change_handler);
+			setAttribute(input, "type", "checkbox");
+			input.className = "hidden svelte-1g2buad";
+			addListener$1(label, "click", click_handler_3);
+			label.className = "close";
+			div_1.className = "card";
+			div.className = "modal svelte-1g2buad";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(input, target, anchor);
+
+			input.checked = state.isBulkActionModalOpen;
+
+			insertNode(text, target, anchor);
+			insertNode(div, target, anchor);
+			appendNode(div_1, div);
+			appendNode(label, div_1);
+			appendNode(text_1, div_1);
+			appendNode(div_2, div_1);
+			component.refs.bulkActionContainer = div_2;
+		},
+
+		p: function update(changed, state) {
+			input.checked = state.isBulkActionModalOpen;
+		},
+
+		u: function unmount() {
+			detachNode(input);
+			detachNode(text);
+			detachNode(div);
+		},
+
+		d: function destroy$$1() {
+			removeListener$1(input, "change", input_change_handler);
+			removeListener$1(label, "click", click_handler_3);
+			if (component.refs.bulkActionContainer === div_2) component.refs.bulkActionContainer = null;
+		}
+	};
+}
+
+// (1:0) {{#if visible && field.data != null && field.data.length > 0}}
+function create_if_block$30(component, state) {
+	var table, thead, text, tr, text_1, text_4, tbody, text_7, if_block_3_anchor;
+
+	var if_block = (state.bulkActions.length > 0) && create_if_block_1$19(component, state);
+
+	var if_block_1 = (state.bulkActions.length > 0) && create_if_block_4$9(component, state);
+
+	var each_value_1 = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$7(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			column: each_value_1[i],
+			column_index: i
+		}));
+	}
+
+	var if_block_2 = (state.map != null) && create_if_block_11$1(component, state);
+
+	var if_block_3 = (state.bulkActions.length > 0) && create_if_block_14$1(component, state);
+
+	return {
+		c: function create() {
+			table = createElement("table");
+			thead = createElement("thead");
+			if (if_block) if_block.c();
+			text = createText("\r\n\t\t\t");
+			tr = createElement("tr");
+			if (if_block_1) if_block_1.c();
+			text_1 = createText("\r\n\r\n\t\t\t\t");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text_4 = createText("\r\n\t\t");
+			tbody = createElement("tbody");
+			if (if_block_2) if_block_2.c();
+			text_7 = createText("\r\n\r\n\t");
+			if (if_block_3) if_block_3.c();
+			if_block_3_anchor = createComment();
+			this.h();
+		},
+
+		h: function hydrate() {
+			table.className = "table svelte-1g2buad";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(table, target, anchor);
+			appendNode(thead, table);
+			if (if_block) if_block.m(thead, null);
+			appendNode(text, thead);
+			appendNode(tr, thead);
+			if (if_block_1) if_block_1.m(tr, null);
+			appendNode(text_1, tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+
+			appendNode(text_4, table);
+			appendNode(tbody, table);
+			if (if_block_2) if_block_2.m(tbody, null);
+			component.refs.table = table;
+			insertNode(text_7, target, anchor);
+			if (if_block_3) if_block_3.m(target, anchor);
+			insertNode(if_block_3_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.bulkActions.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$19(component, state);
+					if_block.c();
+					if_block.m(thead, text);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.bulkActions.length > 0) {
+				if (!if_block_1) {
+					if_block_1 = create_if_block_4$9(component, state);
+					if_block_1.c();
+					if_block_1.m(tr, text_1);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+
+			var each_value_1 = state.columnsOrdered;
+
+			if (changed.columnsOrdered) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						column: each_value_1[i],
+						column_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$7(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+
+			if (state.map != null) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_11$1(component, state);
+					if_block_2.c();
+					if_block_2.m(tbody, null);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+
+			if (state.bulkActions.length > 0) {
+				if (if_block_3) {
+					if_block_3.p(changed, state);
+				} else {
+					if_block_3 = create_if_block_14$1(component, state);
+					if_block_3.c();
+					if_block_3.m(if_block_3_anchor.parentNode, if_block_3_anchor);
+				}
+			} else if (if_block_3) {
+				if_block_3.u();
+				if_block_3.d();
+				if_block_3 = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(table);
+			if (if_block) if_block.u();
+			if (if_block_1) if_block_1.u();
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			if (if_block_2) if_block_2.u();
+			detachNode(text_7);
+			if (if_block_3) if_block_3.u();
+			detachNode(if_block_3_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+
+			destroyEach(each_blocks);
+
+			if (if_block_2) if_block_2.d();
+			if (component.refs.table === table) component.refs.table = null;
+			if (if_block_3) if_block_3.d();
+		}
+	};
+}
+
+// (79:0) {{else}}
+function create_if_block_15$1(component, state) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div.textContent = "No data.";
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "alert-nodata svelte-1g2buad";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+		},
+
+		p: noop$1,
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function click_handler$8(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, action_index = this._svelte.action_index, action = each_value[action_index];
+	component.runBulkAction(action);
+}
+
+function click_handler_1$2(event) {
+	var component = this._svelte.component;
+	var each_value_1 = this._svelte.each_value_1, column_index = this._svelte.column_index, column = each_value_1[column_index];
+	var state = component.get();
+	component.sortData(column,state.columnsOrdered);
+}
+
+function click_handler_2$1(event) {
+	var component = this._svelte.component;
+	var each_value_1 = this._svelte.each_value_1, column_index = this._svelte.column_index, column = each_value_1[column_index];
+	var state = component.get();
+	component.sortData(column,state.columnsOrdered);
+}
+
+function change_handler$2(event) {
+	var component = this._svelte.component;
+	var each_value_2 = this._svelte.each_value_2, row_index = this._svelte.row_index, row = each_value_2[row_index];
+	component.selectItem(this, row);
+}
+
+function SvelteComponent$42(options) {
+	init(this, options);
+	this.refs = {};
+	this._state = assign({}, options.data);
+	this._recompute({ field: 1 }, this._state);
+
+	if (!document.getElementById("svelte-1g2buad-style")) add_css$22();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, visible: 1, bulkActions: 1, columnsOrdered: 1, selectedItemsCount: 1, map: 1, getRowCssClass: 1, getField: 1, app: 1, form: 1, parent: 1, isBulkActionModalOpen: 1 };
+		oncreate$22.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$42(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$42.prototype, proto);
+assign(SvelteComponent$42.prototype, methods$15);
+
+SvelteComponent$42.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.columnsOrdered, (state.columnsOrdered = columnsOrdered$1(state.field)))) changed.columnsOrdered = true;
+	}
+};
+
+/* src\core\ui\outputs\TableWithFooter.html generated by Svelte v1.64.1 */
+function columnsOrdered$2(field) {
+	return field.data.itemMetadata.filter(b => !b.hidden).sort((a, b) => {
+		return a.orderIndex - b.orderIndex;
+	});
+}
+
+function footerColumns(field, columnsOrdered) {
+	var footer = field.data != null ? field.data.footer : null;
+
+	if (footer != null && 
+		footer.footerProperties != null && 
+		footer.footerProperties.length > 0) {
+		
+		var footerColumns = [];
+
+		for (var i = 0; i < columnsOrdered.length; i++){
+			var column = columnsOrdered[i];
+			var found = false;
+
+			for (let property of footer.footerProperties) {
+				if (property.labelIn != null && 
+					property.labelIn.length > 0 && 
+					property.labelIn.indexOf(column.id) > -1) {	
+					footerColumns.push({
+						label: property.label,
+						colspan: property.labelIn.length
+					});
+
+					i += (property.labelIn.length - 1);
+					found = true;
+					break;
+				} else if (
+					property.dataIn != null && 
+					property.dataIn.length > 0 &&
+					property.dataIn.indexOf(column.id) > -1) {
+					for (var p in footer.data) {
+						if (footer.data.hasOwnProperty(p) && property.id.toLowerCase() == p.toLowerCase()) {
+							var propertyMetadata = field.data.footerMetadata.find(a => a.id == property.id);
+							var outputField = {
+								data: footer.data[p],
+								metadata: propertyMetadata
+							};
+							break;
+						}
+					}
+
+					footerColumns.push({
+						outputField: outputField,
+						colspan: property.dataIn.length
+					});
+
+					i += (property.dataIn.length - 1);
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				footerColumns.push({label :""});
+			}
+		}
+
+		return footerColumns;
+	}
+
+	return columnsOrdered;
+}
+
+function oncreate$23() {
+	
+	var data = this.get("field").data;
+
+	if (data == null) {
+		return;
+	}
+
+	var app = this.get("app");
+	var metadata = this.get("field").metadata;
+	var rowCssClass = (metadata.customProperties || {}).rowCssClass;
+	var items = [];
+
+	// Create map, with key being the lowercase version of the property name
+	// and value being the actual property name. 
+	var map = {};
+
+	var formMetadata = new FormMetadata({
+		customProperties: data.itemMetadata.customProperties,
+		outputFields: data.itemMetadata
+	});
+
+	for (let item of data.items) {
+		items.push(FormInstance$$1.getOutputFieldValues(formMetadata.outputFields, item));
+	}				
+
+	if (items.length > 0) {
+		let firstRow = items[0];
+		for (let property in firstRow) {
+			if (firstRow.hasOwnProperty(property)) {
+				map[property.toLowerCase()] = property;
+			}
+		}
+	}
+	
+	this.set({
+		map: map,
+		items : items,
+		footer: data.footer,
+		getField: function(row, column) {	
+			return row.find(a => a.metadata.id == column.id);
+		},
+		getRowCssClass: function (row) {
+			var cssClass = "";
+
+			if (rowCssClass != null)
+			{
+				cssClass = rowCssClass.cssClass || "";
+
+				if (rowCssClass.suffix != null) {
+					cssClass += row.find(a => a.metadata.id == rowCssClass.suffix);
+				}
+			}
+
+			return cssClass;
+		}
+	});
+}
+
+function create_main_fragment$43(component, state) {
+	var if_block_anchor;
+
+	function select_block_type_1(state) {
+		if (state.items != null && state.items.length > 0) return create_if_block$31;
+		return create_if_block_5$5;
+	}
+
+	var current_block_type = select_block_type_1(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+			}
+		},
+
+		u: function unmount() {
+			if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (5:3) {{#each columnsOrdered as column}}
+function create_each_block$17(component, state) {
+	var column = state.column, each_value = state.each_value, column_index = state.column_index;
+	var th, text_value = column.label, text;
+
+	return {
+		c: function create() {
+			th = createElement("th");
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(th, target, anchor);
+			appendNode(text, th);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value = state.each_value;
+			column_index = state.column_index;
+			if ((changed.columnsOrdered) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(th);
+		},
+
+		d: noop$1
+	};
+}
+
+// (12:2) {{#each items as row}}
+function create_each_block_1$8(component, state) {
+	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index;
+	var tr, tr_class_value;
+
+	var each_value_2 = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2$4(component, assign(assign({}, state), {
+			each_value_2: each_value_2,
+			column: each_value_2[i],
+			column_index_1: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			tr = createElement("tr");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			tr.className = tr_class_value = state.getRowCssClass(row);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tr, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_1 = state.each_value_1;
+			row_index = state.row_index;
+			var each_value_2 = state.columnsOrdered;
+
+			if (changed.getField || changed.items || changed.columnsOrdered || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_2.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_2: each_value_2,
+						column: each_value_2[i],
+						column_index_1: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_2$4(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_2.length;
+			}
+
+			if ((changed.getRowCssClass || changed.items) && tr_class_value !== (tr_class_value = state.getRowCssClass(row))) {
+				tr.className = tr_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tr);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (14:3) {{#each columnsOrdered as column}}
+function create_each_block_2$4(component, state) {
+	var row = state.row, each_value_1 = state.each_value_1, row_index = state.row_index, column = state.column, each_value_2 = state.each_value_2, column_index_1 = state.column_index_1;
+	var td;
+
+	var formoutput_initial_data = {
+	 	field: state.getField(row, column),
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var formoutput = new SvelteComponent$6({
+		root: component.root,
+		data: formoutput_initial_data
+	});
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			formoutput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			formoutput._mount(td, null);
+		},
+
+		p: function update(changed, state) {
+			row = state.row;
+			each_value_1 = state.each_value_1;
+			row_index = state.row_index;
+			column = state.column;
+			each_value_2 = state.each_value_2;
+			column_index_1 = state.column_index_1;
+			var formoutput_changes = {};
+			if (changed.getField || changed.items || changed.columnsOrdered) formoutput_changes.field = state.getField(row, column);
+			if (changed.app) formoutput_changes.app = state.app;
+			if (changed.form) formoutput_changes.form = state.form;
+			if (changed.parent) formoutput_changes.parent = state.parent;
+			formoutput._set(formoutput_changes);
+		},
+
+		u: function unmount() {
+			detachNode(td);
+		},
+
+		d: function destroy$$1() {
+			formoutput.destroy(false);
+		}
+	};
+}
+
+// (11:2) {{#if map != null}}
+function create_if_block_1$20(component, state) {
+	var each_anchor;
+
+	var each_value_1 = state.items;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1$8(component, assign(assign({}, state), {
+			each_value_1: each_value_1,
+			row: each_value_1[i],
+			row_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(target, anchor);
+			}
+
+			insertNode(each_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			var each_value_1 = state.items;
+
+			if (changed.getRowCssClass || changed.items || changed.columnsOrdered || changed.getField || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_1.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_1: each_value_1,
+						row: each_value_1[i],
+						row_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_1$8(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(each_anchor.parentNode, each_anchor);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_1.length;
+			}
+		},
+
+		u: function unmount() {
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			detachNode(each_anchor);
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (26:3) {{#each footerColumns as column}}
+function create_each_block_3$3(component, state) {
+	var column = state.column, each_value_3 = state.each_value_3, column_index_2 = state.column_index_2;
+	var td, td_colspan_value;
+
+	function select_block_type(state) {
+		if (column.outputField != null) return create_if_block_3$12;
+		return create_if_block_4$10;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			td.colSpan = td_colspan_value = column.colspan;
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			if_block.m(td, null);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_2 = state.column_index_2;
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
+				if_block.p(changed, state);
+			} else {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(td, null);
+			}
+
+			if ((changed.footerColumns) && td_colspan_value !== (td_colspan_value = column.colspan)) {
+				td.colSpan = td_colspan_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(td);
+			if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+		}
+	};
+}
+
+// (28:5) {{#if column.outputField != null}}
+function create_if_block_3$12(component, state) {
+	var column = state.column, each_value_3 = state.each_value_3, column_index_2 = state.column_index_2;
+
+	var formoutput_initial_data = {
+	 	field: column.outputField,
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var formoutput = new SvelteComponent$6({
+		root: component.root,
+		data: formoutput_initial_data
+	});
+
+	return {
+		c: function create() {
+			formoutput._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			formoutput._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_2 = state.column_index_2;
+			var formoutput_changes = {};
+			if (changed.footerColumns) formoutput_changes.field = column.outputField;
+			if (changed.app) formoutput_changes.app = state.app;
+			if (changed.form) formoutput_changes.form = state.form;
+			if (changed.parent) formoutput_changes.parent = state.parent;
+			formoutput._set(formoutput_changes);
+		},
+
+		u: function unmount() {
+			formoutput._unmount();
+		},
+
+		d: function destroy$$1() {
+			formoutput.destroy(false);
+		}
+	};
+}
+
+// (30:5) {{else}}
+function create_if_block_4$10(component, state) {
+	var column = state.column, each_value_3 = state.each_value_3, column_index_2 = state.column_index_2;
+	var text_value = column.label, text;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			column = state.column;
+			each_value_3 = state.each_value_3;
+			column_index_2 = state.column_index_2;
+			if ((changed.footerColumns) && text_value !== (text_value = column.label)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+// (23:1) {{#if footer != null}}
+function create_if_block_2$18(component, state) {
+	var tfoot, tr;
+
+	var each_value_3 = state.footerColumns;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value_3.length; i += 1) {
+		each_blocks[i] = create_each_block_3$3(component, assign(assign({}, state), {
+			each_value_3: each_value_3,
+			column: each_value_3[i],
+			column_index_2: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			tfoot = createElement("tfoot");
+			tr = createElement("tr");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(tfoot, target, anchor);
+			appendNode(tr, tfoot);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value_3 = state.footerColumns;
+
+			if (changed.footerColumns || changed.app || changed.form || changed.parent) {
+				for (var i = 0; i < each_value_3.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value_3: each_value_3,
+						column: each_value_3[i],
+						column_index_2: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block_3$3(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value_3.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(tfoot);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (1:0) {{#if items != null && items.length > 0}}
+function create_if_block$31(component, state) {
+	var table, thead, tr, text_2, tbody, text_4;
+
+	var each_value = state.columnsOrdered;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$17(component, assign(assign({}, state), {
+			each_value: each_value,
+			column: each_value[i],
+			column_index: i
+		}));
+	}
+
+	var if_block = (state.map != null) && create_if_block_1$20(component, state);
+
+	var if_block_1 = (state.footer != null) && create_if_block_2$18(component, state);
+
+	return {
+		c: function create() {
+			table = createElement("table");
+			thead = createElement("thead");
+			tr = createElement("tr");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			text_2 = createText("\r\n\t");
+			tbody = createElement("tbody");
+			if (if_block) if_block.c();
+			text_4 = createText("\r\n\t");
+			if (if_block_1) if_block_1.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			table.className = "table";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(table, target, anchor);
+			appendNode(thead, table);
+			appendNode(tr, thead);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(tr, null);
+			}
+
+			appendNode(text_2, table);
+			appendNode(tbody, table);
+			if (if_block) if_block.m(tbody, null);
+			appendNode(text_4, table);
+			if (if_block_1) if_block_1.m(table, null);
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.columnsOrdered;
+
+			if (changed.columnsOrdered) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						column: each_value[i],
+						column_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$17(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(tr, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if (state.map != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block_1$20(component, state);
+					if_block.c();
+					if_block.m(tbody, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+
+			if (state.footer != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_2$18(component, state);
+					if_block_1.c();
+					if_block_1.m(table, null);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(table);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+
+			if (if_block) if_block.u();
+			if (if_block_1) if_block_1.u();
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+
+			if (if_block) if_block.d();
+			if (if_block_1) if_block_1.d();
+		}
+	};
+}
+
+// (39:0) {{else}}
+function create_if_block_5$5(component, state) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			div.textContent = "No data.";
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "alert-nodata";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+		},
+
+		p: noop$1,
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$43(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+	this._recompute({ field: 1, columnsOrdered: 1 }, this._state);
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { field: 1, columnsOrdered: 1, items: 1, map: 1, getRowCssClass: 1, getField: 1, app: 1, form: 1, parent: 1, footer: 1, footerColumns: 1 };
+		oncreate$23.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$43(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$43.prototype, proto);
+
+SvelteComponent$43.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field) {
+		if (this._differs(state.columnsOrdered, (state.columnsOrdered = columnsOrdered$2(state.field)))) changed.columnsOrdered = true;
+	}
+
+	if (changed.field || changed.columnsOrdered) {
+		if (this._differs(state.footerColumns, (state.footerColumns = footerColumns(state.field, state.columnsOrdered)))) changed.footerColumns = true;
+	}
+};
+
+/* src\core\ui\outputs\Tabstrip.html generated by Svelte v1.64.1 */
+function getCssClass(tab, tabstrip) {
+	return tab.form == tabstrip.currentTab
+		? "active"
+		: "";
+}
+
+function create_main_fragment$44(component, state) {
+	var div;
+
+	var each_value = state.field.data.tabs;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$18(component, assign(assign({}, state), {
+			each_value: each_value,
+			tab: each_value[i],
+			tab_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			div = createElement("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "tabstrip";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.field.data.tabs;
+
+			if (changed.app || changed.field) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						tab: each_value[i],
+						tab_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$18(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(div, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (2:1) {{#each field.data.tabs as tab}}
+function create_each_block$18(component, state) {
+	var tab = state.tab, each_value = state.each_value, tab_index = state.tab_index;
+	var div, a, text_value = tab.label, text, a_href_value, a_class_value;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			a = createElement("a");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			a.href = a_href_value = state.app.makeUrl(tab.form, tab.inputFieldValues);
+			a.className = a_class_value = getCssClass(tab, state.field.data);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(a, div);
+			appendNode(text, a);
+		},
+
+		p: function update(changed, state) {
+			tab = state.tab;
+			each_value = state.each_value;
+			tab_index = state.tab_index;
+			if ((changed.field) && text_value !== (text_value = tab.label)) {
+				text.data = text_value;
+			}
+
+			if ((changed.app || changed.field) && a_href_value !== (a_href_value = state.app.makeUrl(tab.form, tab.inputFieldValues))) {
+				a.href = a_href_value;
+			}
+
+			if ((changed.field) && a_class_value !== (a_class_value = getCssClass(tab, state.field.data))) {
+				a.className = a_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$44(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$44(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$44.prototype, proto);
+
+/* src\core\ui\outputs\Text.html generated by Svelte v1.64.1 */
+function cssClass(field, form) {
+	var cssClass = "";
+	var dynamicCssClass = field.metadata.getCustomProperty("dynamicCssClass");
+	if (dynamicCssClass != null) {
+		cssClass = dynamicCssClass.cssClassPrefix;
+		if (dynamicCssClass.outputFieldAsSuffix != null) {
+			var suffixOutputField = form.outputs.find(t => t.metadata.id == dynamicCssClass.outputFieldAsSuffix);
+			cssClass += suffixOutputField.data;
+		}
+	}
+	return cssClass;
+}
+
+function BooleanChecker(field) {
+		if (typeof(field.data) === "boolean") {
+			return field.data ? "Yes" : "No";
+		} else {
+			return field.data;
+		}
+	}
+
+function create_main_fragment$45(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.field.data != null) && create_if_block$32(component, state);
 
 	return {
 		c: function create() {
@@ -29605,11 +44089,11 @@ function create_main_fragment$34(component, state) {
 		},
 
 		p: function update(changed, state) {
-			if (state.field.data != null && state.field.data.value != null) {
+			if (state.field.data != null) {
 				if (if_block) {
 					if_block.p(changed, state);
 				} else {
-					if_block = create_if_block$20(component, state);
+					if_block = create_if_block$32(component, state);
 					if_block.c();
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
 				}
@@ -29631,45 +44115,50 @@ function create_main_fragment$34(component, state) {
 	};
 }
 
-// (1:0) {{#if field.data != null && field.data.value != null}}
-function create_if_block$20(component, state) {
-	var raw_value = state.field.data.value, raw_before, raw_after;
+// (1:0) {{#if field.data != null }}
+function create_if_block$32(component, state) {
+	var span, text;
 
 	return {
 		c: function create() {
-			raw_before = createElement('noscript');
-			raw_after = createElement('noscript');
+			span = createElement("span");
+			text = createText(state.BooleanChecker);
+			this.h();
+		},
+
+		h: function hydrate() {
+			span.className = state.cssClass;
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(raw_before, target, anchor);
-			raw_before.insertAdjacentHTML("afterend", raw_value);
-			insertNode(raw_after, target, anchor);
+			insertNode(span, target, anchor);
+			appendNode(text, span);
 		},
 
 		p: function update(changed, state) {
-			if ((changed.field) && raw_value !== (raw_value = state.field.data.value)) {
-				detachBetween(raw_before, raw_after);
-				raw_before.insertAdjacentHTML("afterend", raw_value);
+			if (changed.BooleanChecker) {
+				text.data = state.BooleanChecker;
+			}
+
+			if (changed.cssClass) {
+				span.className = state.cssClass;
 			}
 		},
 
 		u: function unmount() {
-			detachBetween(raw_before, raw_after);
-
-			detachNode(raw_before);
-			detachNode(raw_after);
+			detachNode(span);
 		},
 
 		d: noop$1
 	};
 }
 
-function SvelteComponent$34(options) {
+function SvelteComponent$45(options) {
 	init(this, options);
 	this._state = assign({}, options.data);
+	this._recompute({ field: 1, form: 1 }, this._state);
 
-	this._fragment = create_main_fragment$34(this, this._state);
+	this._fragment = create_main_fragment$45(this, this._state);
 
 	if (options.target) {
 		this._fragment.c();
@@ -29677,7 +44166,722 @@ function SvelteComponent$34(options) {
 	}
 }
 
-assign(SvelteComponent$34.prototype, proto);
+assign(SvelteComponent$45.prototype, proto);
+
+SvelteComponent$45.prototype._recompute = function _recompute(changed, state) {
+	if (changed.field || changed.form) {
+		if (this._differs(state.cssClass, (state.cssClass = cssClass(state.field, state.form)))) changed.cssClass = true;
+	}
+
+	if (changed.field) {
+		if (this._differs(state.BooleanChecker, (state.BooleanChecker = BooleanChecker(state.field)))) changed.BooleanChecker = true;
+	}
+};
+
+/* src\core\ui\outputs\TextValue.html generated by Svelte v1.64.1 */
+function create_main_fragment$46(component, state) {
+	var text_value = state.field.data.value, text;
+
+	return {
+		c: function create() {
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.value)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$46(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	this._fragment = create_main_fragment$46(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$46.prototype, proto);
+
+/* src\core\ui\outputs\TextValueMultiline.html generated by Svelte v1.64.1 */
+function add_css$23() {
+	var style = createElement("style");
+	style.id = 'svelte-1255lu1-style';
+	style.textContent = "div.svelte-1255lu1,.svelte-1255lu1 div{white-space:pre;margin:0 0px 5px 0px;padding:5px 15px}";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$47(component, state) {
+	var if_block_anchor;
+
+	var if_block = ((state.field.data || {}).value != null) && create_if_block$33(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if ((state.field.data || {}).value != null) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$33(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (1:0) {{#if (field.data || {}).value != null}}
+function create_if_block$33(component, state) {
+	var div, text_value = state.field.data.value, text;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "svelte-1255lu1";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			appendNode(text, div);
+		},
+
+		p: function update(changed, state) {
+			if ((changed.field) && text_value !== (text_value = state.field.data.value)) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+		},
+
+		d: noop$1
+	};
+}
+
+function SvelteComponent$47(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-1255lu1-style")) add_css$23();
+
+	this._fragment = create_main_fragment$47(this, this._state);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+	}
+}
+
+assign(SvelteComponent$47.prototype, proto);
+
+/* src\core\ui\outputs\Tree.html generated by Svelte v1.64.1 */
+function getField$1(node) {
+	var result = {
+		data: node.actions // ActionList class
+	};
+
+	//return JSON.stringify(result);
+	return result;
+}
+
+function parentclass(node) {
+	return node.nodes != null && node.nodes.length ? "parent_li" : ""
+}
+
+function selectedclass(form, node) {
+	var bindIdToInput = form.inputs.find(t => t.metadata.id == node.inputFieldBindToNodeId);
+
+	if (bindIdToInput != null && bindIdToInput.value == node.id) {
+		return "selected";
+	}			
+	return "";
+}
+
+var methods$16 = {
+	refreshForm(node) {
+		
+			var parent = this.get("parent");
+			var form = parent.get("form");
+			var input = node.inputFieldBindToNodeId;
+
+			var bindIdToInput = form.inputs.find(t => t.metadata.id == input);
+
+			if (bindIdToInput != null) {
+
+				var params = {};
+				for (let i of form.inputs) {
+					params[i.metadata.id] = i.value;
+				}
+				let pageParams = Object.assign({}, params);
+				pageParams[bindIdToInput.metadata.id] = Object.assign({}, pageParams[bindIdToInput.metadata.id]);
+				pageParams[bindIdToInput.metadata.id] = node.id;
+
+				form.setInputFields(pageParams);
+				parent.submit(null, false);
+			}			
+	}
+};
+
+function oncreate$24(){
+	var field = this.get("field");
+	var nodes = this.get("nodes");
+	if (field == null && nodes == null) {
+		return;
+	}
+	// 1: field.data = OutputFieldValue
+
+	// 2: field.data.nodes == null
+	// 2: nodes = TreeNode[]
+
+	this.set({
+		nodes : field != null ? field.data.nodes: nodes,
+	});
+}
+
+function add_css$24() {
+	var style = createElement("style");
+	style.id = 'svelte-1urwp39-style';
+	style.textContent = ".svelte-1urwp39.tree,.svelte-1urwp39 .tree{margin-right:0}.svelte-1urwp39.tree:first-child,.svelte-1urwp39 .tree:first-child{margin-left:0;padding-left:0}.svelte-1urwp39.tree li,.svelte-1urwp39 .tree li{list-style-type:none;margin:0;padding:7px 0px 0 5px;position:relative\r\n}.svelte-1urwp39.tree li.parent_li > div::before,.svelte-1urwp39 .tree li.parent_li > div::before{border-color:transparent transparent transparent #0061a2;border-style:solid;border-width:4px 0 5px 5px;height:0;width:0;margin-top:13px;content:'';left:15px;position:absolute;right:auto\r\n}.svelte-1urwp39.tree li .node-div,.svelte-1urwp39 .tree li .node-div{border:1px solid #dae2ea}.svelte-1urwp39.tree li .node-div.selected,.svelte-1urwp39 .tree li .node-div.selected{background-color:#f5f5f5;color:#000\r\n}.svelte-1urwp39.tree li .node-div .title:hover,.svelte-1urwp39 .tree li .node-div .title:hover{color:#000\r\n}.svelte-1urwp39.tree li label,.svelte-1urwp39 .tree li label{display:inline-block;padding:4px 26px;padding-right:7px;text-decoration:none;font-weight:500}.svelte-1urwp39.tree li i.folder,.svelte-1urwp39 .tree li i.folder,.svelte-1urwp39.tree li .title,.svelte-1urwp39 .tree li .title{color:#0061a2\r\n}.svelte-1urwp39.tree ul.actionlist,.svelte-1urwp39 .tree ul.actionlist{list-style:none !important;display:inline-flex !important;margin:0 !important;background:transparent !important;float:right}.svelte-1urwp39.tree li>div >label,.svelte-1urwp39 .tree li>div >label,.svelte-1urwp39.tree li>div > .title,.svelte-1urwp39 .tree li>div > .title{cursor:pointer\r\n}.svelte-1urwp39.tree>ul>li::before,.svelte-1urwp39 .tree>ul>li::before,.svelte-1urwp39.tree>ul>li::after,.svelte-1urwp39 .tree>ul>li::after{border:0\r\n}.svelte-1urwp39.tree li.parent_li>label:hover,.svelte-1urwp39 .tree li.parent_li>label:hover,.svelte-1urwp39.tree li.parent_li>label:hover+ul li label,.svelte-1urwp39 .tree li.parent_li>label:hover+ul li label{color:#000\r\n}ul.svelte-1urwp39.tree\tli input.tree-checkBox ~ .tree > li,.svelte-1urwp39 ul.tree\tli input.tree-checkBox ~ .tree > li{display:none}ul.svelte-1urwp39.tree\tli input.tree-checkBox:checked ~ .tree > li,.svelte-1urwp39 ul.tree\tli input.tree-checkBox:checked ~ .tree > li{display:block}ul.svelte-1urwp39.tree\tli.parent_li > input.tree-checkBox:checked + div:before,.svelte-1urwp39 ul.tree\tli.parent_li > input.tree-checkBox:checked + div:before{border-color:transparent transparent #0061a2 transparent }";
+	appendNode(style, document.head);
+}
+
+function create_main_fragment$48(component, state) {
+	var if_block_anchor;
+
+	var if_block = (state.nodes != null && state.nodes.length > 0) && create_if_block$34(component, state);
+
+	return {
+		c: function create() {
+			if (if_block) if_block.c();
+			if_block_anchor = createComment();
+		},
+
+		m: function mount(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insertNode(if_block_anchor, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			if (state.nodes != null && state.nodes.length > 0) {
+				if (if_block) {
+					if_block.p(changed, state);
+				} else {
+					if_block = create_if_block$34(component, state);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			if (if_block) if_block.u();
+			detachNode(if_block_anchor);
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (3:1) {{#each nodes as node}}
+function create_each_block$19(component, state) {
+	var node = state.node, each_value = state.each_value, node_index = state.node_index;
+	var li, input, input_id_value, text, div, label, label_for_value, text_2, span, text_3_value = node.title, text_3, text_4, text_6, div_class_value, text_8, li_class_value;
+
+	function select_block_type(state) {
+		if (node.nodes != null && node.nodes.length > 0) return create_if_block_1$21;
+		return create_if_block_2$19;
+	}
+
+	var current_block_type = select_block_type(state);
+	var if_block = current_block_type(component, state);
+
+	var if_block_1 = (node.counter != null) && create_if_block_3$13(component, state);
+
+	var if_block_2 = (node.actions != null) && create_if_block_4$11(component, state);
+
+	var sveltecomponent_initial_data = {
+	 	nodes: node.nodes,
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent
+	 };
+	var sveltecomponent = new SvelteComponent$48({
+		root: component.root,
+		data: sveltecomponent_initial_data
+	});
+
+	return {
+		c: function create() {
+			li = createElement("li");
+			input = createElement("input");
+			text = createText("\r\n\r\n\t\t");
+			div = createElement("div");
+			label = createElement("label");
+			if_block.c();
+			text_2 = createText("\r\n\t\t");
+			span = createElement("span");
+			text_3 = createText(text_3_value);
+			text_4 = createText(" \r\n\t\t\t");
+			if (if_block_1) if_block_1.c();
+			text_6 = createText("\r\n\t\t");
+			if (if_block_2) if_block_2.c();
+			text_8 = createText("\r\n\r\n\t\t");
+			sveltecomponent._fragment.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			setAttribute(input, "type", "checkbox");
+			input.id = input_id_value = "" + node.title + node.id;
+			input.className = " tree-checkBox";
+			input.checked = "checked";
+			label.htmlFor = label_for_value = "" + node.title + node.id;
+			addListener$1(span, "click", click_handler$9);
+			span.className = "title";
+
+			span._svelte = {
+				component: component,
+				each_value: state.each_value,
+				node_index: state.node_index
+			};
+
+			div.className = div_class_value = "node-div " + selectedclass(state.form,node);
+			li.className = li_class_value = "node " + parentclass(node);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(li, target, anchor);
+			appendNode(input, li);
+			appendNode(text, li);
+			appendNode(div, li);
+			appendNode(label, div);
+			if_block.m(label, null);
+			appendNode(text_2, div);
+			appendNode(span, div);
+			appendNode(text_3, span);
+			appendNode(text_4, span);
+			if (if_block_1) if_block_1.m(span, null);
+			appendNode(text_6, div);
+			if (if_block_2) if_block_2.m(div, null);
+			appendNode(text_8, li);
+			sveltecomponent._mount(li, null);
+		},
+
+		p: function update(changed, state) {
+			node = state.node;
+			each_value = state.each_value;
+			node_index = state.node_index;
+			if ((changed.nodes) && input_id_value !== (input_id_value = "" + node.title + node.id)) {
+				input.id = input_id_value;
+			}
+
+			if (current_block_type !== (current_block_type = select_block_type(state))) {
+				if_block.u();
+				if_block.d();
+				if_block = current_block_type(component, state);
+				if_block.c();
+				if_block.m(label, null);
+			}
+
+			if ((changed.nodes) && label_for_value !== (label_for_value = "" + node.title + node.id)) {
+				label.htmlFor = label_for_value;
+			}
+
+			if ((changed.nodes) && text_3_value !== (text_3_value = node.title)) {
+				text_3.data = text_3_value;
+			}
+
+			if (node.counter != null) {
+				if (if_block_1) {
+					if_block_1.p(changed, state);
+				} else {
+					if_block_1 = create_if_block_3$13(component, state);
+					if_block_1.c();
+					if_block_1.m(span, null);
+				}
+			} else if (if_block_1) {
+				if_block_1.u();
+				if_block_1.d();
+				if_block_1 = null;
+			}
+
+			span._svelte.each_value = state.each_value;
+			span._svelte.node_index = state.node_index;
+
+			if (node.actions != null) {
+				if (if_block_2) {
+					if_block_2.p(changed, state);
+				} else {
+					if_block_2 = create_if_block_4$11(component, state);
+					if_block_2.c();
+					if_block_2.m(div, null);
+				}
+			} else if (if_block_2) {
+				if_block_2.u();
+				if_block_2.d();
+				if_block_2 = null;
+			}
+
+			if ((changed.form || changed.nodes) && div_class_value !== (div_class_value = "node-div " + selectedclass(state.form,node))) {
+				div.className = div_class_value;
+			}
+
+			var sveltecomponent_changes = {};
+			if (changed.nodes) sveltecomponent_changes.nodes = node.nodes;
+			if (changed.app) sveltecomponent_changes.app = state.app;
+			if (changed.form) sveltecomponent_changes.form = state.form;
+			if (changed.parent) sveltecomponent_changes.parent = state.parent;
+			sveltecomponent._set(sveltecomponent_changes);
+
+			if ((changed.nodes) && li_class_value !== (li_class_value = "node " + parentclass(node))) {
+				li.className = li_class_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(li);
+			if_block.u();
+			if (if_block_1) if_block_1.u();
+			if (if_block_2) if_block_2.u();
+		},
+
+		d: function destroy$$1() {
+			if_block.d();
+			if (if_block_1) if_block_1.d();
+			removeListener$1(span, "click", click_handler$9);
+			if (if_block_2) if_block_2.d();
+			sveltecomponent.destroy(false);
+		}
+	};
+}
+
+// (10:3) {{#if node.nodes != null && node.nodes.length > 0}}
+function create_if_block_1$21(component, state) {
+	var node = state.node, each_value = state.each_value, node_index = state.node_index;
+	var i;
+
+	return {
+		c: function create() {
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "folder fa fa-folder-open";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(i, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			node = state.node;
+			each_value = state.each_value;
+			node_index = state.node_index;
+
+		},
+
+		u: function unmount() {
+			detachNode(i);
+		},
+
+		d: noop$1
+	};
+}
+
+// (12:3) {{else}}
+function create_if_block_2$19(component, state) {
+	var node = state.node, each_value = state.each_value, node_index = state.node_index;
+	var i;
+
+	return {
+		c: function create() {
+			i = createElement("i");
+			this.h();
+		},
+
+		h: function hydrate() {
+			i.className = "folder fa fa-folder";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(i, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			node = state.node;
+			each_value = state.each_value;
+			node_index = state.node_index;
+
+		},
+
+		u: function unmount() {
+			detachNode(i);
+		},
+
+		d: noop$1
+	};
+}
+
+// (18:3) {{#if node.counter != null}}
+function create_if_block_3$13(component, state) {
+	var node = state.node, each_value = state.each_value, node_index = state.node_index;
+	var text, text_1_value = node.counter, text_1, text_2;
+
+	return {
+		c: function create() {
+			text = createText("(");
+			text_1 = createText(text_1_value);
+			text_2 = createText(")");
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(text, target, anchor);
+			insertNode(text_1, target, anchor);
+			insertNode(text_2, target, anchor);
+		},
+
+		p: function update(changed, state) {
+			node = state.node;
+			each_value = state.each_value;
+			node_index = state.node_index;
+			if ((changed.nodes) && text_1_value !== (text_1_value = node.counter)) {
+				text_1.data = text_1_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(text);
+			detachNode(text_1);
+			detachNode(text_2);
+		},
+
+		d: noop$1
+	};
+}
+
+// (22:2) {{#if node.actions != null}}
+function create_if_block_4$11(component, state) {
+	var node = state.node, each_value = state.each_value, node_index = state.node_index;
+
+	var actionlist_initial_data = {
+	 	field: getField$1(node),
+	 	app: state.app,
+	 	form: state.form,
+	 	parent: state.parent,
+	 	showLabel: "false"
+	 };
+	var actionlist = new SvelteComponent$36({
+		root: component.root,
+		data: actionlist_initial_data
+	});
+
+	return {
+		c: function create() {
+			actionlist._fragment.c();
+		},
+
+		m: function mount(target, anchor) {
+			actionlist._mount(target, anchor);
+		},
+
+		p: function update(changed, state) {
+			node = state.node;
+			each_value = state.each_value;
+			node_index = state.node_index;
+			var actionlist_changes = {};
+			if (changed.nodes) actionlist_changes.field = getField$1(node);
+			if (changed.app) actionlist_changes.app = state.app;
+			if (changed.form) actionlist_changes.form = state.form;
+			if (changed.parent) actionlist_changes.parent = state.parent;
+			actionlist._set(actionlist_changes);
+		},
+
+		u: function unmount() {
+			actionlist._unmount();
+		},
+
+		d: function destroy$$1() {
+			actionlist.destroy(false);
+		}
+	};
+}
+
+// (1:0) {{#if nodes != null && nodes.length > 0}}
+function create_if_block$34(component, state) {
+	var ul;
+
+	var each_value = state.nodes;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$19(component, assign(assign({}, state), {
+			each_value: each_value,
+			node: each_value[i],
+			node_index: i
+		}));
+	}
+
+	return {
+		c: function create() {
+			ul = createElement("ul");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			ul.className = "tree svelte-1urwp39";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(ul, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(ul, null);
+			}
+		},
+
+		p: function update(changed, state) {
+			var each_value = state.nodes;
+
+			if (changed.nodes || changed.form || changed.app || changed.parent) {
+				for (var i = 0; i < each_value.length; i += 1) {
+					var each_context = assign(assign({}, state), {
+						each_value: each_value,
+						node: each_value[i],
+						node_index: i
+					});
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, each_context);
+					} else {
+						each_blocks[i] = create_each_block$19(component, each_context);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = each_value.length;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(ul);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+function click_handler$9(event) {
+	var component = this._svelte.component;
+	var each_value = this._svelte.each_value, node_index = this._svelte.node_index, node = each_value[node_index];
+	component.refreshForm(node);
+}
+
+function SvelteComponent$48(options) {
+	init(this, options);
+	this._state = assign({}, options.data);
+
+	if (!document.getElementById("svelte-1urwp39-style")) add_css$24();
+
+	var self = this;
+	var _oncreate = function() {
+		var changed = { nodes: 1, form: 1, app: 1, parent: 1 };
+		oncreate$24.call(self);
+		self.fire("update", { changed: changed, current: self._state });
+	};
+
+	if (!options.root) {
+		this._oncreate = [];
+		this._beforecreate = [];
+		this._aftercreate = [];
+	}
+
+	this._fragment = create_main_fragment$48(this, this._state);
+
+	this.root._oncreate.push(_oncreate);
+
+	if (options.target) {
+		this._fragment.c();
+		this._mount(options.target, options.anchor);
+
+		this._lock = true;
+		callAll(this._beforecreate);
+		callAll(this._oncreate);
+		callAll(this._aftercreate);
+		this._lock = false;
+	}
+}
+
+assign(SvelteComponent$48.prototype, proto);
+assign(SvelteComponent$48.prototype, methods$16);
 
 var FormLogToConsole = (function (_super) {
     __extends(FormLogToConsole, _super);
@@ -29685,6 +44889,7 @@ var FormLogToConsole = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FormLogToConsole.prototype.run = function (form, eventHandlerMetadata, args) {
+        // tslint:disable-next-line:no-console
         console.log("[" + eventHandlerMetadata.runAt + "] form event handler '" + eventHandlerMetadata.id + "' from '" + form.metadata.id + "'");
         return Promise.resolve();
     };
@@ -29692,7 +44897,7 @@ var FormLogToConsole = (function (_super) {
 }(FormEventHandler));
 
 /**
- * Reloads form after
+ * Reloads form after an action.
  */
 var ReloadFormAfterAction = (function (_super) {
     __extends(ReloadFormAfterAction, _super);
@@ -29737,6 +44942,7 @@ var InputLogToConsole = (function (_super) {
     }
     InputLogToConsole.prototype.run = function (input, eventHandlerMetadata, args) {
         return input.serialize().then(function (t) {
+            // tslint:disable-next-line:no-console
             console.log("[" + eventHandlerMetadata.runAt + "] input event handler '" + eventHandlerMetadata.id + "' from '" + input.metadata.id + "'");
         });
     };
@@ -29749,18 +44955,19 @@ var DependOn = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DependOn.prototype.run = function (input, eventHandlerMetadata, args) {
-        return input.serialize().then(function (t) {
-            var childInput = args.form.getInputComponent(input.metadata.id);
-            var parentInput = args.form.getInputComponent(eventHandlerMetadata.customProperties.field); // multiselect.html
-            var inputWrapper = childInput.get("wrapper");
-            var parentInputController = parentInput.get("field");
-            // Special case for multiselect.html.
-            var parentInputValue = parentInputController.metadata.type == "typeahead"
-                ? parentInputController.value.value
-                : parentInputController.value;
-            var visible = parentInputValue != null;
-            inputWrapper.show(visible);
-        });
+        var subscribedToField = eventHandlerMetadata.customProperties.field;
+        var fieldChanged = args.input.get("field").metadata.id;
+        if (subscribedToField === fieldChanged) {
+            return input.serialize().then(function (t) {
+                var parentInputController = args.input.get("field");
+                var childWrapper = args.form.getInputComponent(input.metadata.id);
+                var childShouldBeVisible = ["typeahead", "dropdown"].indexOf(parentInputController.metadata.type) !== -1
+                    ? parentInputController.value != null && parentInputController.value.value != null
+                    : parentInputController.value != null;
+                childWrapper.show(childShouldBeVisible);
+            });
+        }
+        return Promise.resolve();
     };
     return DependOn;
 }(InputFieldEventHandler));
@@ -29771,56 +44978,67 @@ var OutputLogToConsole = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     OutputLogToConsole.prototype.run = function (output, eventHandlerMetadata, args) {
+        // tslint:disable-next-line:no-console
         console.log("[" + eventHandlerMetadata.runAt + "] output event handler '" + eventHandlerMetadata.id + "' from '" + output.metadata.id + "'");
         return Promise.resolve();
     };
     return OutputLogToConsole;
 }(OutputFieldEventHandler));
 
+var alertify$5 = alertify$1;
 var Growl = (function () {
     function Growl() {
     }
     Growl.prototype.run = function (metadata) {
-        window.alert(metadata.customProperties.message);
+        alertify$5.notify(metadata.customProperties.message, metadata.customProperties.style, 5);
         return Promise.resolve();
     };
     return Growl;
 }());
 
 var controlRegister = new ControlRegister$$1();
-controlRegister.registerInputFieldControl("text", SvelteComponent, StringInputController);
-controlRegister.registerInputFieldControl("datetime", SvelteComponent$2, DateInputController);
-controlRegister.registerInputFieldControl("number", SvelteComponent$1, NumberInputController);
-controlRegister.registerInputFieldControl("dropdown", SvelteComponent$3, DropdownInputController);
-controlRegister.registerInputFieldControl("boolean", SvelteComponent$4, BooleanInputController);
+controlRegister.registerInputFieldControl("text", SvelteComponent$20, StringInputController);
+controlRegister.registerInputFieldControl("email", SvelteComponent$14, EmailInputController);
+controlRegister.registerInputFieldControl("datetime", SvelteComponent$9, DateInputController);
+controlRegister.registerInputFieldControl("date-range", SvelteComponent$10, DateRangeInputController);
+controlRegister.registerInputFieldControl("number", SvelteComponent$17, NumberInputController);
+controlRegister.registerInputFieldControl("dropdown", SvelteComponent$11, DropdownInputController);
+controlRegister.registerInputFieldControl("boolean", SvelteComponent$8, BooleanInputController);
 controlRegister.registerInputFieldControl("paginator", null, PaginatorInputController);
-controlRegister.registerInputFieldControl("typeahead", SvelteComponent$5, TypeaheadInputController);
-controlRegister.registerInputFieldControl("my-typeahead", SvelteComponent$5, TypeaheadInputController);
-controlRegister.registerInputFieldControl("multiselect", SvelteComponent$5, MultiSelectInputController);
-controlRegister.registerInputFieldControl("password", SvelteComponent$6, PasswordInputController);
-controlRegister.registerInputFieldControl("textarea", SvelteComponent$7, TextareaInputController, { block: true });
-controlRegister.registerInputFieldControl("file-uploader", SvelteComponent$8, FileUploaderController, { alwaysHideLabel: true, block: true });
-controlRegister.registerInputFieldControl("dynamic-form", SvelteComponent$9, DynamicFormInputController);
-controlRegister.registerOutputFieldControl("text", SvelteComponent$11);
-controlRegister.registerOutputFieldControl("number", SvelteComponent$12);
-controlRegister.registerOutputFieldControl("datetime", SvelteComponent$13);
-controlRegister.registerOutputFieldControl("table", SvelteComponent$14, { block: true });
-controlRegister.registerOutputFieldControl("formlink", SvelteComponent$16);
-controlRegister.registerOutputFieldControl("tabstrip", SvelteComponent$17, { alwaysHideLabel: true, block: true });
-controlRegister.registerOutputFieldControl("paginated-data", SvelteComponent$18, { block: true });
-controlRegister.registerOutputFieldControl("action-list", SvelteComponent$20, { alwaysHideLabel: true, block: true });
-controlRegister.registerOutputFieldControl("inline-form", SvelteComponent$23, { alwaysHideLabel: true, block: true });
-controlRegister.registerOutputFieldControl("text-value", SvelteComponent$24);
-controlRegister.registerOutputFieldControl("text-value-multiline", SvelteComponent$25, { block: true });
+controlRegister.registerInputFieldControl("typeahead", SvelteComponent$16, TypeaheadInputController);
+controlRegister.registerInputFieldControl("my-typeahead", SvelteComponent$16, TypeaheadInputController);
+controlRegister.registerInputFieldControl("multiselect", SvelteComponent$16, MultiSelectInputController);
+controlRegister.registerInputFieldControl("password", SvelteComponent$19, PasswordInputController);
+controlRegister.registerInputFieldControl("textarea", SvelteComponent$21, TextareaInputController, new OutputControlConfiguration(false, true));
+controlRegister.registerInputFieldControl("file-uploader", SvelteComponent$15, FileUploaderController, new OutputControlConfiguration(true, true));
+controlRegister.registerInputFieldControl("dynamic-form", SvelteComponent$12, DynamicFormInputController);
+controlRegister.registerInputFieldControl("dynamic-query", SvelteComponent$13, DynamicQueryInputController);
+controlRegister.registerInputFieldControl("number-range", SvelteComponent$18, NumberRangeInputController);
+controlRegister.registerOutputFieldControl("text", SvelteComponent$45);
+controlRegister.registerOutputFieldControl("number", SvelteComponent$37);
+controlRegister.registerOutputFieldControl("datetime", SvelteComponent$25);
+controlRegister.registerOutputFieldControl("table", SvelteComponent$42, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("formlink", SvelteComponent$29);
+controlRegister.registerOutputFieldControl("tabstrip", SvelteComponent$44, new OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("paginated-data", SvelteComponent$39, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("action-list", SvelteComponent$22, new OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("inline-form", SvelteComponent$32, new OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("text-value", SvelteComponent$46);
+controlRegister.registerOutputFieldControl("text-value-multiline", SvelteComponent$47, new OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("downloadable-file", SvelteComponent$26);
-controlRegister.registerOutputFieldControl("alert", SvelteComponent$27, { alwaysHideLabel: true, block: true });
-controlRegister.registerOutputFieldControl("file-size", SvelteComponent$28);
-controlRegister.registerOutputFieldControl("image", SvelteComponent$29, { block: true });
-controlRegister.registerOutputFieldControl("link", SvelteComponent$30);
-controlRegister.registerOutputFieldControl("object-list", SvelteComponent$31, { block: true });
-controlRegister.registerOutputFieldControl("form-instance", SvelteComponent$32, { alwaysHideLabel: true });
-controlRegister.registerOutputFieldControl("pie-graph", SvelteComponent$33, { block: true });
-controlRegister.registerOutputFieldControl("html-string", SvelteComponent$34);
+controlRegister.registerOutputFieldControl("alert", SvelteComponent$23, new OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("money", SvelteComponent$34, new OutputControlConfiguration(false, false));
+controlRegister.registerOutputFieldControl("file-size", SvelteComponent$27);
+controlRegister.registerOutputFieldControl("image", SvelteComponent$31, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("link", SvelteComponent$33);
+controlRegister.registerOutputFieldControl("object-list", SvelteComponent$38, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("form-instance", SvelteComponent$28, new OutputControlConfiguration(true, false));
+controlRegister.registerOutputFieldControl("pie-graph", SvelteComponent$41, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("html-string", SvelteComponent$30);
+controlRegister.registerOutputFieldControl("table-with-footer", SvelteComponent$43, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("conversation", SvelteComponent$24, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("notifications", SvelteComponent$35, new OutputControlConfiguration(false, true));
+controlRegister.registerOutputFieldControl("tree", SvelteComponent$48, new OutputControlConfiguration(true, true));
 // Form event handlers.
 controlRegister.registerFormEventHandler("log-to-console", new FormLogToConsole());
 controlRegister.registerFormEventHandler("reload-form-after-action", new ReloadFormAfterAction());
@@ -29833,2880 +45051,62 @@ controlRegister.registerOutputFieldEventHandler("log-to-console", new OutputLogT
 // Functions.
 controlRegister.registerFunction("growl", new Growl());
 
-var stateStringParser = function(stateString) {
-	return stateString.split('.').reduce(function(stateNames, latestNameChunk) {
-		if (stateNames.length) {
-			latestNameChunk = stateNames[stateNames.length - 1] + '.' + latestNameChunk;
-		}
-		stateNames.push(latestNameChunk);
-		return stateNames
-	}, [])
+var alertify = alertify$1;
+alertify.defaults = {
+    closable: false,
+    transition: "pulse",
+    notifier: {
+        delay: 0,
+        position: "bottom-right",
+        closeButton: true
+    },
+    glossary: {
+        title: "AlertifyJS",
+        ok: "Yes",
+        cancel: "No"
+    },
+    // theme settings
+    theme: {
+        // class name attached to prompt dialog input textbox.
+        input: "ajs-input",
+        // class name attached to ok button
+        ok: "ajs-ok",
+        // class name attached to cancel button
+        cancel: "ajs-cancel"
+    }
 };
-
-var parse = stateStringParser;
-
-var stateState = function StateState() {
-	var states = {};
-
-	function getHierarchy(name) {
-		var names = stateStringParser(name);
-
-		return names.map(function(name) {
-			if (!states[name]) {
-				throw new Error('State ' + name + ' not found')
-			}
-			return states[name]
-		})
-	}
-
-	function getParent(name) {
-		var parentName = getParentName(name);
-
-		return parentName && states[parentName]
-	}
-
-	function getParentName(name) {
-		var names = stateStringParser(name);
-
-		if (names.length > 1) {
-			var secondToLast = names.length - 2;
-
-			return names[secondToLast]
-		} else {
-			return null
-		}
-	}
-
-	function guaranteeAllStatesExist(newStateName) {
-		var stateNames = parse(newStateName);
-		var statesThatDontExist = stateNames.filter(function(name) {
-			return !states[name]
-		});
-
-		if (statesThatDontExist.length > 0) {
-			throw new Error('State ' + statesThatDontExist[statesThatDontExist.length - 1] + ' does not exist')
-		}
-	}
-
-	function buildFullStateRoute(stateName) {
-		return getHierarchy(stateName).map(function(state) {
-			return '/' + (state.route || '')
-		}).join('').replace(/\/{2,}/g, '/')
-	}
-
-	function applyDefaultChildStates(stateName) {
-		var state = states[stateName];
-
-		function getDefaultChildStateName() {
-			return state && (typeof state.defaultChild === 'function'
-				? state.defaultChild()
-				: state.defaultChild)
-		}
-
-		var defaultChildStateName = getDefaultChildStateName();
-
-		if (!defaultChildStateName) {
-			return stateName
-		}
-
-		var fullStateName = stateName + '.' + defaultChildStateName;
-
-		return applyDefaultChildStates(fullStateName)
-	}
-
-
-	return {
-		add: function(name, state) {
-			states[name] = state;
-		},
-		get: function(name) {
-			return name && states[name]
-		},
-		getHierarchy: getHierarchy,
-		getParent: getParent,
-		getParentName: getParentName,
-		guaranteeAllStatesExist: guaranteeAllStatesExist,
-		buildFullStateRoute: buildFullStateRoute,
-		applyDefaultChildStates: applyDefaultChildStates
-	}
-};
-
-var index$10 = function(obj) {
-	var keys = Object.keys(obj);
-
-	keys.forEach(function(key) {
-		if (!Array.isArray(obj[key])) {
-			throw new Error(key + ' is not an array')
-		}
-	});
-
-	var maxIndex = keys.reduce(function(maxSoFar, key) {
-		var len = obj[key].length;
-		return maxSoFar > len ? maxSoFar : len
-	}, 0);
-
-	var output = [];
-
-	function getObject(index) {
-		var o = {};
-		keys.forEach(function(key) {
-			o[key] = obj[key][index];
-		});
-		return o
-	}
-
-	for (var i = 0; i < maxIndex; ++i) {
-		output.push(getObject(i));
-	}
-
-	return output
-};
-
-var index$14 = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
-
-/**
- * Expose `pathToRegexp`.
- */
-var index$12 = pathToRegexp;
-
-/**
- * The main path matching regexp utility.
- *
- * @type {RegExp}
- */
-var PATH_REGEXP = new RegExp([
-  // Match escaped characters that would otherwise appear in future matches.
-  // This allows the user to escape special characters that won't transform.
-  '(\\\\.)',
-  // Match Express-style parameters and un-named parameters with a prefix
-  // and optional suffixes. Matches appear as:
-  //
-  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?"]
-  // "/route(\\d+)" => [undefined, undefined, undefined, "\d+", undefined]
-  '([\\/.])?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^)])*)\\))?|\\(((?:\\\\.|[^)])*)\\))([+*?])?',
-  // Match regexp special characters that are always escaped.
-  '([.+*?=^!:${}()[\\]|\\/])'
-].join('|'), 'g');
-
-/**
- * Escape the capturing group by escaping special characters and meaning.
- *
- * @param  {String} group
- * @return {String}
- */
-function escapeGroup (group) {
-  return group.replace(/([=!:$\/()])/g, '\\$1');
-}
-
-/**
- * Attach the keys as a property of the regexp.
- *
- * @param  {RegExp} re
- * @param  {Array}  keys
- * @return {RegExp}
- */
-function attachKeys (re, keys, allTokens) {
-  re.keys = keys;
-  re.allTokens = allTokens;
-  return re;
-}
-
-/**
- * Get the flags for a regexp from the options.
- *
- * @param  {Object} options
- * @return {String}
- */
-function flags (options) {
-  return options.sensitive ? '' : 'i';
-}
-
-/**
- * Pull out keys from a regexp.
- *
- * @param  {RegExp} path
- * @param  {Array}  keys
- * @return {RegExp}
- */
-function regexpToRegexp (path, keys, allTokens) {
-  // Use a negative lookahead to match only capturing groups.
-  var groups = path.source.match(/\((?!\?)/g);
-
-  if (groups) {
-    for (var i = 0; i < groups.length; i++) {
-      keys.push({
-        name:      i,
-        delimiter: null,
-        optional:  false,
-        repeat:    false
-      });
+var alertifyErrorMsg = [];
+var GmsApp = (function (_super) {
+    __extends(GmsApp, _super);
+    function GmsApp(theServer) {
+        return _super.call(this, theServer, controlRegister) || this;
     }
-  }
-
-  return attachKeys(path, keys, allTokens);
-}
-
-/**
- * Transform an array into a regexp.
- *
- * @param  {Array}  path
- * @param  {Array}  keys
- * @param  {Object} options
- * @return {RegExp}
- */
-function arrayToRegexp (path, keys, options, allTokens) {
-  var parts = [];
-
-  for (var i = 0; i < path.length; i++) {
-    parts.push(pathToRegexp(path[i], keys, options, allTokens).source);
-  }
-
-  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
-  return attachKeys(regexp, keys, allTokens);
-}
-
-/**
- * Replace the specific tags with regexp strings.
- *
- * @param  {String} path
- * @param  {Array}  keys
- * @return {String}
- */
-function replacePath (path, keys, allTokens) {
-  var index = 0;
-  var lastEndIndex = 0;
-
-  function addLastToken(lastToken) {
-    if (lastEndIndex === 0 && lastToken[0] !== '/') {
-      lastToken = '/' + lastToken;
-    }
-    allTokens.push({
-      string: lastToken
-    });
-  }
-
-
-  function replace (match, escaped, prefix, key, capture, group, suffix, escape, offset) {
-    if (escaped) {
-      return escaped;
-    }
-
-    if (escape) {
-      return '\\' + escape;
-    }
-
-    var repeat   = suffix === '+' || suffix === '*';
-    var optional = suffix === '?' || suffix === '*';
-
-    if (offset > lastEndIndex) {
-      addLastToken(path.substring(lastEndIndex, offset));
-    }
-
-    lastEndIndex = offset + match.length;
-
-    var newKey = {
-      name:      key || index++,
-      delimiter: prefix || '/',
-      optional:  optional,
-      repeat:    repeat
+    GmsApp.prototype.showError = function (message) {
+        var msg = alertify.error(message);
+        alertifyErrorMsg.push(msg);
     };
-
-    keys.push(newKey);
-    allTokens.push(newKey);
-
-    prefix = prefix ? ('\\' + prefix) : '';
-    capture = escapeGroup(capture || group || '[^' + (prefix || '\\/') + ']+?');
-
-    if (repeat) {
-      capture = capture + '(?:' + prefix + capture + ')*';
-    }
-
-    if (optional) {
-      return '(?:' + prefix + '(' + capture + '))?';
-    }
-
-    // Basic parameter support.
-    return prefix + '(' + capture + ')';
-  }
-
-  var newPath = path.replace(PATH_REGEXP, replace);
-
-  if (lastEndIndex < path.length) {
-    addLastToken(path.substring(lastEndIndex));
-  }
-
-  return newPath;
-}
-
-/**
- * Normalize the given path string, returning a regular expression.
- *
- * An empty array can be passed in for the keys, which will hold the
- * placeholder key descriptions. For example, using `/user/:id`, `keys` will
- * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
- *
- * @param  {(String|RegExp|Array)} path
- * @param  {Array}                 [keys]
- * @param  {Object}                [options]
- * @return {RegExp}
- */
-function pathToRegexp (path, keys, options, allTokens) {
-  keys = keys || [];
-  allTokens = allTokens || [];
-
-  if (!index$14(keys)) {
-    options = keys;
-    keys = [];
-  } else if (!options) {
-    options = {};
-  }
-
-  if (path instanceof RegExp) {
-    return regexpToRegexp(path, keys, options, allTokens);
-  }
-
-  if (index$14(path)) {
-    return arrayToRegexp(path, keys, options, allTokens);
-  }
-
-  var strict = options.strict;
-  var end = options.end !== false;
-  var route = replacePath(path, keys, allTokens);
-  var endsWithSlash = path.charAt(path.length - 1) === '/';
-
-  // In non-strict mode we allow a slash at the end of match. If the path to
-  // match already ends with a slash, we remove it for consistency. The slash
-  // is valid at the end of a path match, not in the middle. This is important
-  // in non-ending mode, where "/test/" shouldn't match "/test//route".
-  if (!strict) {
-    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
-  }
-
-  if (end) {
-    route += '$';
-  } else {
-    // In non-ending mode, we need the capturing groups to match as much as
-    // possible by using a positive lookahead to the end or next path segment.
-    route += strict && endsWithSlash ? '' : '(?=\\/|$)';
-  }
-
-  return attachKeys(new RegExp('^' + route, flags(options)), keys, allTokens);
-}
-
-var stateComparison_1 = function StateComparison(stateState) {
-	var getPathParameters = pathParameters();
-
-	var parametersChanged = parametersThatMatterWereChanged.bind(null, stateState, getPathParameters);
-
-	return stateComparison.bind(null, parametersChanged)
-};
-
-function pathParameters() {
-	var parameters = {};
-
-	return function getPathParameters(path) {
-		if (!path) {
-			return []
-		}
-
-		if (!parameters[path]) {
-			parameters[path] = index$12(path).keys.map(function(key) {
-				return key.name
-			});
-		}
-
-		return parameters[path]
-	}
-}
-
-function parametersThatMatterWereChanged(stateState, getPathParameters, stateName, fromParameters, toParameters) {
-	var state = stateState.get(stateName);
-	var querystringParameters = state.querystringParameters || [];
-	var parameters = getPathParameters(state.route).concat(querystringParameters);
-
-	return Array.isArray(parameters) && parameters.some(function(key) {
-		return fromParameters[key] !== toParameters[key]
-	})
-}
-
-function stateComparison(parametersChanged, originalState, originalParameters, newState, newParameters) {
-	var states = index$10({
-		start: stateStringParser(originalState),
-		end: stateStringParser(newState)
-	});
-
-	return states.map(function(states) {
-		return {
-			nameBefore: states.start,
-			nameAfter: states.end,
-			stateNameChanged: states.start !== states.end,
-			stateParametersChanged: states.start === states.end && parametersChanged(states.start, originalParameters, newParameters)
-		}
-	})
-}
-
-var currentState = function CurrentState() {
-	var current = {
-		name: '',
-		parameters: {}
-	};
-
-	return {
-		get: function() {
-			return current
-		},
-		set: function(name, parameters) {
-			current = {
-				name: name,
-				parameters: parameters
-			};
-		}
-	}
-};
-
-var stateChangeLogic = function stateChangeLogic(stateComparisonResults) {
-	var hitChangingState = false;
-	var hitDestroyedState = false;
-
-	var output = {
-		destroy: [],
-		change: [],
-		create: []
-	};
-
-	stateComparisonResults.forEach(function(state) {
-		hitChangingState = hitChangingState || state.stateParametersChanged;
-		hitDestroyedState = hitDestroyedState || state.stateNameChanged;
-
-		if (state.nameBefore) {
-			if (hitDestroyedState) {
-				output.destroy.push(state.nameBefore);
-			} else if (hitChangingState) {
-				output.change.push(state.nameBefore);
-			}
-		}
-
-		if (state.nameAfter && hitDestroyedState) {
-			output.create.push(state.nameAfter);
-		}
-	});
-
-	return output
-};
-
-var stateTransitionManager = function (emitter) {
-	var currentTransitionAttempt = null;
-	var nextTransition = null;
-
-	function doneTransitioning() {
-		currentTransitionAttempt = null;
-		if (nextTransition) {
-			beginNextTransitionAttempt();
-		}
-	}
-
-	function isTransitioning() {
-		return !!currentTransitionAttempt
-	}
-
-	function beginNextTransitionAttempt() {
-		currentTransitionAttempt = nextTransition;
-		nextTransition = null;
-		currentTransitionAttempt.beginStateChange();
-	}
-
-	function cancelCurrentTransition() {
-		currentTransitionAttempt.transition.cancelled = true;
-		var err = new Error('State transition cancelled by the state transition manager');
-		err.wasCancelledBySomeoneElse = true;
-		emitter.emit('stateChangeCancelled', err);
-	}
-
-	emitter.on('stateChangeAttempt', function(beginStateChange) {
-		nextTransition = createStateTransitionAttempt(beginStateChange);
-
-		if (isTransitioning() && currentTransitionAttempt.transition.cancellable) {
-			cancelCurrentTransition();
-		} else if (!isTransitioning()) {
-			beginNextTransitionAttempt();
-		}
-	});
-
-	emitter.on('stateChangeError', doneTransitioning);
-	emitter.on('stateChangeCancelled', doneTransitioning);
-	emitter.on('stateChangeEnd', doneTransitioning);
-
-	function createStateTransitionAttempt(beginStateChange) {
-		var transition = {
-			cancelled: false,
-			cancellable: true
-		};
-		return {
-			transition: transition,
-			beginStateChange: beginStateChange.bind(null, transition)
-		}
-	}
-};
-
-var defaultRouterOptions = { reverse: false };
-
-var npo = createCommonjsModule(function (module) {
-/*! Native Promise Only
-    v0.8.1 (c) Kyle Simpson
-    MIT License: http://getify.mit-license.org
-*/
-!function(t,n,e){n[t]=n[t]||e(),"undefined"!='object'&&module.exports?module.exports=n[t]:"function"==typeof undefined&&undefined.amd&&undefined(function(){return n[t]});}("Promise","undefined"!=typeof commonjsGlobal?commonjsGlobal:commonjsGlobal,function(){"use strict";function t(t,n){l.add(t,n),h||(h=y(l.drain));}function n(t){var n,e=typeof t;return null==t||"object"!=e&&"function"!=e||(n=t.then),"function"==typeof n?n:!1}function e(){for(var t=0;t<this.chain.length;t++)o(this,1===this.state?this.chain[t].success:this.chain[t].failure,this.chain[t]);this.chain.length=0;}function o(t,e,o){var r,i;try{e===!1?o.reject(t.msg):(r=e===!0?t.msg:e.call(void 0,t.msg),r===o.promise?o.reject(TypeError("Promise-chain cycle")):(i=n(r))?i.call(r,o.resolve,o.reject):o.resolve(r));}catch(c){o.reject(c);}}function r(o){var c,u=this;if(!u.triggered){u.triggered=!0,u.def&&(u=u.def);try{(c=n(o))?t(function(){var t=new f(u);try{c.call(o,function(){r.apply(t,arguments);},function(){i.apply(t,arguments);});}catch(n){i.call(t,n);}}):(u.msg=o,u.state=1,u.chain.length>0&&t(e,u));}catch(a){i.call(new f(u),a);}}}function i(n){var o=this;o.triggered||(o.triggered=!0,o.def&&(o=o.def),o.msg=n,o.state=2,o.chain.length>0&&t(e,o));}function c(t,n,e,o){for(var r=0;r<n.length;r++)!function(r){t.resolve(n[r]).then(function(t){e(r,t);},o);}(r);}function f(t){this.def=t,this.triggered=!1;}function u(t){this.promise=t,this.state=0,this.triggered=!1,this.chain=[],this.msg=void 0;}function a(n){if("function"!=typeof n)throw TypeError("Not a function");if(0!==this.__NPO__)throw TypeError("Not a promise");this.__NPO__=1;var o=new u(this);this.then=function(n,r){var i={success:"function"==typeof n?n:!0,failure:"function"==typeof r?r:!1};return i.promise=new this.constructor(function(t,n){if("function"!=typeof t||"function"!=typeof n)throw TypeError("Not a function");i.resolve=t,i.reject=n;}),o.chain.push(i),0!==o.state&&t(e,o),i.promise},this["catch"]=function(t){return this.then(void 0,t)};try{n.call(void 0,function(t){r.call(o,t);},function(t){i.call(o,t);});}catch(c){i.call(o,c);}}var s,h,l,p=Object.prototype.toString,y="undefined"!=typeof setImmediate?function(t){return setImmediate(t)}:setTimeout;try{Object.defineProperty({},"x",{}),s=function(t,n,e,o){return Object.defineProperty(t,n,{value:e,writable:!0,configurable:o!==!1})};}catch(d){s=function(t,n,e){return t[n]=e,t};}l=function(){function t(t,n){this.fn=t,this.self=n,this.next=void 0;}var n,e,o;return{add:function(r,i){o=new t(r,i),e?e.next=o:n=o,e=o,o=void 0;},drain:function(){var t=n;for(n=e=h=void 0;t;)t.fn.call(t.self),t=t.next;}}}();var g=s({},"constructor",a,!1);return a.prototype=g,s(g,"__NPO__",0,!1),s(a,"resolve",function(t){var n=this;return t&&"object"==typeof t&&1===t.__NPO__?t:new n(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");n(t);})}),s(a,"reject",function(t){return new this(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");e(t);})}),s(a,"all",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):0===t.length?n.resolve([]):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");var r=t.length,i=Array(r),f=0;c(n,t,function(t,n){i[t]=n,++f===r&&e(i);},o);})}),s(a,"race",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");c(n,t,function(t,n){e(n);},o);})}),a});
-});
-
-// Pulled from https://github.com/joliss/promise-map-series and prettied up a bit
-
-
-
-var promiseMapSeries = function sequence(array, iterator, thisArg) {
-	var current = npo.resolve();
-	var cb = arguments.length > 2 ? iterator.bind(thisArg) : iterator;
-
-	var results = array.map(function(value, i) {
-		return current = current.then(function(j) {
-			return cb(value, j, array)
-		}.bind(null, i))
-	});
-
-	return npo.all(results)
-};
-
-var index$16 = function denodeify(fn) {
-	return function() {
-		var self = this;
-		var args = Array.prototype.slice.call(arguments);
-		return new Promise(function(resolve, reject) {
-			args.push(function(err, res) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(res);
-				}
-			});
-
-			var res = fn.apply(self, args);
-
-			var isPromise = res
-				&& (typeof res === 'object' || typeof res === 'function')
-				&& typeof res.then === 'function';
-
-			if (isPromise) {
-				resolve(res);
-			}
-		})
-	}
-};
-
-var index$18 = createCommonjsModule(function (module) {
-'use strict';
-
-var has = Object.prototype.hasOwnProperty
-  , prefix = '~';
-
-/**
- * Constructor to create a storage for our `EE` objects.
- * An `Events` instance is a plain object whose properties are event names.
- *
- * @constructor
- * @api private
- */
-function Events() {}
-
-//
-// We try to not inherit from `Object.prototype`. In some engines creating an
-// instance in this way is faster than calling `Object.create(null)` directly.
-// If `Object.create(null)` is not supported we prefix the event names with a
-// character to make sure that the built-in object properties are not
-// overridden or used as an attack vector.
-//
-if (Object.create) {
-  Events.prototype = Object.create(null);
-
-  //
-  // This hack is needed because the `__proto__` property is still inherited in
-  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-  //
-  if (!new Events().__proto__) prefix = false;
-}
-
-/**
- * Representation of a single event listener.
- *
- * @param {Function} fn The listener function.
- * @param {Mixed} context The context to invoke the listener with.
- * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
- * @constructor
- * @api private
- */
-function EE(fn, context, once) {
-  this.fn = fn;
-  this.context = context;
-  this.once = once || false;
-}
-
-/**
- * Minimal `EventEmitter` interface that is molded against the Node.js
- * `EventEmitter` interface.
- *
- * @constructor
- * @api public
- */
-function EventEmitter() {
-  this._events = new Events();
-  this._eventsCount = 0;
-}
-
-/**
- * Return an array listing the events for which the emitter has registered
- * listeners.
- *
- * @returns {Array}
- * @api public
- */
-EventEmitter.prototype.eventNames = function eventNames() {
-  var names = []
-    , events
-    , name;
-
-  if (this._eventsCount === 0) return names;
-
-  for (name in (events = this._events)) {
-    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    return names.concat(Object.getOwnPropertySymbols(events));
-  }
-
-  return names;
-};
-
-/**
- * Return the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Boolean} exists Only check if there are listeners.
- * @returns {Array|Boolean}
- * @api public
- */
-EventEmitter.prototype.listeners = function listeners(event, exists) {
-  var evt = prefix ? prefix + event : event
-    , available = this._events[evt];
-
-  if (exists) return !!available;
-  if (!available) return [];
-  if (available.fn) return [available.fn];
-
-  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
-    ee[i] = available[i].fn;
-  }
-
-  return ee;
-};
-
-/**
- * Calls each of the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @api public
- */
-EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return false;
-
-  var listeners = this._events[evt]
-    , len = arguments.length
-    , args
-    , i;
-
-  if (listeners.fn) {
-    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
-
-    switch (len) {
-      case 1: return listeners.fn.call(listeners.context), true;
-      case 2: return listeners.fn.call(listeners.context, a1), true;
-      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-    }
-
-    for (i = 1, args = new Array(len -1); i < len; i++) {
-      args[i - 1] = arguments[i];
-    }
-
-    listeners.fn.apply(listeners.context, args);
-  } else {
-    var length = listeners.length
-      , j;
-
-    for (i = 0; i < length; i++) {
-      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
-
-      switch (len) {
-        case 1: listeners[i].fn.call(listeners[i].context); break;
-        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
-        default:
-          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-            args[j - 1] = arguments[j];
-          }
-
-          listeners[i].fn.apply(listeners[i].context, args);
-      }
-    }
-  }
-
-  return true;
-};
-
-/**
- * Add a listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.on = function on(event, fn, context) {
-  var listener = new EE(fn, context || this)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Add a one-time listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.once = function once(event, fn, context) {
-  var listener = new EE(fn, context || this, true)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Remove the listeners of a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn Only remove the listeners that match this function.
- * @param {Mixed} context Only remove the listeners that have this context.
- * @param {Boolean} once Only remove one-time listeners.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return this;
-  if (!fn) {
-    if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-    return this;
-  }
-
-  var listeners = this._events[evt];
-
-  if (listeners.fn) {
-    if (
-         listeners.fn === fn
-      && (!once || listeners.once)
-      && (!context || listeners.context === context)
-    ) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-      if (
-           listeners[i].fn !== fn
-        || (once && !listeners[i].once)
-        || (context && listeners[i].context !== context)
-      ) {
-        events.push(listeners[i]);
-      }
-    }
-
-    //
-    // Reset the array, or remove it completely if we have no more listeners.
-    //
-    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-    else if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-  }
-
-  return this;
-};
-
-/**
- * Remove all listeners, or those of the specified event.
- *
- * @param {String|Symbol} [event] The event name.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-  var evt;
-
-  if (event) {
-    evt = prefix ? prefix + event : event;
-    if (this._events[evt]) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
-
-  return this;
-};
-
-//
-// Alias methods names because people roll like that.
-//
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-//
-// This function doesn't apply anymore.
-//
-EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
-  return this;
-};
-
-//
-// Expose the prefix.
-//
-EventEmitter.prefixed = prefix;
-
-//
-// Allow `EventEmitter` to be imported as module namespace.
-//
-EventEmitter.EventEmitter = EventEmitter;
-
-//
-// Expose the module.
-//
-{
-  module.exports = EventEmitter;
-}
-});
-
-var immutable = extend$3;
-
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-function extend$3() {
-    var target = {};
-
-    for (var i = 0; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-            if (hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-            }
-        }
-    }
-
-    return target
-}
-
-var index$24 = function (str) {
-	return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-		return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-	});
-};
-
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject$1(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-var index$26 = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject$1(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty$1.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-function encoderForArrayFormat(opts) {
-	switch (opts.arrayFormat) {
-		case 'index':
-			return function (key, value, index) {
-				return value === null ? [
-					encode$1(key, opts),
-					'[',
-					index,
-					']'
-				].join('') : [
-					encode$1(key, opts),
-					'[',
-					encode$1(index, opts),
-					']=',
-					encode$1(value, opts)
-				].join('');
-			};
-
-		case 'bracket':
-			return function (key, value) {
-				return value === null ? encode$1(key, opts) : [
-					encode$1(key, opts),
-					'[]=',
-					encode$1(value, opts)
-				].join('');
-			};
-
-		default:
-			return function (key, value) {
-				return value === null ? encode$1(key, opts) : [
-					encode$1(key, opts),
-					'=',
-					encode$1(value, opts)
-				].join('');
-			};
-	}
-}
-
-function parserForArrayFormat(opts) {
-	var result;
-
-	switch (opts.arrayFormat) {
-		case 'index':
-			return function (key, value, accumulator) {
-				result = /\[(\d*)\]$/.exec(key);
-
-				key = key.replace(/\[\d*\]$/, '');
-
-				if (!result) {
-					accumulator[key] = value;
-					return;
-				}
-
-				if (accumulator[key] === undefined) {
-					accumulator[key] = {};
-				}
-
-				accumulator[key][result[1]] = value;
-			};
-
-		case 'bracket':
-			return function (key, value, accumulator) {
-				result = /(\[\])$/.exec(key);
-				key = key.replace(/\[\]$/, '');
-
-				if (!result) {
-					accumulator[key] = value;
-					return;
-				} else if (accumulator[key] === undefined) {
-					accumulator[key] = [value];
-					return;
-				}
-
-				accumulator[key] = [].concat(accumulator[key], value);
-			};
-
-		default:
-			return function (key, value, accumulator) {
-				if (accumulator[key] === undefined) {
-					accumulator[key] = value;
-					return;
-				}
-
-				accumulator[key] = [].concat(accumulator[key], value);
-			};
-	}
-}
-
-function encode$1(value, opts) {
-	if (opts.encode) {
-		return opts.strict ? index$24(value) : encodeURIComponent(value);
-	}
-
-	return value;
-}
-
-function keysSorter(input) {
-	if (Array.isArray(input)) {
-		return input.sort();
-	} else if (typeof input === 'object') {
-		return keysSorter(Object.keys(input)).sort(function (a, b) {
-			return Number(a) - Number(b);
-		}).map(function (key) {
-			return input[key];
-		});
-	}
-
-	return input;
-}
-
-var extract = function (str) {
-	return str.split('?')[1] || '';
-};
-
-var parse$1 = function (str, opts) {
-	opts = index$26({arrayFormat: 'none'}, opts);
-
-	var formatter = parserForArrayFormat(opts);
-
-	// Create an object with no prototype
-	// https://github.com/sindresorhus/query-string/issues/47
-	var ret = Object.create(null);
-
-	if (typeof str !== 'string') {
-		return ret;
-	}
-
-	str = str.trim().replace(/^(\?|#|&)/, '');
-
-	if (!str) {
-		return ret;
-	}
-
-	str.split('&').forEach(function (param) {
-		var parts = param.replace(/\+/g, ' ').split('=');
-		// Firefox (pre 40) decodes `%3D` to `=`
-		// https://github.com/sindresorhus/query-string/pull/37
-		var key = parts.shift();
-		var val = parts.length > 0 ? parts.join('=') : undefined;
-
-		// missing `=` should be `null`:
-		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-		val = val === undefined ? null : decodeURIComponent(val);
-
-		formatter(decodeURIComponent(key), val, ret);
-	});
-
-	return Object.keys(ret).sort().reduce(function (result, key) {
-		var val = ret[key];
-		if (Boolean(val) && typeof val === 'object' && !Array.isArray(val)) {
-			// Sort object keys, not values
-			result[key] = keysSorter(val);
-		} else {
-			result[key] = val;
-		}
-
-		return result;
-	}, Object.create(null));
-};
-
-var stringify = function (obj, opts) {
-	var defaults = {
-		encode: true,
-		strict: true,
-		arrayFormat: 'none'
-	};
-
-	opts = index$26(defaults, opts);
-
-	var formatter = encoderForArrayFormat(opts);
-
-	return obj ? Object.keys(obj).sort().map(function (key) {
-		var val = obj[key];
-
-		if (val === undefined) {
-			return '';
-		}
-
-		if (val === null) {
-			return encode$1(key, opts);
-		}
-
-		if (Array.isArray(val)) {
-			var result = [];
-
-			val.slice().forEach(function (val2) {
-				if (val2 === undefined) {
-					return;
-				}
-
-				result.push(formatter(key, val2, result.length));
-			});
-
-			return result.join('&');
-		}
-
-		return encode$1(key, opts) + '=' + encode$1(val, opts);
-	}).filter(function (x) {
-		return x.length > 0;
-	}).join('&') : '';
-};
-
-var index$22 = {
-	extract: extract,
-	parse: parse$1,
-	stringify: stringify
-};
-
-var hashLocation = function HashLocation(window) {
-	var emitter = new index$18();
-	var last = '';
-	var needToDecode = getNeedToDecode();
-
-	window.addEventListener('hashchange', function() {
-		if (last !== emitter.get()) {
-			last = emitter.get();
-			emitter.emit('hashchange');
-		}
-	});
-
-	emitter.go = go.bind(null, window);
-	emitter.replace = replace.bind(null, window);
-	emitter.get = get$6.bind(null, window, needToDecode);
-
-	return emitter
-};
-
-function replace(window, newPath) {
-	window.location.replace(everythingBeforeTheSlash(window.location.href) + '#' + newPath);
-}
-
-function everythingBeforeTheSlash(url) {
-	var hashIndex = url.indexOf('#');
-	return hashIndex === -1 ? url : url.substring(0, hashIndex)
-}
-
-function go(window, newPath) {
-	window.location.hash = newPath;
-}
-
-function get$6(window, needToDecode) {
-	var hash = removeHashFromPath(window.location.hash);
-	return needToDecode ? decodeURI(hash) : hash
-}
-
-function removeHashFromPath(path) {
-	return (path && path[0] === '#') ? path.substr(1) : path
-}
-
-function getNeedToDecode() {
-	var a = document.createElement('a');
-	a.href = '#x x';
-	return !/x x/.test(a.hash)
-}
-
-var index$20 = function Router(opts, hashLocation$$1) {
-	var emitter = new index$18();
-	if (isHashLocation(opts)) {
-		hashLocation$$1 = opts;
-		opts = null;
-	}
-
-	opts = opts || {};
-
-	if (!hashLocation$$1) {
-		hashLocation$$1 = hashLocation(window);
-	}
-
-	function onNotFound(path, queryStringParameters) {
-		emitter.emit('not found', path, queryStringParameters);
-	}
-
-	var routes = [];
-
-	var onHashChange = evaluateCurrentPath.bind(null, routes, hashLocation$$1, !!opts.reverse, onNotFound);
-
-	hashLocation$$1.on('hashchange', onHashChange);
-
-	function stop() {
-		hashLocation$$1.removeListener('hashchange', onHashChange);
-	}
-
-	emitter.add = add$4.bind(null, routes);
-	emitter.stop = stop;
-	emitter.evaluateCurrent = evaluateCurrentPathOrGoToDefault.bind(null, routes, hashLocation$$1, !!opts.reverse, onNotFound);
-	emitter.replace = hashLocation$$1.replace;
-	emitter.go = hashLocation$$1.go;
-	emitter.location = hashLocation$$1;
-
-	return emitter
-};
-
-function evaluateCurrentPath(routes, hashLocation$$1, reverse, onNotFound) {
-	evaluatePath(routes, hashLocation$$1.get(), reverse, onNotFound);
-}
-
-function getPathParts(path) {
-	var chunks = path.split('?');
-	return {
-		path: chunks.shift(),
-		queryString: index$22.parse(chunks.join(''))
-	}
-}
-
-function evaluatePath(routes, path, reverse, onNotFound) {
-	var pathParts = getPathParts(path);
-	path = pathParts.path;
-	var queryStringParameters = pathParts.queryString;
-
-	var matchingRoute = find$1((reverse ? reverseArray(routes) : routes), path);
-
-	if (matchingRoute) {
-		var regexResult = matchingRoute.exec(path);
-		var routeParameters = makeParametersObjectFromRegexResult(matchingRoute.keys, regexResult);
-		var params = immutable(queryStringParameters, routeParameters);
-		matchingRoute.fn(params);
-	} else {
-		onNotFound(path, queryStringParameters);
-	}
-}
-
-function reverseArray(ary) {
-	return ary.slice().reverse()
-}
-
-function makeParametersObjectFromRegexResult(keys, regexResult) {
-	return keys.reduce(function(memo, urlKey, index) {
-		memo[urlKey.name] = regexResult[index + 1];
-		return memo
-	}, {})
-}
-
-function add$4(routes, routeString, routeFunction) {
-	if (typeof routeFunction !== 'function') {
-		throw new Error('The router add function must be passed a callback function')
-	}
-	var newRoute = index$12(routeString);
-	newRoute.fn = routeFunction;
-	routes.push(newRoute);
-}
-
-function evaluateCurrentPathOrGoToDefault(routes, hashLocation$$1, reverse, onNotFound, defaultPath) {
-	const currentLocation = hashLocation$$1.get();
-	if (currentLocation && currentLocation !== '/') {
-		var routesCopy = routes.slice();
-
-		evaluateCurrentPath(routesCopy, hashLocation$$1, reverse, onNotFound);
-	} else {
-		hashLocation$$1.go(defaultPath);
-	}
-}
-
-function isHashLocation(hashLocation$$1) {
-	return hashLocation$$1 && hashLocation$$1.go && hashLocation$$1.replace && hashLocation$$1.on
-}
-
-function find$1(aryOfRegexes, str) {
-	for (var i = 0; i < aryOfRegexes.length; ++i) {
-		if (str.match(aryOfRegexes[i])) {
-			return aryOfRegexes[i]
-		}
-	}
-}
-
-// This file to be replaced with an official implementation maintained by
-// the page.js crew if and when that becomes an option
-
-
-
-var pathParser = function(pathString) {
-	var parseResults = index$12(pathString);
-
-	// The only reason I'm returning a new object instead of the results of the pathToRegexp
-	// function is so that if the official implementation ends up returning an
-	// allTokens-style array via some other mechanism, I may be able to change this file
-	// without having to change the rest of the module in index.js
-	return {
-		regex: parseResults,
-		allTokens: parseResults.allTokens
-	}
-};
-
-var stringifyQuerystring = index$22.stringify;
-
-var index$28 = function(pathStr, parameters) {
-	var parsed = typeof pathStr === 'string' ? pathParser(pathStr) : pathStr;
-	var allTokens = parsed.allTokens;
-	var regex = parsed.regex;
-
-	if (parameters) {
-		var path = allTokens.map(function(bit) {
-			if (bit.string) {
-				return bit.string
-			}
-
-			var defined = typeof parameters[bit.name] !== 'undefined';
-			if (!bit.optional && !defined) {
-				throw new Error('Must supply argument ' + bit.name + ' for path ' + pathStr)
-			}
-
-			return defined ? (bit.delimiter + encodeURIComponent(parameters[bit.name])) : ''
-		}).join('');
-
-		if (!regex.test(path)) {
-			throw new Error('Provided arguments do not match the original arguments')
-		}
-
-		return buildPathWithQuerystring(path, parameters, allTokens)
-	} else {
-		return parsed
-	}
-};
-
-function buildPathWithQuerystring(path, parameters, tokenArray) {
-	var parametersInQuerystring = getParametersWithoutMatchingToken(parameters, tokenArray);
-
-	if (Object.keys(parametersInQuerystring).length === 0) {
-		return path
-	}
-
-	return path + '?' + stringifyQuerystring(parametersInQuerystring)
-}
-
-function getParametersWithoutMatchingToken(parameters, tokenArray) {
-	var tokenHash = tokenArray.reduce(function(memo, bit) {
-		if (!bit.string) {
-			memo[bit.name] = bit;
-		}
-		return memo
-	}, {});
-
-	return Object.keys(parameters).filter(function(param) {
-		return !tokenHash[param]
-	}).reduce(function(newParameters, param) {
-		newParameters[param] = parameters[param];
-		return newParameters
-	}, {})
-}
-
-var browser$1 = function (fn) {
-  typeof setImmediate === 'function' ?
-    setImmediate(fn) :
-    setTimeout(fn, 0);
-};
-
-var expectedPropertiesOfAddState = [ 'name', 'route', 'defaultChild', 'data', 'template', 'resolve', 'activate', 'querystringParameters', 'defaultQuerystringParameters', 'defaultParameters' ];
-
-var index$8 = function StateProvider(makeRenderer, rootElement, stateRouterOptions) {
-	var prototypalStateHolder = stateState();
-	var lastCompletelyLoadedState = currentState();
-	var lastStateStartedActivating = currentState();
-	var stateProviderEmitter = new index$18();
-	stateTransitionManager(stateProviderEmitter);
-	stateRouterOptions = immutable({
-		throwOnError: true,
-		pathPrefix: '#'
-	}, stateRouterOptions);
-
-	if (!stateRouterOptions.router) {
-		stateRouterOptions.router = index$20(defaultRouterOptions);
-	}
-
-	stateRouterOptions.router.on('not found', function(route, parameters) {
-		stateProviderEmitter.emit('routeNotFound', route, parameters);
-	});
-
-	var destroyDom = null;
-	var getDomChild = null;
-	var renderDom = null;
-	var resetDom = null;
-
-	var activeDomApis = {};
-	var activeStateResolveContent = {};
-	var activeEmitters = {};
-
-	function handleError(event, err) {
-		browser$1(function() {
-			stateProviderEmitter.emit(event, err);
-			console.error(event + ' - ' + err.message);
-			if (stateRouterOptions.throwOnError) {
-				throw err
-			}
-		});
-	}
-
-	function destroyStateName(stateName) {
-		var state = prototypalStateHolder.get(stateName);
-		stateProviderEmitter.emit('beforeDestroyState', {
-			state: state,
-			domApi: activeDomApis[stateName]
-		});
-
-		activeEmitters[stateName].emit('destroy');
-		activeEmitters[stateName].removeAllListeners();
-		delete activeEmitters[stateName];
-		delete activeStateResolveContent[stateName];
-
-		return destroyDom(activeDomApis[stateName]).then(function() {
-			delete activeDomApis[stateName];
-			stateProviderEmitter.emit('afterDestroyState', {
-				state: state
-			});
-		})
-	}
-
-	function resetStateName(parameters, stateName) {
-		var domApi = activeDomApis[stateName];
-		var content = getContentObject(activeStateResolveContent, stateName);
-		var state = prototypalStateHolder.get(stateName);
-
-		stateProviderEmitter.emit('beforeResetState', {
-			domApi: domApi,
-			content: content,
-			state: state,
-			parameters: parameters
-		});
-
-		activeEmitters[stateName].emit('destroy');
-		delete activeEmitters[stateName];
-
-		return resetDom({
-			domApi: domApi,
-			content: content,
-			template: state.template,
-			parameters: parameters
-		}).then(function(newDomApi) {
-			if (newDomApi) {
-				activeDomApis[stateName] = newDomApi;
-			}
-
-			stateProviderEmitter.emit('afterResetState', {
-				domApi: activeDomApis[stateName],
-				content: content,
-				state: state,
-				parameters: parameters
-			});
-		})
-	}
-
-	function getChildElementForStateName(stateName) {
-		return new Promise(function(resolve) {
-			var parent = prototypalStateHolder.getParent(stateName);
-			if (parent) {
-				var parentDomApi = activeDomApis[parent.name];
-				resolve(getDomChild(parentDomApi));
-			} else {
-				resolve(rootElement);
-			}
-		})
-	}
-
-	function renderStateName(parameters, stateName) {
-		return getChildElementForStateName(stateName).then(function(childElement) {
-			var state = prototypalStateHolder.get(stateName);
-			var content = getContentObject(activeStateResolveContent, stateName);
-
-			stateProviderEmitter.emit('beforeCreateState', {
-				state: state,
-				content: content,
-				parameters: parameters
-			});
-
-			return renderDom({
-				element: childElement,
-				template: state.template,
-				content: content,
-				parameters: parameters
-			}).then(function(domApi) {
-				activeDomApis[stateName] = domApi;
-				stateProviderEmitter.emit('afterCreateState', {
-					state: state,
-					domApi: domApi,
-					content: content,
-					parameters: parameters
-				});
-				return domApi
-			})
-		})
-	}
-
-	function renderAll(stateNames, parameters) {
-		return promiseMapSeries(stateNames, renderStateName.bind(null, parameters))
-	}
-
-	function onRouteChange(state, parameters) {
-		try {
-			var finalDestinationStateName = prototypalStateHolder.applyDefaultChildStates(state.name);
-
-			if (finalDestinationStateName === state.name) {
-				emitEventAndAttemptStateChange(finalDestinationStateName, parameters);
-			} else {
-				// There are default child states that need to be applied
-
-				var theRouteWeNeedToEndUpAt = makePath(finalDestinationStateName, parameters);
-				var currentRoute = stateRouterOptions.router.location.get();
-
-				if (theRouteWeNeedToEndUpAt === currentRoute) {
-					// the child state has the same route as the current one, just start navigating there
-					emitEventAndAttemptStateChange(finalDestinationStateName, parameters);
-				} else {
-					// change the url to match the full default child state route
-					stateProviderEmitter.go(finalDestinationStateName, parameters, { replace: true });
-				}
-			}
-		} catch (err) {
-			handleError('stateError', err);
-		}
-	}
-
-	function addState(state) {
-		if (typeof state === 'undefined') {
-			throw new Error('Expected \'state\' to be passed in.')
-		} else if (typeof state.name === 'undefined') {
-			throw new Error('Expected the \'name\' option to be passed in.')
-		} else if (typeof state.template === 'undefined') {
-			throw new Error('Expected the \'template\' option to be passed in.')
-		}
-		Object.keys(state).filter(function(key) {
-			return expectedPropertiesOfAddState.indexOf(key) === -1
-		}).forEach(function(key) {
-			console.warn('Unexpected property passed to addState:', key);
-		});
-
-		prototypalStateHolder.add(state.name, state);
-
-		var route = prototypalStateHolder.buildFullStateRoute(state.name);
-
-		stateRouterOptions.router.add(route, onRouteChange.bind(null, state));
-	}
-
-	function getStatesToResolve(stateChanges) {
-		return stateChanges.change.concat(stateChanges.create).map(prototypalStateHolder.get)
-	}
-
-	function emitEventAndAttemptStateChange(newStateName, parameters) {
-		stateProviderEmitter.emit('stateChangeAttempt', function stateGo(transition) {
-			attemptStateChange(newStateName, parameters, transition);
-		});
-	}
-
-	function attemptStateChange(newStateName, parameters, transition) {
-		function ifNotCancelled(fn) {
-			return function() {
-				if (transition.cancelled) {
-					var err = new Error('The transition to ' + newStateName + 'was cancelled');
-					err.wasCancelledBySomeoneElse = true;
-					throw err
-				} else {
-					return fn.apply(null, arguments)
-				}
-			}
-		}
-
-		return promiseMe(prototypalStateHolder.guaranteeAllStatesExist, newStateName)
-		.then(function applyDefaultParameters() {
-			var state = prototypalStateHolder.get(newStateName);
-			var defaultParams = state.defaultParameters || state.defaultQuerystringParameters || {};
-			var needToApplyDefaults = Object.keys(defaultParams).some(function missingParameterValue(param) {
-				return typeof parameters[param] === 'undefined'
-			});
-
-			if (needToApplyDefaults) {
-				throw redirector(newStateName, immutable(defaultParams, parameters))
-			}
-			return state
-		}).then(ifNotCancelled(function(state) {
-			stateProviderEmitter.emit('stateChangeStart', state, parameters);
-			lastStateStartedActivating.set(state.name, parameters);
-		})).then(function getStateChanges() {
-			var stateComparisonResults = stateComparison_1(prototypalStateHolder)(lastCompletelyLoadedState.get().name, lastCompletelyLoadedState.get().parameters, newStateName, parameters);
-			return stateChangeLogic(stateComparisonResults) // { destroy, change, create }
-		}).then(ifNotCancelled(function resolveDestroyAndActivateStates(stateChanges) {
-			return resolveStates(getStatesToResolve(stateChanges), immutable(parameters)).catch(function onResolveError(e) {
-				e.stateChangeError = true;
-				throw e
-			}).then(ifNotCancelled(function destroyAndActivate(stateResolveResultsObject) {
-				transition.cancellable = false;
-
-				function activateAll() {
-					var statesToActivate = stateChanges.change.concat(stateChanges.create);
-
-					return activateStates(statesToActivate)
-				}
-
-				activeStateResolveContent = immutable(activeStateResolveContent, stateResolveResultsObject);
-
-				return promiseMapSeries(reverse$1(stateChanges.destroy), destroyStateName).then(function() {
-					return promiseMapSeries(reverse$1(stateChanges.change), resetStateName.bind(null, immutable(parameters)))
-				}).then(function() {
-					return renderAll(stateChanges.create, immutable(parameters)).then(activateAll)
-				})
-			}))
-
-			function activateStates(stateNames) {
-				return stateNames.map(prototypalStateHolder.get).forEach(function(state) {
-					var emitter = new index$18();
-					var context = Object.create(emitter);
-					context.domApi = activeDomApis[state.name];
-					context.data = state.data;
-					context.parameters = parameters;
-					context.content = getContentObject(activeStateResolveContent, state.name);
-					activeEmitters[state.name] = emitter;
-
-					try {
-						state.activate && state.activate(context);
-					} catch (e) {
-						browser$1(function() {
-							throw e
-						});
-					}
-				})
-			}
-		})).then(function stateChangeComplete() {
-			lastCompletelyLoadedState.set(newStateName, parameters);
-			try {
-				stateProviderEmitter.emit('stateChangeEnd', prototypalStateHolder.get(newStateName), parameters);
-			} catch (e) {
-				handleError('stateError', e);
-			}
-		}).catch(ifNotCancelled(function handleStateChangeError(err) {
-			if (err && err.redirectTo) {
-				stateProviderEmitter.emit('stateChangeCancelled', err);
-				return stateProviderEmitter.go(err.redirectTo.name, err.redirectTo.params, { replace: true })
-			} else if (err) {
-				handleError('stateChangeError', err);
-			}
-		})).catch(function handleCancellation(err) {
-			if (err && err.wasCancelledBySomeoneElse) {
-				// we don't care, the state transition manager has already emitted the stateChangeCancelled for us
-			} else {
-				throw new Error("This probably shouldn't happen, maybe file an issue or something " + err)
-			}
-		})
-	}
-
-	function makePath(stateName, parameters, options) {
-		function getGuaranteedPreviousState() {
-			if (!lastStateStartedActivating.get().name) {
-				throw new Error('makePath required a previous state to exist, and none was found')
-			}
-			return lastStateStartedActivating.get()
-		}
-		if (options && options.inherit) {
-			parameters = immutable(getGuaranteedPreviousState().parameters, parameters);
-		}
-
-		var destinationStateName = stateName === null ? getGuaranteedPreviousState().name : stateName;
-
-		var destinationState = prototypalStateHolder.get(destinationStateName) || {};
-		var defaultParams = destinationState.defaultParameters || destinationState.defaultQuerystringParameters;
-
-		parameters = immutable(defaultParams, parameters);
-
-		prototypalStateHolder.guaranteeAllStatesExist(destinationStateName);
-		var route = prototypalStateHolder.buildFullStateRoute(destinationStateName);
-		return index$28(route, parameters || {})
-	}
-
-	var defaultOptions = {
-		replace: false
-	};
-
-	stateProviderEmitter.addState = addState;
-	stateProviderEmitter.go = function go(newStateName, parameters, options) {
-		options = immutable(defaultOptions, options);
-		var goFunction = options.replace ? stateRouterOptions.router.replace : stateRouterOptions.router.go;
-
-		return promiseMe(makePath, newStateName, parameters, options).then(goFunction, handleError.bind(null, 'stateChangeError'))
-	};
-	stateProviderEmitter.evaluateCurrentRoute = function evaluateCurrentRoute(defaultState, defaultParams) {
-		return promiseMe(makePath, defaultState, defaultParams).then(function(defaultPath) {
-			stateRouterOptions.router.evaluateCurrent(defaultPath);
-		}).catch(function(err) {
-			handleError('stateError', err);
-		})
-	};
-	stateProviderEmitter.makePath = function makePathAndPrependHash(stateName, parameters, options) {
-		return stateRouterOptions.pathPrefix + makePath(stateName, parameters, options)
-	};
-	stateProviderEmitter.stateIsActive = function stateIsActive(stateName, opts) {
-		var currentState$$1 = lastCompletelyLoadedState.get();
-		return (currentState$$1.name === stateName || currentState$$1.name.indexOf(stateName + '.') === 0) && (typeof opts === 'undefined' || Object.keys(opts).every(function matches(key) {
-			return opts[key] === currentState$$1.parameters[key]
-		}))
-	};
-
-	var renderer = makeRenderer(stateProviderEmitter);
-
-	destroyDom = index$16(renderer.destroy);
-	getDomChild = index$16(renderer.getChildElement);
-	renderDom = index$16(renderer.render);
-	resetDom = index$16(renderer.reset);
-
-	return stateProviderEmitter
-};
-
-function getContentObject(stateResolveResultsObject, stateName) {
-	var allPossibleResolvedStateNames = stateStringParser(stateName);
-
-	return allPossibleResolvedStateNames.filter(function(stateName) {
-		return stateResolveResultsObject[stateName]
-	}).reduce(function(obj, stateName) {
-		return immutable(obj, stateResolveResultsObject[stateName])
-	}, {})
-}
-
-function redirector(newStateName, parameters) {
-	return {
-		redirectTo: {
-			name: newStateName,
-			params: parameters
-		}
-	}
-}
-
-// { [stateName]: resolveResult }
-function resolveStates(states, parameters) {
-	var statesWithResolveFunctions = states.filter(isFunction$2('resolve'));
-	var stateNamesWithResolveFunctions = statesWithResolveFunctions.map(property('name'));
-	var resolves = Promise.all(statesWithResolveFunctions.map(function(state) {
-		return new Promise(function(resolve, reject) {
-			function resolveCb(err, content) {
-				err ? reject(err) : resolve(content);
-			}
-
-			resolveCb.redirect = function redirect(newStateName, parameters) {
-				reject(redirector(newStateName, parameters));
-			};
-
-			var res = state.resolve(state.data, parameters, resolveCb);
-			if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
-				resolve(res);
-			}
-		})
-	}));
-
-	return resolves.then(function(resolveResults) {
-		return index$10({
-			stateName: stateNamesWithResolveFunctions,
-			resolveResult: resolveResults
-		}).reduce(function(obj, result) {
-			obj[result.stateName] = result.resolveResult;
-			return obj
-		}, {})
-	})
-}
-
-function property(name) {
-	return function(obj) {
-		return obj[name]
-	}
-}
-
-function reverse$1(ary) {
-	return ary.slice().reverse()
-}
-
-function isFunction$2(property) {
-	return function(obj) {
-		return typeof obj[property] === 'function'
-	}
-}
-
-function promiseMe() {
-	var fn = Array.prototype.shift.apply(arguments);
-	var args = arguments;
-	return new Promise(function(resolve) {
-		resolve(fn.apply(null, args));
-	})
-}
-
-var index$32 = createCommonjsModule(function (module, exports) {
-(function (root, factory) {
-    if (typeof undefined === 'function' && undefined.amd) {
-        undefined(factory);
-    } else {
-        module.exports = factory();
-    }
-}(commonjsGlobal, function () {
-
-function isMergeableObject(val) {
-    var nonNullObject = val && typeof val === 'object';
-
-    return nonNullObject
-        && Object.prototype.toString.call(val) !== '[object RegExp]'
-        && Object.prototype.toString.call(val) !== '[object Date]'
-}
-
-function emptyTarget(val) {
-    return Array.isArray(val) ? [] : {}
-}
-
-function cloneIfNecessary(value, optionsArgument) {
-    var clone = optionsArgument && optionsArgument.clone === true;
-    return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
-}
-
-function defaultArrayMerge(target, source, optionsArgument) {
-    var destination = target.slice();
-    source.forEach(function(e, i) {
-        if (typeof destination[i] === 'undefined') {
-            destination[i] = cloneIfNecessary(e, optionsArgument);
-        } else if (isMergeableObject(e)) {
-            destination[i] = deepmerge(target[i], e, optionsArgument);
-        } else if (target.indexOf(e) === -1) {
-            destination.push(cloneIfNecessary(e, optionsArgument));
-        }
-    });
-    return destination
-}
-
-function mergeObject(target, source, optionsArgument) {
-    var destination = {};
-    if (isMergeableObject(target)) {
-        Object.keys(target).forEach(function (key) {
-            destination[key] = cloneIfNecessary(target[key], optionsArgument);
-        });
-    }
-    Object.keys(source).forEach(function (key) {
-        if (!isMergeableObject(source[key]) || !target[key]) {
-            destination[key] = cloneIfNecessary(source[key], optionsArgument);
-        } else {
-            destination[key] = deepmerge(target[key], source[key], optionsArgument);
-        }
-    });
-    return destination
-}
-
-function deepmerge(target, source, optionsArgument) {
-    var array = Array.isArray(source);
-    var options = optionsArgument || { arrayMerge: defaultArrayMerge };
-    var arrayMerge = options.arrayMerge || defaultArrayMerge;
-
-    if (array) {
-        return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
-    } else {
-        return mergeObject(target, source, optionsArgument)
-    }
-}
-
-deepmerge.all = function deepmergeAll(array, optionsArgument) {
-    if (!Array.isArray(array) || array.length < 2) {
-        throw new Error('first argument should be an array with at least two elements')
-    }
-
-    // we are sure there are at least 2 values, so it is safe to have no initial value
-    return array.reduce(function(prev, next) {
-        return deepmerge(prev, next, optionsArgument)
-    })
-};
-
-return deepmerge
-
-}));
-});
-
-const copy$1 = object => index$32({}, object, { clone: true });
-
-var index$30 = function SvelteStateRendererFactory(defaultOptions = {}) {
-	return function makeRenderer(stateRouter) {
-		const asr = {
-			makePath: stateRouter.makePath,
-			stateIsActive: stateRouter.stateIsActive
-		};
-
-		function render(context, cb) {
-			const { element: target, template, content } = context;
-
-			const rendererSuppliedOptions = index$32(defaultOptions, {
-				target,
-				data: Object.assign(content, defaultOptions.data, { asr })
-			});
-
-			let svelte;
-
-			try {
-				if (typeof template === 'function') {
-					svelte = new template(rendererSuppliedOptions);
-				} else {
-					const options = index$32(rendererSuppliedOptions, template.options);
-
-					svelte = options.methods
-						? instantiateWithMethods(template.component, options, options.methods)
-						: new template.component(options);
-				}
-				svelte.asrReset = createComponentResetter(svelte);
-			} catch (e) {
-				cb(e);
-				return
-			}
-
-			function onRouteChange() {
-				svelte.set({
-					asr
-				});
-			}
-
-			stateRouter.on('stateChangeEnd', onRouteChange);
-
-			svelte.on('destroy', () => {
-				stateRouter.removeListener('stateChangeEnd', onRouteChange);
-			});
-
-			svelte.mountedToTarget = target;
-			cb(null, svelte);
-		}
-
-		return {
-			render,
-			reset: function reset(context, cb) {
-				const svelte = context.domApi;
-
-				svelte.asrReset(context.content);
-
-				cb();
-			},
-			destroy: function destroy(svelte, cb) {
-				svelte.teardown();
-				cb();
-			},
-			getChildElement: function getChildElement(svelte, cb) {
-				try {
-					const element = svelte.mountedToTarget;
-					const child = element.querySelector('uiView');
-					cb(null, child);
-				} catch (e) {
-					cb(e);
-				}
-			}
-		}
-	}
-};
-
-function createComponentResetter(component) {
-	const originalData = copy$1(component.get());
-
-	return function reset(newData) {
-		const resetObject = Object.create(null);
-		Object.keys(component.get()).forEach(key => {
-			resetObject[key] = undefined;
-		});
-		Object.assign(resetObject, copy$1(originalData), newData);
-		component.set(resetObject);
-	}
-}
-
-function instantiateWithMethods(Component, options, methods) {
-	// const coolPrototype = Object.assign(Object.create(Component.prototype), methods)
-	// return Component.call(coolPrototype, options)
-	return Object.assign(new Component(options), methods)
-}
-
-/* src\components\MenuItem.html generated by Svelte v1.64.1 */
-let id$1 = 0;
-function data$7() {
-	return {
-		id: id$1++
-	};
-}
-
-function create_main_fragment$36(component, state) {
-	var if_block_anchor;
-
-	function select_block_type_1(state) {
-		if (state.menu.url != null) return create_if_block$22;
-		return create_if_block_1$14;
-	}
-
-	var current_block_type = select_block_type_1(state);
-	var if_block = current_block_type(component, state);
-
-	return {
-		c: function create() {
-			if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(if_block_anchor.parentNode, if_block_anchor);
-			}
-		},
-
-		u: function unmount() {
-			if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-		}
-	};
-}
-
-// (5:1) {{#if menu.items.length > 1}}
-function create_if_block_2$9(component, state) {
-	var label, text_value = state.menu.id, text, label_for_value;
-
-	return {
-		c: function create() {
-			label = createElement("label");
-			text = createText(text_value);
-			this.h();
-		},
-
-		h: function hydrate() {
-			label.htmlFor = label_for_value = "menu" + state.id;
-			label.className = "toggle-sub";
-			setAttribute(label, "onclick", "");
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(label, target, anchor);
-			appendNode(text, label);
-		},
-
-		p: function update(changed, state) {
-			if ((changed.menu) && text_value !== (text_value = state.menu.id)) {
-				text.data = text_value;
-			}
-
-			if ((changed.id) && label_for_value !== (label_for_value = "menu" + state.id)) {
-				label.htmlFor = label_for_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(label);
-		},
-
-		d: noop$1
-	};
-}
-
-// (7:1) {{else}}
-function create_if_block_3$3(component, state) {
-	var a, raw_value = state.menu.items[0].label, a_href_value;
-
-	return {
-		c: function create() {
-			a = createElement("a");
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = state.menu.items[0].url;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(a, target, anchor);
-			a.innerHTML = raw_value;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.menu) && raw_value !== (raw_value = state.menu.items[0].label)) {
-				a.innerHTML = raw_value;
-			}
-
-			if ((changed.menu) && a_href_value !== (a_href_value = state.menu.items[0].url)) {
-				a.href = a_href_value;
-			}
-		},
-
-		u: function unmount() {
-			a.innerHTML = '';
-
-			detachNode(a);
-		},
-
-		d: noop$1
-	};
-}
-
-// (15:1) {{#each menu.items as submenu}}
-function create_each_block$13(component, state) {
-	var submenu = state.submenu, each_value = state.each_value, submenu_index = state.submenu_index;
-	var li;
-
-	var sveltecomponent_initial_data = { menu: submenu };
-	var sveltecomponent = new SvelteComponent$36({
-		root: component.root,
-		data: sveltecomponent_initial_data
-	});
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			sveltecomponent._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			sveltecomponent._mount(li, null);
-		},
-
-		p: function update(changed, state) {
-			submenu = state.submenu;
-			each_value = state.each_value;
-			submenu_index = state.submenu_index;
-			var sveltecomponent_changes = {};
-			if (changed.menu) sveltecomponent_changes.menu = submenu;
-			sveltecomponent._set(sveltecomponent_changes);
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: function destroy$$1() {
-			sveltecomponent.destroy(false);
-		}
-	};
-}
-
-// (13:0) {{#if menu.items.length > 1}}
-function create_if_block_4$3(component, state) {
-	var ul;
-
-	var each_value = state.menu.items;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$13(component, assign(assign({}, state), {
-			each_value: each_value,
-			submenu: each_value[i],
-			submenu_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-			this.h();
-		},
-
-		h: function hydrate() {
-			ul.className = "sub-nav";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(ul, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.menu.items;
-
-			if (changed.menu) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						submenu: each_value[i],
-						submenu_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$13(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(ul);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-// (1:0) {{#if menu.url != null}}
-function create_if_block$22(component, state) {
-	var a, raw_value = state.menu.label, a_href_value;
-
-	return {
-		c: function create() {
-			a = createElement("a");
-			this.h();
-		},
-
-		h: function hydrate() {
-			a.href = a_href_value = state.menu.url;
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(a, target, anchor);
-			a.innerHTML = raw_value;
-		},
-
-		p: function update(changed, state) {
-			if ((changed.menu) && raw_value !== (raw_value = state.menu.label)) {
-				a.innerHTML = raw_value;
-			}
-
-			if ((changed.menu) && a_href_value !== (a_href_value = state.menu.url)) {
-				a.href = a_href_value;
-			}
-		},
-
-		u: function unmount() {
-			a.innerHTML = '';
-
-			detachNode(a);
-		},
-
-		d: noop$1
-	};
-}
-
-// (3:0) {{else}}
-function create_if_block_1$14(component, state) {
-	var div, text_1, input, input_id_value, text_2, if_block_1_anchor;
-
-	function select_block_type(state) {
-		if (state.menu.items.length > 1) return create_if_block_2$9;
-		return create_if_block_3$3;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
-
-	var if_block_1 = (state.menu.items.length > 1) && create_if_block_4$3(component, state);
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			if_block.c();
-			text_1 = createText("\r\n\r\n");
-			input = createElement("input");
-			text_2 = createText("\r\n");
-			if (if_block_1) if_block_1.c();
-			if_block_1_anchor = createComment();
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "top-menu-div";
-			setAttribute(input, "type", "checkbox");
-			input.id = input_id_value = "menu" + state.id;
-			input.className = "sub-nav-check";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-			if_block.m(div, null);
-			insertNode(text_1, target, anchor);
-			insertNode(input, target, anchor);
-			insertNode(text_2, target, anchor);
-			if (if_block_1) if_block_1.m(target, anchor);
-			insertNode(if_block_1_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(div, null);
-			}
-
-			if ((changed.id) && input_id_value !== (input_id_value = "menu" + state.id)) {
-				input.id = input_id_value;
-			}
-
-			if (state.menu.items.length > 1) {
-				if (if_block_1) {
-					if_block_1.p(changed, state);
-				} else {
-					if_block_1 = create_if_block_4$3(component, state);
-					if_block_1.c();
-					if_block_1.m(if_block_1_anchor.parentNode, if_block_1_anchor);
-				}
-			} else if (if_block_1) {
-				if_block_1.u();
-				if_block_1.d();
-				if_block_1 = null;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(div);
-			if_block.u();
-			detachNode(text_1);
-			detachNode(input);
-			detachNode(text_2);
-			if (if_block_1) if_block_1.u();
-			detachNode(if_block_1_anchor);
-		},
-
-		d: function destroy$$1() {
-			if_block.d();
-			if (if_block_1) if_block_1.d();
-		}
-	};
-}
-
-function SvelteComponent$36(options) {
-	init(this, options);
-	this._state = assign(data$7(), options.data);
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
-
-	this._fragment = create_main_fragment$36(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
-	}
-}
-
-assign(SvelteComponent$36.prototype, proto);
-
-/* src\components\Menu.html generated by Svelte v1.64.1 */
-function nestedSort(array, comparison) {
-	array.sort(comparison);
-
-	for (let item of array) {
-		if (item.items != null) {
-			nestedSort(item.items, comparison);
-		}
-	}
-}
-
-function oncreate$12() {
-	var forms = this.get("forms");
-	var getMenu = this.get("getMenu");
-	var makeUrl = this.get("makeUrl");
-
-	var menus = [];
-	var tree = [];
-
-	for (let form of forms) {
-		let formMenu = getMenu(form);
-		if (formMenu != null) {
-			var currentFolder = {
-				items: tree
-			};
-
-			// If it's a "folder" menu.
-			if (formMenu.name !== "") {
-				var path = formMenu.name.split("/");
-
-				for (let folder of path) {
-					let subfolder = currentFolder.items.find(t => t.id == folder);
-
-					if (subfolder == null) {
-						subfolder = {
-							id: folder,
-							orderIndex: formMenu.orderIndex,
-							items: []
-						};
-
-						currentFolder.items.push(subfolder);
-						currentFolder = subfolder;
-					}
-					else {
-						currentFolder = subfolder;
-					}
-				}
-			}
-			currentFolder.items.push({
-				label: form.label,
-				url: makeUrl(form.id),
-				// Make sure we respect both parent menu sorting order and then leaf-level menu sorting order.
-				orderIndex: (formMenu.orderIndex * 100000) + form.customProperties.menuOrderIndex
-			});
-		}
-	}
-	nestedSort(tree, (a, b) => {
-		return a.orderIndex - b.orderIndex;
-	});
-
-	this.set({ menus: tree });
-}
-
-function create_main_fragment$35(component, state) {
-	var if_block_anchor;
-
-	var if_block = (state.menus != null) && create_if_block$21(component, state);
-
-	return {
-		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = createComment();
-		},
-
-		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insertNode(if_block_anchor, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			if (state.menus != null) {
-				if (if_block) {
-					if_block.p(changed, state);
-				} else {
-					if_block = create_if_block$21(component, state);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.u();
-				if_block.d();
-				if_block = null;
-			}
-		},
-
-		u: function unmount() {
-			if (if_block) if_block.u();
-			detachNode(if_block_anchor);
-		},
-
-		d: function destroy$$1() {
-			if (if_block) if_block.d();
-		}
-	};
-}
-
-// (3:1) {{#each menus as menu}}
-function create_each_block$12(component, state) {
-	var menu = state.menu, each_value = state.each_value, menu_index = state.menu_index;
-	var li;
-
-	var menuitem_initial_data = { menu: menu };
-	var menuitem = new SvelteComponent$36({
-		root: component.root,
-		slots: { default: createFragment() },
-		data: menuitem_initial_data
-	});
-
-	return {
-		c: function create() {
-			li = createElement("li");
-			menuitem._fragment.c();
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(li, target, anchor);
-			menuitem._mount(li, null);
-		},
-
-		p: function update(changed, state) {
-			menu = state.menu;
-			each_value = state.each_value;
-			menu_index = state.menu_index;
-			var menuitem_changes = {};
-			if (changed.menus) menuitem_changes.menu = menu;
-			menuitem._set(menuitem_changes);
-		},
-
-		u: function unmount() {
-			detachNode(li);
-		},
-
-		d: function destroy$$1() {
-			menuitem.destroy(false);
-		}
-	};
-}
-
-// (1:0) {{#if menus != null}}
-function create_if_block$21(component, state) {
-	var ul;
-
-	var each_value = state.menus;
-
-	var each_blocks = [];
-
-	for (var i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$12(component, assign(assign({}, state), {
-			each_value: each_value,
-			menu: each_value[i],
-			menu_index: i
-		}));
-	}
-
-	return {
-		c: function create() {
-			ul = createElement("ul");
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(ul, target, anchor);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
-			}
-		},
-
-		p: function update(changed, state) {
-			var each_value = state.menus;
-
-			if (changed.menus) {
-				for (var i = 0; i < each_value.length; i += 1) {
-					var each_context = assign(assign({}, state), {
-						each_value: each_value,
-						menu: each_value[i],
-						menu_index: i
-					});
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(changed, each_context);
-					} else {
-						each_blocks[i] = create_each_block$12(component, each_context);
-						each_blocks[i].c();
-						each_blocks[i].m(ul, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].u();
-					each_blocks[i].d();
-				}
-				each_blocks.length = each_value.length;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(ul);
-
-			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].u();
-			}
-		},
-
-		d: function destroy$$1() {
-			destroyEach(each_blocks);
-		}
-	};
-}
-
-function SvelteComponent$35(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	var self = this;
-	var _oncreate = function() {
-		var changed = { menus: 1 };
-		oncreate$12.call(self);
-		self.fire("update", { changed: changed, current: self._state });
-	};
-
-	if (!options.root) {
-		this._oncreate = [];
-		this._beforecreate = [];
-		this._aftercreate = [];
-	}
-
-	this._fragment = create_main_fragment$35(this, this._state);
-
-	this.root._oncreate.push(_oncreate);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-
-		this._lock = true;
-		callAll(this._beforecreate);
-		callAll(this._oncreate);
-		callAll(this._aftercreate);
-		this._lock = false;
-	}
-}
-
-assign(SvelteComponent$35.prototype, proto);
-
-/* src\components\Home.html generated by Svelte v1.64.1 */
-function create_main_fragment$37(component, state) {
-	var div;
-
-	return {
-		c: function create() {
-			div = createElement("div");
-			div.textContent = "Welcome to the TeamR System. To continue please use the top menu for navigation.";
-			this.h();
-		},
-
-		h: function hydrate() {
-			div.className = "mt-4";
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(div, target, anchor);
-		},
-
-		p: noop$1,
-
-		u: function unmount() {
-			detachNode(div);
-		},
-
-		d: noop$1
-	};
-}
-
-function SvelteComponent$37(options) {
-	init(this, options);
-	this._state = assign({}, options.data);
-
-	this._fragment = create_main_fragment$37(this, this._state);
-
-	if (options.target) {
-		this._fragment.c();
-		this._mount(options.target, options.anchor);
-	}
-}
-
-assign(SvelteComponent$37.prototype, proto);
-
-var AppRouter = (function () {
-    function AppRouter(element, app) {
-        this.element = element;
-        this.stateRenderer = index$30({});
-        this.stateRouter = index$8(this.stateRenderer, this.element);
-        var rpb = this.rpb = new RouteParameterBuilder("_", app);
-        this.stateRouter.addState({
-            name: "home",
-            data: {},
-            route: "/home",
-            template: SvelteComponent$37
-        });
-        var self = this;
-        this.stateRouter.addState({
-            name: "menu",
-            route: "/menu",
-            template: SvelteComponent$35,
-            resolve: function (data, parameters, cb) {
-                cb(false, {
-                    forms: app.forms,
-                    getMenu: function (form) {
-                        if (form.customProperties != null) {
-                            return app.getMenu(form.customProperties.menu);
-                        }
-                        return null;
-                    },
-                    makeUrl: function (formId) { return self.makeUrl(formId, null); }
-                });
-            }
-        });
-        this.stateRouter.addState({
-            name: "form",
-            data: {},
-            route: "/form/:_id",
-            template: SvelteComponent$21,
-            // Force route reload when value of _d parameter changes. This is
-            // needed because by default the router will not reload route even if
-            // any of the parameters change, unless they are specified in "querystringParameters".
-            // This means that if we are trying to reload same form, but with different parameters,
-            // nothing will happen, unless _d changes too.
-            querystringParameters: [rpb.parameterName],
-            defaultParameters: rpb.defaultParameters,
-            activate: function (context) {
-                context.domApi.init();
-                rpb.currentForm = context.parameters._id;
-                context.on("destroy", function () { return rpb.currentForm = null; });
-            },
-            resolve: function (data, parameters, cb) {
-                var formInstance = app.getFormInstance(parameters._id, true);
-                formInstance.initializeInputFields(parameters).then(function () {
-                    cb(false, {
-                        metadata: formInstance.metadata,
-                        form: formInstance,
-                        app: app
-                    });
-                });
-            }
-        });
-        this.stateRouter.evaluateCurrentRoute("home");
-    }
-    AppRouter.prototype.go = function (form, values) {
-        this.stateRouter.go("form", this.rpb.buildFormRouteParameters(form, values));
-    };
-    
-    AppRouter.prototype.makeUrl = function (form, values) {
-        return this.stateRouter.makePath('form', this.rpb.buildFormRouteParameters(form, values));
-    };
-    
-    return AppRouter;
-}());
-var RouteParameterBuilder = (function () {
-    function RouteParameterBuilder(parameterName, app) {
-        this.defaultParameters = {};
-        this.getFormInstance = function (formId, throwError) { return app.getFormInstance(formId, null); };
-        this.parameterName = parameterName;
-        this.defaultParameters[parameterName] = "";
-    }
-    RouteParameterBuilder.prototype.buildFormRouteParameters = function (form, values) {
-        var formInstance = this.getFormInstance(form, true);
-        var base = formInstance.getSerializedInputValuesFromObject(values);
-        if (form === this.currentForm) {
-            var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
-            var dAsNumber = parseInt(d, 10);
-            base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
-        }
-        return Object.assign(base, { _id: form });
-    };
-    RouteParameterBuilder.parseQueryStringParameters = function (url) {
-        var queryStartsAt = url.indexOf("?");
-        var result = {};
-        // If there is a query string.
-        if (queryStartsAt !== -1 && url.length > queryStartsAt) {
-            url.substr(queryStartsAt + 1).split("&").filter(function (t) {
-                var value = t.split("=");
-                result[value[0]] = value[1];
-            });
-        }
-        return result;
-    };
-    return RouteParameterBuilder;
-}());
-
+    return GmsApp;
+}(UmfApp));
 var server = new UmfServer("/api/form/metadata", "/api/form/run");
-var app = new UmfApp(server, controlRegister);
+var app = new GmsApp(server);
 app.on("request:started", function (request) {
     showLoader();
 });
-app.on("request:completed", function (request) {
+app.on("request:completed", function (error) {
+    if (error != null) {
+        app.showError(error);
+    }
     hideLoader();
 });
 app.load().then(function (response) {
     var router = new AppRouter(document.getElementById("main"), app);
     app.useRouter(router);
+    router.on("router:activated", function () {
+        for (var _i = 0, alertifyErrorMsg_1 = alertifyErrorMsg; _i < alertifyErrorMsg_1.length; _i++) {
+            var msg = alertifyErrorMsg_1[_i];
+            msg.dismiss();
+        }
+    });
     app.registerResponseHandler(new FormComponentResponseHandler());
     app.registerResponseHandler(new MessageResponseHandler());
     app.registerResponseHandler(new ReloadResponseHandler(function (form, inputFieldValues) {
@@ -32720,36 +45120,38 @@ app.load().then(function (response) {
     }));
     buildMenu(app);
 });
-function buildMenu(app) {
+function buildMenu(theApp) {
     // Remove old menu.
     var myNode = document.getElementById("topmenu");
     while (myNode.firstChild) {
         myNode.removeChild(myNode.firstChild);
     }
-    new SvelteComponent$35({
+    // tslint:disable-next-line:no-unused-expression
+    new SvelteComponent({
         target: document.getElementById("topmenu"),
         data: {
-            forms: app.forms,
+            forms: theApp.forms,
+            theApp: theApp,
             getMenu: function (form) {
                 if (form.customProperties != null) {
-                    return app.getMenu(form.customProperties.menu);
+                    return theApp.getMenu(form.customProperties.menu);
                 }
                 return null;
             },
-            makeUrl: function (formId) { return app.makeUrl(formId, null); }
+            makeUrl: function (formId) { return theApp.makeUrl(formId, null); }
         }
     });
 }
 function showLoader() {
     var progress = document.getElementById("progress");
-    progress.setAttribute('style', 'width:50%');
+    progress.setAttribute("style", "width:50%");
     var loader = document.getElementById("loader");
     loader.setAttribute("class", "");
 }
 function hideLoader() {
     var loader = document.getElementById("loader");
     var progress = document.getElementById("progress");
-    progress.setAttribute('style', 'width:100%');
+    progress.setAttribute("style", "width:100%");
     setTimeout(function () {
         loader.setAttribute("class", "hidden");
     }, 500);

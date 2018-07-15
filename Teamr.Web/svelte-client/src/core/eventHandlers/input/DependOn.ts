@@ -1,24 +1,29 @@
-import {
-	InputFieldEventHandler,
-	InputController,
-	FormInstance,
-	InputEventArguments
-} from "../../framework/index";
 import * as umf from "uimf-core";
+import {
+	InputController,
+	InputEventArguments,
+	InputFieldEventHandler
+} from "../../framework/index";
 
 export class DependOn extends InputFieldEventHandler {
-	run(input: InputController<any>, eventHandlerMetadata: umf.EventHandlerMetadata, args: InputEventArguments): Promise<any> {
-		return input.serialize().then(t => {
-			var childInput = args.form.getInputComponent(input.metadata.id);
-			var parentInput = args.form.getInputComponent(eventHandlerMetadata.customProperties.field); // multiselect.html
-			var inputWrapper = childInput.get("wrapper");
-			var parentInputController = parentInput.get("field");
-			// Special case for multiselect.html.
-			var parentInputValue = parentInputController.metadata.type == "typeahead"
-				? parentInputController.value.value
-				: parentInputController.value;
-			var visible = parentInputValue != null;
-			inputWrapper.show(visible);
-		});
+	public run(input: InputController<any>, eventHandlerMetadata: umf.EventHandlerMetadata, args: InputEventArguments): Promise<any> {
+		const subscribedToField = eventHandlerMetadata.customProperties.field;
+		const fieldChanged = args.input.get("field").metadata.id;
+
+		if (subscribedToField === fieldChanged) {
+			return input.serialize().then((t) => {
+				const parentInputController = args.input.get("field");
+
+				const childWrapper = args.form.getInputComponent(input.metadata.id);
+
+				const childShouldBeVisible = ["typeahead", "dropdown"].indexOf(parentInputController.metadata.type) !== -1
+					? parentInputController.value != null && parentInputController.value.value != null
+					: parentInputController.value != null;
+
+				childWrapper.show(childShouldBeVisible);
+			});
+		}
+
+		return Promise.resolve();
 	}
 }

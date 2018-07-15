@@ -61,7 +61,7 @@
 			public string Name { get; set; }
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
-			[DecimalStep(".01")]
+			[NumberConfig(Step = 0.01)]
 			public decimal? Points { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]

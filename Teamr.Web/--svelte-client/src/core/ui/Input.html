@@ -1,0 +1,83 @@
+<span hidden="{{!visible}}">
+    {{#if !alwaysHideLabel && field.metadata.label !== "" }}
+    <div class="form-group row">
+        <label for="{{id}}" class="col-sm-3 col-form-label">{{field.metadata.label}}</label>
+        <div ref:container class="{{class}} col-sm-9"></div>
+    </div>
+    {{else}}
+    <div class="form-group row">
+        <div ref:container class="{{class}} col-sm-12"></div>
+    </div>
+    {{/if}}
+</span>
+
+
+<script>
+    import * as umf from "core-framework";
+
+    var inputId = 0;
+
+    export default {
+        oncreate() {
+            let field = this.get("field");
+            let tabindex = this.get("tabindex");
+            let app = this.get("app");
+            let form = this.get("form");
+
+            var input = app.controlRegister.getInput(field.metadata.type);
+
+            // Set correct css class based on the field type.
+            var inputDisplayConfig = input.constants || {};
+            this.set({
+                class: inputDisplayConfig.block ? "block" : "inline",
+                alwaysHideLabel: inputDisplayConfig.alwaysHideLabel
+            });
+
+            var i = new input.component({
+                target: this.refs.container,
+                data: {
+                    field: field,
+                    tabindex: tabindex,
+                    id: this.get("id"),
+                    app: app,
+                    form: form,
+                    wrapper: this
+                }
+            });
+
+            form.get("inputs").push(i);
+
+            if (field.metadata.eventHandlers.length) {
+                var event = field.metadata.eventHandlers.find(t => t.id === "depend-on");
+                if (event != null) {
+                    this.show(false);
+                }
+            }
+        },
+        data() {
+            inputId += 1;
+            return {
+                id: "i" + inputId,
+                visible: true
+            }
+        },
+        methods: {
+            show(visible) {
+                var field = this.get("field");
+                this.set({ visible: !!visible });
+                if (!visible) {
+                    field.metadata.type == "typeahead"
+                        ? field.value.value = null
+                        : field.value = null;
+                }
+            }
+        }
+    }
+
+</script>
+
+<style>
+    .inline {
+        display: inline-block
+    }
+</style>

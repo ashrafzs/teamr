@@ -1,0 +1,77 @@
+<div ref:pie></div>
+<script>
+	import * as d3 from "d3";
+	export default {
+		oncreate() {
+			var data = this.get("field").data;
+			data = data.data.map(d => { return { presses: d.data, letter: d.label } });
+			var width = 400,
+				height = 400,
+				radius = Math.min(width, height) / 2;
+			
+			var color = d3.scaleOrdinal()
+				.range(["#2C93E8", "#838690", "#F56C4E"]);
+
+			var tooltip = d3.select(this.refs.pie)
+				.append("div")
+				.attr("class", "tooltip");
+
+			var pie = d3.pie()
+				.value(function (d) { return d.presses; })(data);
+
+			var arc = d3.arc()
+				.outerRadius(radius - 10)
+				.innerRadius(0);
+
+			var svg = d3.select(this.refs.pie)
+				.append("svg")
+				.attr('viewBox', '0 0 ' + Math.min(width, height) + ' ' + Math.min(width, height))
+				.attr('preserveAspectRatio', 'xMinYMin')
+				.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"); // Moving the center point. 1/2 the width and 1/2 the height
+
+			var g = svg.selectAll("arc")
+				.data(pie)
+				.enter().append("g")
+				.attr("class", "arc")
+
+				.on("mousemove", function (d) {
+					var mouseVal = d3.mouse(this);
+					tooltip.style("display", "none");
+					tooltip
+						.html("Status: " + d.data.letter + "</br>" + "Value: " + d.data.presses)
+						.style("left", (d3.event.pageX + 12) + "px")
+						.style("top", (d3.event.pageY - 10) + "px")
+						.style("opacity", 1)
+						.style("display", "block");
+				})
+				.on("mouseout", function () {
+					tooltip.html(" ").style("display", "none");
+				});
+
+			g.append("path")
+				.attr("d", arc)
+				.style("fill", function (d) { return color(d.data.letter); });
+
+			g.append("text")
+				.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+				.text(function (d) { return d.data.letter; })
+				.style("fill", "#fff");
+		}
+	}
+</script>
+<style>
+	div {
+		max-width: 400px;
+	}
+
+	.tooltip {
+		position: absolute;
+		padding: 8px 15px;
+		background: black;
+		border: 0px;
+		border-radius: 8px;
+		color: white;
+		display: inline-block;
+	}
+</style>

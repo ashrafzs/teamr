@@ -94,7 +94,7 @@
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Points))]
-			[DecimalStep(".01")]
+			[NumberConfig(Step = 0.01)]
 			public decimal? Points { get; set; }
 
 			[InputField(Required = false, OrderIndex = 50)]

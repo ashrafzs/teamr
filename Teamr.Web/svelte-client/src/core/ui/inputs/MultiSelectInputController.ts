@@ -23,8 +23,8 @@ export class MultiSelectInputController
 	}
 
 	getValue(): Promise<MultiSelectValue> {
-		var valueToSubmit = this.value == null || this.value.items == null || this.value.items.length === 0 
-			? null 
+		var valueToSubmit = this.value == null || this.value.items == null || this.value.items.length === 0
+			? null
 			: this.value;
 
 		return Promise.resolve(valueToSubmit);

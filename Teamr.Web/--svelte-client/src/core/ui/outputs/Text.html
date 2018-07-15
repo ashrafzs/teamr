@@ -1,0 +1,24 @@
+{{#if field.data != null }}
+<span class="{{cssClass}}">{{field.data}}</span>
+{{/if}}
+
+<script>
+	export default {
+		computed: {
+			cssClass: (field, form) => {
+				var cssClass = "";
+
+				var dynamicCssClass = field.metadata.getCustomProperty("dynamicCssClass");
+				if (dynamicCssClass != null) {
+					cssClass = dynamicCssClass.cssClassPrefix;
+					if (dynamicCssClass.outputFieldAsSuffix != null) {
+						var suffixOutputField = form.outputs.find(t => t.metadata.id == dynamicCssClass.outputFieldAsSuffix);
+						cssClass += suffixOutputField.data;
+					}
+				}
+
+				return cssClass;
+			}
+		}
+	}
+</script>
