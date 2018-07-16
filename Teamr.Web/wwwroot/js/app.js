@@ -9001,7 +9001,7 @@ function create_main_fragment$2(component, state) {
 	return {
 		c: function create() {
 			div = createElement("div");
-			div.textContent = "Welcome to the Grants Management System. To continue please use the top menu for navigation.";
+			div.textContent = "Welcome to the Team Task Management System. To continue please use the top menu for navigation.";
 			this.h();
 		},
 
