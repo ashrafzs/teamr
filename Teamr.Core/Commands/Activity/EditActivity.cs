@@ -43,8 +43,14 @@ namespace Teamr.Core.Commands.Activity
 					activity.EditPerformedDate(message.PerformedOn.Value);
 				}
 
-				activity.EditNotes(message.Notes);
+				if (message.Quantity != null)
+				{
+					activity.EditQuantity(message.Quantity.Value);
+					activity.EditPoints(activity.ActivityType.Points);
+				}
+
 				activity.EditActivityType(message.ActivityType.Value);
+				activity.EditNotes(message.Notes);
 
 				await this.dbContext.SaveChangesAsync();
 			}

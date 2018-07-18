@@ -52,6 +52,11 @@ namespace Teamr.Core.Domain
 			this.Notes = notes;
 		}
 
+		public void EditQuantity(decimal quantity)
+		{
+			this.Quantity = quantity;
+		}
+
 		public void EditPerformedDate(DateTime performedOn)
 		{
 			this.PerformedOn = performedOn;
