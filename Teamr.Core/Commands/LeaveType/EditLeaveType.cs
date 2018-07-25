@@ -34,7 +34,7 @@
 			{
 				if (message.Quantity != null)
 				{
-					leaveType.Edit(message.Name, message.Quantity.Value, message.Remarks?.Value);
+					leaveType.Edit(message.Name, message.Quantity.Value, message.Remarks?.Value, message.Tag);
 					this.context.SaveChanges();
 				}
 			}
@@ -42,6 +42,7 @@
 			return new Response
 			{
 				Name = leaveType.Name,
+				Tag = leaveType.Tag,
 				Points = leaveType.Quantity,
 				Remarks = leaveType.Remarks,
 				Metadata = new MyFormResponseMetadata
@@ -78,6 +79,10 @@
 			[BindToOutput(nameof(Response.Name))]
 			public string Name { get; set; }
 
+			[InputField(Required = true, OrderIndex = 3)]
+			[BindToOutput(nameof(Response.Tag))]
+			public string Tag { get; set; }
+
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Points))]
 			public decimal? Quantity { get; set; }
@@ -91,6 +96,9 @@
 		{
 			[NotField]
 			public string Name { get; set; }
+
+			[NotField]
+			public string Tag { get; set; }
 
 			[NotField]
 			public decimal Points { get; set; }

@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using CPermissions;
 	using MediatR;
+	using Teamr.Core.Commands.Activity;
 	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
 	using Teamr.Core.Security;
@@ -31,7 +32,7 @@
 		{
 			if (message.Quantity != null)
 			{
-				var leaveType = new LeaveType(message.Name, this.userContext.User.UserId, message.Quantity.Value, message.Remarks?.Value);
+				var leaveType = new LeaveType(message.Name, this.userContext.User.UserId, message.Quantity.Value, message.Remarks?.Value,message.Tag);
 				this.context.LeaveTypes.Add(leaveType);
 				this.context.SaveChanges();
 			}
@@ -58,6 +59,9 @@
 		{
 			[InputField(Required = true, OrderIndex = 2)]
 			public string Name { get; set; }
+
+			[InputField(Required = true, OrderIndex = 3)]
+			public string Tag { get; set; }
 
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			public decimal? Quantity { get; set; }

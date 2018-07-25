@@ -44,7 +44,7 @@
 						}
 					}
 
-					activityType.Edit(message.Name, message.Unit, message.Points.Value, message.Remarks?.Value);
+					activityType.Edit(message.Name, message.Unit, message.Points.Value, message.Remarks?.Value,message.Tag);
 					this.context.SaveChanges();
 				}
 			}
@@ -92,6 +92,10 @@
 			[BindToOutput(nameof(Response.Name))]
 			public string Name { get; set; }
 
+			[InputField(Required = true, OrderIndex = 3)]
+			[BindToOutput(nameof(Response.Tag))]
+			public string Tag { get; set; }
+
 			[InputField(Hidden = false, Required = true, OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Points))]
 			[NumberConfig(Step = 0.01)]
@@ -119,6 +123,9 @@
 
 			[NotField]
 			public string Unit { get; set; }
+
+			[NotField]
+			public string Tag { get; set; }
 		}
 	}
 }

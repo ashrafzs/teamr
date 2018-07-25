@@ -32,7 +32,7 @@
 		{
 			if (message.Points != null)
 			{
-				var activityType = new ActivityType(message.Name, this.userContext.User.UserId, message.Unit, message.Points.Value, message.Remarks?.Value);
+				var activityType = new ActivityType(message.Name, this.userContext.User.UserId, message.Unit, message.Points.Value, message.Remarks?.Value, message.Tag);
 				this.context.ActivityTypes.Add(activityType);
 				this.context.SaveChanges();
 			}
@@ -66,6 +66,9 @@
 
 			[InputField(Required = false, OrderIndex = 50)]
 			public TextareaValue Remarks { get; set; }
+
+			[InputField(Required = true, OrderIndex = 3)]
+			public string Tag { get; set; }
 
 			[InputField(Required = true, OrderIndex = 3)]
 			public string Unit { get; set; }

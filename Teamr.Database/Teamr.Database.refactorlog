@@ -42,4 +42,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LeaveTypeId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="305b9396-c7a2-479d-b994-b82b63658a68" ChangeDateTime="07/23/2018 03:47:06">
+    <Property Name="ElementName" Value="[dbo].[Leave].[ Category int True ]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Leave]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value=" Category" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a9ee1c18-ba77-4ae5-beb6-0317bd216c70" ChangeDateTime="07/23/2018 04:27:29">
+    <Property Name="ElementName" Value="[dbo].[LeaveType].[Catogry]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LeaveType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Category" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2c5a4511-0707-4459-b77a-fcfcdc7a06b0" ChangeDateTime="07/23/2018 06:16:23">
+    <Property Name="ElementName" Value="[dbo].[LeaveType].[Category]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LeaveType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Tag" />
+  </Operation>
 </Operations>

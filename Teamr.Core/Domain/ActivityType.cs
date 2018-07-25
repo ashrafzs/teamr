@@ -12,7 +12,7 @@ namespace Teamr.Core.Domain
 		{
 		}
 
-		internal ActivityType(string name, int userId, string unit, decimal points, string remarks)
+		internal ActivityType(string name, int userId, string unit, decimal points, string remarks,string tag)
 		{
 			this.CreatedOn = DateTime.UtcNow;
 			this.Remarks = remarks;
@@ -20,14 +20,16 @@ namespace Teamr.Core.Domain
 			this.Name = name;
 			this.Unit = unit;
 			this.Points = points;
+			this.Tag = tag;
 		}
 
-		internal void Edit(string name, string unit, decimal points, string remarks)
+		internal void Edit(string name, string unit, decimal points, string remarks, string tag)
 		{
 			this.Points = points;
 			this.Name = name;
 			this.Unit = unit;
 			this.Remarks = remarks;
+			this.Tag = tag;
 		}	
 
 		/// <summary>
@@ -48,6 +50,8 @@ namespace Teamr.Core.Domain
 		public decimal Points { get; private set; }
 
 		public string Remarks { get; private set; }
+
+		public string Tag { get; private set; }
 
 		public string Unit { get; private set; }
 

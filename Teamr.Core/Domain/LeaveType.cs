@@ -12,13 +12,14 @@ namespace Teamr.Core.Domain
 		{
 		}
 
-		internal LeaveType(string name, int userId, decimal quantity, string remarks)
+		internal LeaveType(string name, int userId, decimal quantity, string remarks, string tag)
 		{
 			this.CreatedOn = DateTime.UtcNow;
 			this.Remarks = remarks;
 			this.UserId = userId;
 			this.Name = name;
 			this.Quantity = quantity;
+			this.Tag = tag;
 		}
 
 		/// <summary>
@@ -40,15 +41,18 @@ namespace Teamr.Core.Domain
 
 		public string Remarks { get; private set; }
 
+		public string Tag { get; private set; }
+
 		public virtual RegisteredUser User { get; private set; }
 
 		public int UserId { get; private set; }
 
-		internal void Edit(string name, decimal quantity, string remarks)
+		internal void Edit(string name, decimal quantity, string remarks,string tag)
 		{
 			this.Quantity = quantity;
 			this.Name = name;
 			this.Remarks = remarks;
+			this.Tag = tag;
 		}
 	}
 }

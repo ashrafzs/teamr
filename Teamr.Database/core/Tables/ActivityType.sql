@@ -7,5 +7,6 @@ CREATE TABLE [dbo].[ActivityType]
     [Unit] NVARCHAR(250) NOT NULL, 
     [Remarks] NVARCHAR(MAX) NULL, 
     [Points] DECIMAL(18, 2) NOT NULL,
-	CONSTRAINT [FK_dbo.ActivityType_dbo.AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id])
+	[Tag] NVARCHAR(50) NOT NULL, 
+    CONSTRAINT [FK_dbo.ActivityType_dbo.AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id])
 	)
