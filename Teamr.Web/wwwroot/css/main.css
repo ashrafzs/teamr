@@ -1588,8 +1588,8 @@ footer {
   color: #fff;
   content: attr(data-tooltip);
   text-align: center;
-  line-height: 1;
-  width: 100px;
+  line-height: 1.2;
+  width: 120px;
   overflow: auto;
   font-size: 9pt; }
 
