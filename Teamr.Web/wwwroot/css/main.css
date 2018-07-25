@@ -1575,8 +1575,8 @@ footer {
 /* Position tooltip above the element */
 [data-tooltip]:before {
   position: absolute;
-  bottom: 150%;
-  left: 50%;
+  bottom: 90%;
+  left: 90%;
   margin-bottom: 5px;
   margin-left: -80px;
   padding: 5px;
@@ -1588,15 +1588,15 @@ footer {
   color: #fff;
   content: attr(data-tooltip);
   text-align: center;
-  line-height: 1.2;
-  width: 150px;
+  line-height: 1;
+  width: 100px;
   overflow: auto;
   font-size: 9pt; }
 
 /* Triangle hack to make tooltip look like a speech bubble */
 [data-tooltip]:after {
   position: absolute;
-  bottom: 150%;
+  bottom: 90%;
   left: 50%;
   margin-left: -5px;
   width: 0;
