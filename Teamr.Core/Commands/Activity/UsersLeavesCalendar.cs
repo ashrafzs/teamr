@@ -3,12 +3,16 @@ namespace Teamr.Core.Commands.Activity
 	using System.Linq;
 	using CPermissions;
 	using MediatR;
+	using Microsoft.EntityFrameworkCore;
 	using Teamr.Core.DataAccess;
+	using Teamr.Core.Domain;
 	using Teamr.Core.Menus;
+	using Teamr.Core.Pickers;
 	using Teamr.Core.Security;
 	using Teamr.Infrastructure.Forms;
 	using Teamr.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -47,8 +51,12 @@ namespace Teamr.Core.Commands.Activity
 		{
 			if (message.SelectMonth != null && message.SelectYear != null)
 			{
-				var users = this.dbContext.Users;
+				var users = this.dbContext.Users.AsNoTracking(); ;
 
+				if (message.UsersId?.Items?.Count > 0)
+				{
+					  users = users.Where(u => message.UsersId.Items.Contains(u.Id));
+				}
 				var leaves = this.dbContext.Leaves.Where(u =>
 					u.ScheduledOn.ToString("MMMM").Equals(message.SelectMonth.Value.ToString()) &&
 					u.ScheduledOn.Year.ToString().Equals(message.SelectYear));
@@ -94,6 +102,9 @@ namespace Teamr.Core.Commands.Activity
 
 			[InputField(OrderIndex = 1, Label = "Year")]
 			public string SelectYear { get; set; }
+
+			[TypeaheadInputField(typeof(UserTypeaheadRemoteSource), Label = "User")]
+			public MultiSelect<int> UsersId { get; set; }
 		}
 
 		public class Response : FormResponse

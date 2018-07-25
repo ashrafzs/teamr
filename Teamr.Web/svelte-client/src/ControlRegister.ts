@@ -93,7 +93,7 @@ controlRegister.registerOutputFieldControl("text", TextOutput);
 controlRegister.registerOutputFieldControl("number", NumberOutput);
 controlRegister.registerOutputFieldControl("datetime", DateTimeOutput);
 controlRegister.registerOutputFieldControl("table", TableOutput, new umf.OutputControlConfiguration(false, true));
-controlRegister.registerOutputFieldControl("calendar", Calendar);
+controlRegister.registerOutputFieldControl("calendar", Calendar, new umf.OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("formlink", FormLink);
 controlRegister.registerOutputFieldControl("tabstrip", Tabstrip, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("paginated-data", Paginator, new umf.OutputControlConfiguration(false, true));

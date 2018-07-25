@@ -46065,7 +46065,7 @@ controlRegister.registerOutputFieldControl("text", SvelteComponent$46);
 controlRegister.registerOutputFieldControl("number", SvelteComponent$37);
 controlRegister.registerOutputFieldControl("datetime", SvelteComponent$25);
 controlRegister.registerOutputFieldControl("table", SvelteComponent$42, new OutputControlConfiguration(false, true));
-controlRegister.registerOutputFieldControl("calendar", SvelteComponent$43);
+controlRegister.registerOutputFieldControl("calendar", SvelteComponent$43, new OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("formlink", SvelteComponent$29);
 controlRegister.registerOutputFieldControl("tabstrip", SvelteComponent$45, new OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("paginated-data", SvelteComponent$39, new OutputControlConfiguration(false, true));
