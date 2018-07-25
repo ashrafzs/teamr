@@ -36,13 +36,13 @@
 						 {{GetUserSchedule(day.schedules, user)[0].tag}}
 					</td>
 					 {{else}}
-					<td>
-						{{#if GetUserSchedule(day.schedules, user) != ''}}
-							 {{GetUserSchedule(day.schedules, user)[0].tag}}
-						{{else}}
-							 {{GetUserSchedule(day.schedules, user)}}
-						 {{/if}}
+					 {{#if GetUserSchedule(day.schedules, user) != ''}}
+					<td data-tooltip="{{GetUserEvents(day.schedules, user)}}">
+						 {{GetUserSchedule(day.schedules, user)[0].tag}}
 					</td>
+					  {{else}} 
+					 <td>{{GetUserSchedule(day.schedules, user)}}</td>
+					  {{/if}}
 					 {{/if}}
 				 {{else}}
 				<td> </td>

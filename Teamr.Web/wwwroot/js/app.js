@@ -43475,12 +43475,12 @@ function create_each_block_3$3(component, state) {
 	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
 	var if_block_anchor;
 
-	function select_block_type_2(state) {
+	function select_block_type_1(state) {
 		if (user.schedules != null && user.schedules.length > 0) return create_if_block_5$5;
-		return create_if_block_10$2;
+		return create_if_block_9$2;
 	}
 
-	var current_block_type = select_block_type_2(state);
+	var current_block_type = select_block_type_1(state);
 	var if_block = current_block_type(component, state);
 
 	return {
@@ -43501,7 +43501,7 @@ function create_each_block_3$3(component, state) {
 			day = state.day;
 			each_value_3 = state.each_value_3;
 			day_index_2 = state.day_index_2;
-			if (current_block_type === (current_block_type = select_block_type_2(state)) && if_block) {
+			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
 				if_block.p(changed, state);
 			} else {
 				if_block.u();
@@ -43520,74 +43520,6 @@ function create_each_block_3$3(component, state) {
 		d: function destroy$$1() {
 			if_block.d();
 		}
-	};
-}
-
-// (40:6) {{#if GetUserSchedule(day.schedules, user) != ''}}
-function create_if_block_8$2(component, state) {
-	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
-	var text_value = GetUserSchedule(day.schedules, user)[0].tag, text;
-
-	return {
-		c: function create() {
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			user = state.user;
-			each_value_2 = state.each_value_2;
-			user_index = state.user_index;
-			day = state.day;
-			each_value_3 = state.each_value_3;
-			day_index_2 = state.day_index_2;
-			if ((changed.days || changed.users) && text_value !== (text_value = GetUserSchedule(day.schedules, user)[0].tag)) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
-	};
-}
-
-// (42:6) {{else}}
-function create_if_block_9$2(component, state) {
-	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
-	var text_value = GetUserSchedule(day.schedules, user), text;
-
-	return {
-		c: function create() {
-			text = createText(text_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-		},
-
-		p: function update(changed, state) {
-			user = state.user;
-			each_value_2 = state.each_value_2;
-			user_index = state.user_index;
-			day = state.day;
-			each_value_3 = state.each_value_3;
-			day_index_2 = state.day_index_2;
-			if ((changed.days || changed.users) && text_value !== (text_value = GetUserSchedule(day.schedules, user))) {
-				text.data = text_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-		},
-
-		d: noop$1
 	};
 }
 
@@ -43637,28 +43569,25 @@ function create_if_block_6$4(component, state) {
 	};
 }
 
-// (38:6) {{else}}
+// (39:6) {{#if GetUserSchedule(day.schedules, user) != ''}}
 function create_if_block_7$2(component, state) {
 	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
-	var td;
-
-	function select_block_type(state) {
-		if (GetUserSchedule(day.schedules, user) != '') return create_if_block_8$2;
-		return create_if_block_9$2;
-	}
-
-	var current_block_type = select_block_type(state);
-	var if_block = current_block_type(component, state);
+	var td, text_value = GetUserSchedule(day.schedules, user)[0].tag, text, td_data_tooltip_value;
 
 	return {
 		c: function create() {
 			td = createElement("td");
-			if_block.c();
+			text = createText(text_value);
+			this.h();
+		},
+
+		h: function hydrate() {
+			td.dataset.tooltip = td_data_tooltip_value = GetUserEvents(day.schedules, user);
 		},
 
 		m: function mount(target, anchor) {
 			insertNode(td, target, anchor);
-			if_block.m(td, null);
+			appendNode(text, td);
 		},
 
 		p: function update(changed, state) {
@@ -43668,25 +43597,56 @@ function create_if_block_7$2(component, state) {
 			day = state.day;
 			each_value_3 = state.each_value_3;
 			day_index_2 = state.day_index_2;
-			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
-				if_block.p(changed, state);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(component, state);
-				if_block.c();
-				if_block.m(td, null);
+			if ((changed.days || changed.users) && text_value !== (text_value = GetUserSchedule(day.schedules, user)[0].tag)) {
+				text.data = text_value;
+			}
+
+			if ((changed.days || changed.users) && td_data_tooltip_value !== (td_data_tooltip_value = GetUserEvents(day.schedules, user))) {
+				td.dataset.tooltip = td_data_tooltip_value;
 			}
 		},
 
 		u: function unmount() {
 			detachNode(td);
-			if_block.u();
 		},
 
-		d: function destroy$$1() {
-			if_block.d();
-		}
+		d: noop$1
+	};
+}
+
+// (43:7) {{else}}
+function create_if_block_8$2(component, state) {
+	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
+	var td, text_value = GetUserSchedule(day.schedules, user), text;
+
+	return {
+		c: function create() {
+			td = createElement("td");
+			text = createText(text_value);
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(td, target, anchor);
+			appendNode(text, td);
+		},
+
+		p: function update(changed, state) {
+			user = state.user;
+			each_value_2 = state.each_value_2;
+			user_index = state.user_index;
+			day = state.day;
+			each_value_3 = state.each_value_3;
+			day_index_2 = state.day_index_2;
+			if ((changed.days || changed.users) && text_value !== (text_value = GetUserSchedule(day.schedules, user))) {
+				text.data = text_value;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(td);
+		},
+
+		d: noop$1
 	};
 }
 
@@ -43695,12 +43655,13 @@ function create_if_block_5$5(component, state) {
 	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
 	var if_block_anchor;
 
-	function select_block_type_1(state) {
+	function select_block_type(state) {
 		if (GetUserSchedule(day.schedules, user).length > 1) return create_if_block_6$4;
-		return create_if_block_7$2;
+		if (GetUserSchedule(day.schedules, user) != '') return create_if_block_7$2;
+		return create_if_block_8$2;
 	}
 
-	var current_block_type = select_block_type_1(state);
+	var current_block_type = select_block_type(state);
 	var if_block = current_block_type(component, state);
 
 	return {
@@ -43721,7 +43682,7 @@ function create_if_block_5$5(component, state) {
 			day = state.day;
 			each_value_3 = state.each_value_3;
 			day_index_2 = state.day_index_2;
-			if (current_block_type === (current_block_type = select_block_type_1(state)) && if_block) {
+			if (current_block_type === (current_block_type = select_block_type(state)) && if_block) {
 				if_block.p(changed, state);
 			} else {
 				if_block.u();
@@ -43744,7 +43705,7 @@ function create_if_block_5$5(component, state) {
 }
 
 // (47:5) {{else}}
-function create_if_block_10$2(component, state) {
+function create_if_block_9$2(component, state) {
 	var user = state.user, each_value_2 = state.each_value_2, user_index = state.user_index, day = state.day, each_value_3 = state.each_value_3, day_index_2 = state.day_index_2;
 	var td;
 
