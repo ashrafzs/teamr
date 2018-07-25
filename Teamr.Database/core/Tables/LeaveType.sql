@@ -6,6 +6,6 @@ create TABLE [dbo].[LeaveType]
 	[Name] NVARCHAR(100) NOT NULL, 
     [Remarks] NVARCHAR(MAX) NULL, 
     [Quantity] DECIMAL(18, 2) NOT NULL,
-	[Tag] NVARCHAR(50) NOT NULL, 
+	[Tag] VARCHAR(5) NOT NULL DEFAULT 'T', 
     CONSTRAINT [FK_dbo.LeaveType_dbo.AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id])
 )

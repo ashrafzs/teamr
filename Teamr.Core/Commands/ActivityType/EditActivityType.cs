@@ -55,6 +55,7 @@
 				Points = activityType.Points,
 				Unit = activityType.Unit,
 				Remarks = activityType.Remarks,
+				Tag = activityType.Tag,
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = activityType.Name
