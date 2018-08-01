@@ -1,24 +1,26 @@
-namespace Teamr.Users.Commands
+namespace TeamR.Users.Commands
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users.Pickers;
-	using Teamr.Users.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
-	
-	[MyForm(Id = "edit-user", PostOnLoad = true, Label = "Edit user", SubmitButtonLabel = "Save changes")]
-	public class EditUser : IMyAsyncForm<EditUser.Request, EditUser.Response>, ISecureHandler
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Inputs;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Users.Pickers;
+	using TeamR.Users.Security;
+
+	[MyForm(Id = "edit-user", PostOnLoad = true, Label = "Edit user", SubmitButtonLabel = UiFormConstants.EditSubmitLabel)]
+	[Secure(typeof(UserActions), nameof(UserActions.ManageUsers))]
+	public class EditUser : MyAsyncForm<EditUser.Request, EditUser.Response>
 	{
 		private readonly RoleManager<ApplicationRole> roleManager;
 		private readonly UserManager<ApplicationUser> userManager;
@@ -29,20 +31,20 @@ namespace Teamr.Users.Commands
 			this.roleManager = roleManager;
 		}
 
-		public static FormLink Button(int userId)
+		public static FormLink Button(int userId, string label = null)
 		{
 			return new FormLink
 			{
 				Form = typeof(EditUser).GetFormId(),
-				Label = UiFormConstants.EditLabel,
+				Label = label ?? "Edit",
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Id), userId }
 				}
-			}.WithCssClass("btn-primary btn-icon");
+			};
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
 			var user = this.userManager.Users
 				.Include(t => t.Roles)
@@ -57,7 +59,7 @@ namespace Teamr.Users.Commands
 				await this.roleManager.EnsureRoles(message.Roles?.Items ?? new string[0]);
 				await this.userManager.AddToRolesAsync(user, message.Roles?.Items ?? new string[0]);
 
-				var identityResult = await this.userManager.SetEmailAsync(user, message.Email);
+				var identityResult = await this.userManager.SetEmailAsync(user, message.Email?.Value);
 				identityResult.EnforceSuccess("Failed to save changes.");
 
 				identityResult = await this.userManager.SetUserNameAsync(user, message.UserName);
@@ -76,25 +78,22 @@ namespace Teamr.Users.Commands
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return UserActions.ManageUsers;
-		}
-
 		public class Request : RecordRequest<Response>
 		{
+			[InputField(OrderIndex = 5)]
 			[BindToOutput(nameof(Response.Email))]
-			public string Email { get; set; }
+			public Email Email { get; set; }
 
 			[InputField(Hidden = true, Required = true)]
 			public int Id { get; set; }
 
+			[BindToOutput(nameof(Response.Roles))]
+			[TypeaheadInputField(typeof(RoleTypeaheadInlineSource), OrderIndex = 10)]
+			public MultiSelect<string> Roles { get; set; }
+
+			[InputField(OrderIndex = 1, Label = "Name")]
 			[BindToOutput(nameof(Response.Name))]
 			public string UserName { get; set; }
-
-			[BindToOutput(nameof(Response.Roles))]
-			[TypeaheadInputField(typeof(RoleTypeaheadInlineSource))]
-			public MultiSelect<string> Roles { get; set; }
 		}
 
 		public class Response : RecordResponse

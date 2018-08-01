@@ -1,9 +1,9 @@
-namespace Teamr.Infrastructure.Security
+namespace TeamR.Infrastructure.Security
 {
 	using System.Collections.Generic;
 	using System.Linq;
 	using CPermissions;
-	using Teamr.Infrastructure.User;
+	using TeamR.Infrastructure.User;
 
 	public class SystemPermissionManager : PermissionManager<UserContext, SystemRole>
 	{

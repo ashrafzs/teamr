@@ -1,25 +1,26 @@
 namespace Teamr.Core.Commands.Activity
 {
 	using System;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
 	using Teamr.Core.Pickers;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.CustomProperties;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.CustomProperties;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "add-activity", Label = "Add completed activity")]
-	public class AddCompletedActivity : IMyAsyncForm<AddCompletedActivity.Request, AddCompletedActivity.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.AddActivity))]
+	public class AddCompletedActivity : MyAsyncForm<AddCompletedActivity.Request, AddCompletedActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
@@ -30,24 +31,19 @@ namespace Teamr.Core.Commands.Activity
 			this.userContext = userContext;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
-			if (message.PerformedOn.Date > DateTime.Today.Date)
+			if (request.PerformedOn.Date > DateTime.Today.Date)
 			{
 				throw new BusinessException("It is not allowed to record activities for future dates.");
 			}
 
-			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(message.ActivityTypeId.Value);
-			var activity = new Activity(this.userContext.User.UserId, activityType, message.Quantity, message.Notes, message.PerformedOn, message.PerformedOn);
+			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(request.ActivityTypeId.Value);
+			var activity = new Activity(this.userContext.User.UserId, activityType, request.Quantity, request.Notes, request.PerformedOn, request.PerformedOn);
 			this.dbContext.Activities.Add(activity);
-			await this.dbContext.SaveChangesAsync();
+			await this.dbContext.SaveChangesAsync(cancellationToken);
 
 			return new Response();
-		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.AddActivity;
 		}
 
 		public static FormLink Button()

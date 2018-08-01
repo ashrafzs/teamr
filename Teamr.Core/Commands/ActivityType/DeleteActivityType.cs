@@ -2,20 +2,21 @@
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "delete-activity-type", PostOnLoad = true)]
-	public class DeleteActivityType : IMyAsyncForm<DeleteActivityType.Request, DeleteActivityType.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ManageActivityTypes))]
+	public class DeleteActivityType : MyAsyncForm<DeleteActivityType.Request, DeleteActivityType.Response>
 	{
 		private readonly CoreDbContext context;
 
@@ -24,12 +25,12 @@
 			this.context = context;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
 			var activityType = await this.context.ActivityTypes
-				.SingleOrExceptionAsync(s => s.Id == message.Id);
+				.SingleOrExceptionAsync(s => s.Id == request.Id);
 
-			if (this.context.Activities.Any(a => a.ActivityTypeId == message.Id))
+			if (this.context.Activities.Any(a => a.ActivityTypeId == request.Id))
 			{
 				throw new BusinessException("You can not delete activity type, because it's have linked activities.");
 			}
@@ -41,12 +42,7 @@
 
 			return new Response();
 		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ManageActivityTypes;
-		}
-
+		
 		public static FormLink Button(int id)
 		{
 			return new FormLink
@@ -72,5 +68,6 @@
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
 		}
+
 	}
 }

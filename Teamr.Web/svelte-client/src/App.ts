@@ -1,16 +1,13 @@
-﻿import { UmfApp, UmfServer } from "core-framework";
-import * as handlers from "core-handlers";
-import * as umf from "uimf-core";
-
-import * as alertifyLib from "alertifyjs";
+﻿import * as alertifyLib from "alertifyjs";
 import Menu from "components/Menu";
+import { UmfApp, UmfServer } from "core-framework";
+import * as handlers from "core-handlers";
 import { AppRouter } from "./AppRouter";
 import controlRegister from "./ControlRegister";
 const alertify = alertifyLib.default;
 
 alertify.defaults = {
 	closable: false,
-	transition: "pulse",
 
 	notifier: {
 		delay: 0,
@@ -34,8 +31,8 @@ alertify.defaults = {
 	}
 };
 
-const alertifyErrorMsg = [];
-class GmsApp extends UmfApp {
+const alertifyErrorMsg: any[] = [];
+class MyApp extends UmfApp {
 	constructor(theServer: UmfServer) {
 		super(theServer, controlRegister);
 	}
@@ -50,7 +47,10 @@ const server = new UmfServer(
 	"/api/form/metadata",
 	"/api/form/run");
 
-const app = new GmsApp(server);
+const app = new MyApp(server);
+
+// Create a global variable, which can be accessed from any component.
+(window as any).app = app;
 
 app.on("request:started", (request) => {
 	showLoader();
@@ -81,6 +81,7 @@ app.load().then((response) => {
 			return app.makeUrl(form, inputFieldValues);
 		});
 	}));
+
 	app.registerResponseHandler(new handlers.RedirectResponseHandler((form, inputFieldValues) => {
 		app.go(form, inputFieldValues);
 	}));
@@ -100,15 +101,9 @@ function buildMenu(theApp: UmfApp): void {
 		target: document.getElementById("topmenu"),
 		data: {
 			forms: theApp.forms,
-			theApp,
-			getMenu: (form: umf.FormMetadata) => {
-				if (form.customProperties != null) {
-					return theApp.getMenu(form.customProperties.menu);
-				}
-
-				return null;
-			},
-			makeUrl: (formId: string) => theApp.makeUrl(formId, null)
+			menu: theApp.menu,
+			app: theApp,
+			makeUrl: (formId: string, inputFieldValues: any) => theApp.makeUrl(formId, inputFieldValues)
 		}
 	});
 }
@@ -126,6 +121,6 @@ function hideLoader(): void {
 	progress.setAttribute("style", "width:100%");
 
 	setTimeout(function(): void {
-		loader.setAttribute("class", "hidden");
+		loader.setAttribute("class", "d-none");
 	}, 500);
 }

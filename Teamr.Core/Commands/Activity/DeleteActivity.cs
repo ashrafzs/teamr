@@ -1,22 +1,21 @@
 namespace Teamr.Core.Commands.Activity
 {
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Domain;
 	using Teamr.Core.Security.Activity;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "delete-activity", PostOnLoad = true)]
-	public class DeleteActivity : IMyAsyncForm<DeleteActivity.Request, DeleteActivity.Response>,
-		IAsyncSecureHandler<Activity, DeleteActivity.Request, DeleteActivity.Response>
+	[Secure(typeof(ActivityAction), nameof(ActivityAction.Delete))]
+	public class DeleteActivity : MyAsyncForm<DeleteActivity.Request, DeleteActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -25,14 +24,9 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public UserAction<Activity> GetPermission()
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
-			return ActivityAction.Delete;
-		}
-
-		public async Task<Response> Handle(Request message)
-		{
-			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == message.Id);
+			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == request.Id);
 
 			this.dbContext.Activities.Remove(activity);
 			await this.dbContext.SaveChangesAsync();

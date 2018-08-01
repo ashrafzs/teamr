@@ -2,23 +2,23 @@
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.CustomProperties;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.CustomProperties;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "edit-activity-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit activity type",
-		SubmitButtonLabel = "Save changes")]
-	public class EditActivityType : IMyAsyncForm<EditActivityType.Request, EditActivityType.Response>, ISecureHandler
+	[MyForm(Id = "edit-activity-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit activity type", SubmitButtonLabel = "Save changes")]
+	[Secure(typeof(CoreActions), nameof(CoreActions.ManageActivityTypes))]
+	public class EditActivityType : MyAsyncForm<EditActivityType.Request, EditActivityType.Response>
 	{
 		private readonly CoreDbContext context;
 
@@ -27,24 +27,24 @@
 			this.context = context;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
 			var activityType = await this.context.ActivityTypes
-				.SingleOrExceptionAsync(s => s.Id == message.Id);
+				.SingleOrExceptionAsync(s => s.Id == request.Id);
 
-			if (message.Operation?.Value == RecordRequestOperation.Post)
+			if (request.Operation?.Value == RecordRequestOperation.Post)
 			{
-				if (message.Points != null)
+				if (request.Points != null)
 				{
-					if (message.Points != activityType.Points && message.ChangeOldActivityPoints)
+					if (request.Points != activityType.Points && request.ChangeOldActivityPoints)
 					{
-						foreach (var activity in this.context.Activities.Where(w => w.ActivityTypeId == message.Id))
+						foreach (var activity in this.context.Activities.Where(w => w.ActivityTypeId == request.Id))
 						{
-							activity.EditPoints(message.Points.Value);
+							activity.EditPoints(request.Points.Value);
 						}
 					}
 
-					activityType.Edit(message.Name, message.Unit, message.Points.Value, message.Remarks?.Value,message.Tag);
+					activityType.Edit(request.Name, request.Unit, request.Points.Value, request.Remarks?.Value,request.Tag);
 					this.context.SaveChanges();
 				}
 			}
@@ -61,11 +61,6 @@
 					Title = activityType.Name
 				}
 			};
-		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ManageActivityTypes;
 		}
 
 		public static FormLink Button(int id)

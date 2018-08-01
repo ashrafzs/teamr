@@ -5,8 +5,10 @@
 namespace Teamr.Core.Domain
 {
 	using System;
+	using TeamR.Core.Domain;
+	using TeamR.Infrastructure.Domain;
 
-	public class ActivityType
+	public class ActivityType : DomainEntityWithKeyInt32
 	{
 		private ActivityType()
 		{
@@ -36,9 +38,7 @@ namespace Teamr.Core.Domain
 		/// Gets date when the activity created.
 		/// </summary>
 		public DateTime CreatedOn { get; private set; }
-
-		public int Id { get; set; }
-
+		
 		/// <summary>
 		/// Gets name of the activity.
 		/// </summary>

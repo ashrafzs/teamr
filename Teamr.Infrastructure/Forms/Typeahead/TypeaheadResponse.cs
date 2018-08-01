@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.Typeahead
+namespace TeamR.Infrastructure.Forms.Typeahead
 {
 	using System.Collections.Generic;
 	using UiMetadataFramework.Basic.Input.Typeahead;

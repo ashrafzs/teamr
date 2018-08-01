@@ -2,25 +2,23 @@ namespace Teamr.Core.Commands.Leave
 {
 	using System;
 	using System.Linq;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "leaves", PostOnLoad = true, Label = "Leaves", Menu = CoreMenus.Leave, MenuOrderIndex = 1)]
-	public class Leaves : IForm<Leaves.Request, Leaves.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
+	public class Leaves : MyForm<Leaves.Request, Leaves.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly SystemPermissionManager permissionManager;
@@ -36,7 +34,7 @@ namespace Teamr.Core.Commands.Leave
 			this.dbContext = dbContext;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var query = this.dbContext.Leaves
 				.Include(a => a.LeaveType)
@@ -61,11 +59,6 @@ namespace Teamr.Core.Commands.Leave
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewActivities;
-		}
-
 		private ActionList GetActions(Leave leave)
 		{
 			var result = new ActionList();
@@ -83,7 +76,7 @@ namespace Teamr.Core.Commands.Leave
 			public Paginator Paginator { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = -10)]
 			public ActionList Actions { get; set; }

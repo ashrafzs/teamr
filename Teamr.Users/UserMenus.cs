@@ -1,23 +1,27 @@
-namespace Teamr.Users
+namespace TeamR.Users
 {
 	using System.Collections.Generic;
-	using Teamr.Infrastructure.Forms.Menu;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms.Menu;
 
-	public sealed class UserMenus : IMenuContainer
+	[RegisterEntry("user")]
+	public sealed class UserMenus : MenuContainer
 	{
 		public const string Main = "System";
 		public const string Account = "Account";
 		public const string TopLevel = "";
+		public const string Impersonation = "Impersonation";
 		public const string Reports = Main + "/Reports";
 
-		public IList<MenuMetadata> GetMenuMetadata()
+		public override IEnumerable<MenuGroup> GetMenuGroups()
 		{
-			return new List<MenuMetadata>
+			return new List<MenuGroup>
 			{
-				new MenuMetadata(TopLevel, 100),
-				new MenuMetadata(Main, 90),
-				new MenuMetadata(Account, 100),
-				new MenuMetadata(Reports, 1)
+				new MenuGroup(TopLevel, 100),
+				new MenuGroup(Main, 90),
+				new MenuGroup(Account, 100),
+				new MenuGroup(Reports, 1),
+				new MenuGroup(Impersonation, 101)
 			};
 		}
 	}

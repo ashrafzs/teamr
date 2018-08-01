@@ -1,6 +1,6 @@
-namespace Teamr.Infrastructure.Forms.Record
+namespace TeamR.Infrastructure.Forms.Record
 {
-	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Dropdown;
 	using UiMetadataFramework.Core.Binding;
 
 	public class RecordResponse : MyFormResponse

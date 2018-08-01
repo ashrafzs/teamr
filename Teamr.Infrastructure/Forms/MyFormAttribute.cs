@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms
+namespace TeamR.Infrastructure.Forms
 {
 	using System;
 	using System.Collections.Generic;

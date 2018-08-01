@@ -1,4 +1,4 @@
-﻿namespace Teamr.Infrastructure.Forms.CustomProperties
+namespace TeamR.Infrastructure.Forms.CustomProperties
 {
 	public class PositiveIntInputAttribute : NumberConfigAttribute
 	{

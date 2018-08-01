@@ -1,10 +1,10 @@
-namespace Teamr.Infrastructure.Decorators
+namespace TeamR.Infrastructure.Decorators
 {
 	using MediatR;
 
-	public interface IAsyncRequestHandlerDecorator<in TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse>
+	public interface IAsyncRequestHandlerDecorator<in TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
 		where TRequest : IRequest<TResponse>
 	{
-		IAsyncRequestHandler<TRequest, TResponse> InnerCommand { get; }
+		IRequestHandler<TRequest, TResponse> InnerCommand { get; }
 	}
 }

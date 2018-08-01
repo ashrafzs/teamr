@@ -1,4 +1,4 @@
-namespace Teamr.Users
+namespace TeamR.Users
 {
 	using System.Collections.Generic;
 	using Microsoft.AspNetCore.Identity;
@@ -21,5 +21,7 @@ namespace Teamr.Users
 		public virtual ICollection<ApplicationUserLogin> Logins { get; } = new List<ApplicationUserLogin>();
 
 		public bool HasLoggedIn => this.EmailConfirmed || this.PasswordHash != null;
+
+		public bool Active { get; set; } = true;
 	}
 }

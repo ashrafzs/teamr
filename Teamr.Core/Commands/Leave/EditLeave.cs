@@ -2,25 +2,25 @@ namespace Teamr.Core.Commands.Leave
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using CPermissions;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Pickers;
 	using Teamr.Core.Security.Leave;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "edit-leave", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit leave",
-		SubmitButtonLabel = UiFormConstants.EditSubmitLabel)]
-	public class EditLeave : IMyAsyncForm<EditLeave.Request, EditLeave.Response>,
-		IAsyncSecureHandler<Domain.Leave, EditLeave.Request, EditLeave.Response>
+	[MyForm(Id = "edit-leave", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit leave", SubmitButtonLabel = UiFormConstants.EditSubmitLabel)]
+	[Secure(typeof(LeaveAction), nameof(LeaveAction.Edit))]
+	public class EditLeave : MyAsyncForm<EditLeave.Request, EditLeave.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -34,18 +34,18 @@ namespace Teamr.Core.Commands.Leave
 			return LeaveAction.Edit;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
 			var leave = this.dbContext.Leaves
 				.Include(s => s.LeaveType)
 				.Include(s => s.CreatedByUser)
-				.SingleOrException(t => t.Id == message.Id);
+				.SingleOrException(t => t.Id == request.Id);
 
-			if (message.Operation?.Value == RecordRequestOperation.Post)
+			if (request.Operation?.Value == RecordRequestOperation.Post)
 			{
-				if (message.ScheduledOn != null)
+				if (request.ScheduledOn != null)
 				{
-					leave.Edit(message.Notes, message.LeaveType.Value, message.ScheduledOn.Value);
+					leave.Edit(request.Notes, request.LeaveType.Value, request.ScheduledOn.Value);
 				}
 
 				await this.dbContext.SaveChangesAsync();

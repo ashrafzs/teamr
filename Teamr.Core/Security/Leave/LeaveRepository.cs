@@ -1,9 +1,9 @@
 namespace Teamr.Core.Security.Leave
 {
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Security;
 
 	[EntityRepository(EntityType = typeof(Leave))]
 	public class LeaveRepository : IEntityRepository

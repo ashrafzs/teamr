@@ -1,4 +1,4 @@
-namespace Teamr.Web
+namespace TeamR.Web
 {
 	using System.IO;
 	using Microsoft.AspNetCore;

@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Security
+namespace TeamR.Infrastructure.Security
 {
 	/// <summary>
 	/// Represents a role which is not bound to any specific entity, but is

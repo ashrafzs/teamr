@@ -16,7 +16,7 @@
 				"ASPNETCORE_ENVIRONMENT": "Development"
 			}
 		},
-		"Teamr.Web": {
+		"TeamR.Web": {
 			"commandName": "Project",
 			"launchBrowser": true,
 			"launchUrl": "",

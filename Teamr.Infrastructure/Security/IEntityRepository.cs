@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Security
+namespace TeamR.Infrastructure.Security
 {
 	/// <summary>
 	/// Repository that is capable of retrieving objects by their primary key.

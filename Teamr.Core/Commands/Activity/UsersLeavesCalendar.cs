@@ -4,21 +4,20 @@ namespace Teamr.Core.Commands.Activity
 	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
 	using Teamr.Core.Pickers;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using UiMetadataFramework.Basic.Input;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using UiMetadataFramework.Basic.Input.Dropdown;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "calendar", PostOnLoad = true, Label = "Calendar", Menu = CoreMenus.Leave, MenuOrderIndex = 1)]
-	public class UsersLeavesCalendar : IForm<UsersLeavesCalendar.Request, UsersLeavesCalendar.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
+	public class UsersLeavesCalendar : MyForm<UsersLeavesCalendar.Request, UsersLeavesCalendar.Response>
 	{
 		public enum MonthEnum
 		{
@@ -47,11 +46,11 @@ namespace Teamr.Core.Commands.Activity
 			this.metadataBinder = metadataBinder;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			if (message.SelectMonth != null && message.SelectYear != null)
 			{
-				var users = this.dbContext.Users.AsNoTracking(); ;
+				var users = this.dbContext.Users.AsNoTracking();
 
 				if (message.UsersId?.Items?.Count > 0)
 				{
@@ -107,7 +106,7 @@ namespace Teamr.Core.Commands.Activity
 			public MultiSelect<int> UsersId { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 0, Label = "")]
 			public TeamCalendar<UserSchedule> TeamSchedule { get; set; }

@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.ClientFunctions
+namespace TeamR.Infrastructure.Forms.ClientFunctions
 {
 	using System;
 	using System.Collections.Generic;

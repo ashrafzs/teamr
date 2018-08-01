@@ -1,34 +1,51 @@
-namespace Teamr.Filing.Commands
+namespace TeamR.Filing.Commands
 {
 	using System.Collections.Generic;
 	using System.Linq;
 	using Filer.Core;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.User;
 
 	[Form(Id = "detach-file")]
-	public class DetachFile : IForm<DetachFile.Request, DetachFile.Response>
+	public class DetachFile : Form<DetachFile.Request, DetachFile.Response>
 	{
 		private readonly IFileManager context;
-		private readonly EntityFileManagerCollection documentSecurityRules;
+		private readonly EntityFileManagerRegister documentSecurityRules;
 		private readonly UserContext userContext;
 
-		public DetachFile(IFileManager context, EntityFileManagerCollection documentSecurityRule, UserContext userContext)
+		public DetachFile(IFileManager context, EntityFileManagerRegister documentSecurityRule, UserContext userContext)
 		{
 			this.context = context;
 			this.documentSecurityRules = documentSecurityRule;
 			this.userContext = userContext;
 		}
 
-		public Response Handle(Request message)
+		public static FormLink Button(int fileId, string contextType, string contextId, string metaTag)
 		{
-			var manager = this.documentSecurityRules.GetManager(message.ContextType);
+			return new FormLink
+			{
+				Form = typeof(DetachFile).GetFormId(),
+				Label = UiFormConstants.DeleteLabel,
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.FileId), fileId },
+					{ nameof(Request.ContextType), contextType },
+					{ nameof(Request.ContextId), contextId },
+					{ nameof(Request.MetaTag), metaTag }
+				}
+			};
+		}
+
+		protected override Response Handle(Request message)
+		{
+			var manager = this.documentSecurityRules.GetInstance(message.ContextType);
 			var canDelete = manager.CanDeleteFiles(message.ContextId, message.MetaTag);
 
 			if (!canDelete)
@@ -46,22 +63,6 @@ namespace Teamr.Filing.Commands
 			}
 
 			return new Response();
-		}
-
-		public static FormLink Button(int fileId, string contextType, string contextId, string metaTag)
-		{
-			return new FormLink
-			{
-				Form = typeof(DetachFile).GetFormId(),
-				Label = "Delete document",
-				InputFieldValues = new Dictionary<string, object>
-				{
-					{ nameof(Request.FileId), fileId },
-					{ nameof(Request.ContextType), contextType },
-					{ nameof(Request.ContextId), contextId },
-					{ nameof(Request.MetaTag), metaTag }
-				}
-			};
 		}
 
 		public class Request : IRequest<Response>

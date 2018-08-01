@@ -5,8 +5,10 @@
 namespace Teamr.Core.Domain
 {
 	using System;
+	using TeamR.Core.Domain;
+	using TeamR.Infrastructure.Domain;
 
-	public class Leave
+	public class Leave : DomainEntityWithKeyInt32
 	{
 		private Leave()
 		{
@@ -27,7 +29,6 @@ namespace Teamr.Core.Domain
 
 		public DateTime CreatedOn { get; private set; }
 
-		public int Id { get; set; }
 		public virtual LeaveType LeaveType { get; private set; }
 
 		public int LeaveTypeId { get; private set; }

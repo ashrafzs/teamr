@@ -1,13 +1,13 @@
-namespace Teamr.Web.Controllers
+namespace TeamR.Web.Controllers
 {
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using MediatR;
 	using Microsoft.AspNetCore.Cors;
 	using Microsoft.AspNetCore.Mvc;
+	using TeamR.Infrastructure.Forms;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.MediatR;
-	using Teamr.Infrastructure.Forms;
 
 	[Route("api/form")]
 	[EnableCors(Startup.CorsAllowAllPolicy)]

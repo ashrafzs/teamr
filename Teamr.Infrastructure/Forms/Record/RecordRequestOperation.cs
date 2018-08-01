@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.Record
+namespace TeamR.Infrastructure.Forms.Record
 {
 	public enum RecordRequestOperation
 	{

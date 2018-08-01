@@ -8,14 +8,14 @@ class PaginationParameters {
 		this.ascending = PaginationParameters.asBool(ascending, null);
 	}
 
-	pageSize: number;
-	pageIndex: number;
-	ascending: boolean;
-	orderBy: string;
+	public pageSize: number;
+	public pageIndex: number;
+	public ascending: boolean;
+	public orderBy: string;
 
 	private static asInt(value: number | string, defaultValue: number): number {
 		if (typeof (value) === "string") {
-			var result = parseInt(value);
+			const result = parseInt(value, 10);
 			return isNaN(result) ? defaultValue : result;
 		}
 
@@ -37,21 +37,22 @@ class PaginationParameters {
 	}
 }
 
+// tslint:disable-next-line:max-classes-per-file
 export class PaginatorInputController extends umf.InputController<PaginationParameters> {
-	serializeValue(value: PaginationParameters | string): string {
+	public serializeValue(value: PaginationParameters | string): string {
 
-		var p = typeof (value) === "string" || value == null
-			? this.parse(<string>value)
+		const p = typeof (value) === "string" || value == null
+			? this.parse(value as string)
 			: value;
 
-		if (p.pageIndex == 1 &&
-			p.pageSize == 10 &&
+		if (p.pageIndex === 1 &&
+			p.pageSize === 10 &&
 			p.ascending == null &&
 			p.orderBy == null) {
 			return "";
 		}
 
-		var result = `${p.pageIndex}-${p.pageSize}`;
+		let result = `${p.pageIndex}-${p.pageSize}`;
 
 		if (p.orderBy != null) {
 			result += `-${p.orderBy}-${p.ascending}}`;
@@ -60,14 +61,14 @@ export class PaginatorInputController extends umf.InputController<PaginationPara
 		return result;
 	}
 
-	init(value: string): Promise<PaginatorInputController> {
+	public init(value: string): Promise<PaginatorInputController> {
 		return new Promise((resolve, reject) => {
 			this.value = this.parse(value);
 			resolve(this);
 		});
 	}
 
-	getValue(): Promise<PaginationParameters> {
+	public getValue(): Promise<PaginationParameters> {
 		return Promise.resolve(this.value);
 	}
 
@@ -79,7 +80,7 @@ export class PaginatorInputController extends umf.InputController<PaginationPara
 			return new PaginationParameters();
 		}
 
-		var components = value.split("-");
+		const components = value.split("-");
 		return new PaginationParameters(
 			components[0],
 			components[1],

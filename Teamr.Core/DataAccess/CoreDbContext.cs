@@ -1,12 +1,19 @@
-namespace Teamr.Core.DataAccess
+namespace TeamR.Core.DataAccess
 {
 	using Microsoft.EntityFrameworkCore;
+	using Microsoft.Extensions.Options;
+	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Unops.Spgs.Core.DataAccess.Mapping;
+	using TeamR.Core.Domain;
+	using TeamR.Infrastructure.Configuration;
+	using TeamR.Infrastructure.DataAccess;
+	using TeamR.Infrastructure.Domain;
+	using TeamR.Infrastructure.User;
 
-	public class CoreDbContext : DbContext
+	public class CoreDbContext : BaseDbContext
 	{
-		public CoreDbContext(DbContextOptions options) : base(options)
+		public CoreDbContext(DbContextOptions options, EventManager eventManager, UserSession userSession, IOptions<AppConfig> appConfig)
+			: base(options, eventManager, appConfig, userSession)
 		{
 		}
 

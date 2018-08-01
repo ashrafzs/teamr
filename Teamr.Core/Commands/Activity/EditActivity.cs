@@ -2,25 +2,25 @@ namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Pickers;
 	using Teamr.Core.Security.Activity;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.CustomProperties;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.CustomProperties;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "edit-activity", PostOnLoad = true,PostOnLoadValidation = false ,Label = "Edit activity", SubmitButtonLabel = UiFormConstants.EditSubmitLabel)]
-	public class EditActivity : IMyAsyncForm<EditActivity.Request, EditActivity.Response>, 
-		IAsyncSecureHandler<Domain.Activity, EditActivity.Request, EditActivity.Response>
+	[Secure(typeof(ActivityAction), nameof(ActivityAction.Edit))]
+	public class EditActivity : MyAsyncForm<EditActivity.Request, EditActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -29,30 +29,30 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
 			var activity = this.dbContext.Activities
 				.Include(s => s.ActivityType)
 				.Include(s => s.CreatedByUser)
-				.SingleOrException(t => t.Id == message.Id);
+				.SingleOrException(t => t.Id == request.Id);
 
-			if (message.Operation?.Value == RecordRequestOperation.Post)
+			if (request.Operation?.Value == RecordRequestOperation.Post)
 			{
-				if (message.PerformedOn != null)
+				if (request.PerformedOn != null)
 				{
-					activity.EditPerformedDate(message.PerformedOn.Value);
+					activity.EditPerformedDate(request.PerformedOn.Value);
 				}
 
-				if (message.Quantity != null)
+				if (request.Quantity != null)
 				{
-					activity.EditQuantity(message.Quantity.Value);
+					activity.EditQuantity(request.Quantity.Value);
 					activity.EditPoints(activity.ActivityType.Points);
 				}
 
-				activity.EditActivityType(message.ActivityType.Value);
-				activity.EditNotes(message.Notes);
+				activity.EditActivityType(request.ActivityType.Value);
+				activity.EditNotes(request.Notes);
 
-				await this.dbContext.SaveChangesAsync();
+				await this.dbContext.SaveChangesAsync(cancellationToken);
 			}
 
 			return new Response
@@ -66,11 +66,6 @@ namespace Teamr.Core.Commands.Activity
 					Title = activity.Notes
 				}
 			};
-		}
-
-		public UserAction<Domain.Activity> GetPermission()
-		{
-			return ActivityAction.Edit;
 		}
 
 		public static FormLink Button(int id)

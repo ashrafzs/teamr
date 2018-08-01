@@ -1,9 +1,9 @@
 import * as umf from "core-framework";
 
 export class DateInputController extends umf.InputController<Date> {
-	valueAsText: string = null;
+	public valueAsText: string = null;
 
-	init(value: string): Promise<DateInputController> {
+	public init(value: string): Promise<DateInputController> {
 		return new Promise((resolve, reject) => {
 			this.value = DateInputController.parseDate(value);
 			this.valueAsText = this.serializeValue(this.value);
@@ -12,16 +12,16 @@ export class DateInputController extends umf.InputController<Date> {
 		});
 	}
 
-	getValue(): Promise<Date> {
+	public getValue(): Promise<Date> {
 		return Promise.resolve(this.value);
 	}
 
-	serializeValue(date: Date | string): string {
+	public serializeValue(date: Date | string): string {
 		return DateInputController.serialize(date);
 	}
 
 	public static serialize(date: Date | string): string {
-		var asDate = typeof (date) === "string"
+		const asDate = typeof (date) === "string"
 			? DateInputController.parseDate(date)
 			: date;
 
@@ -31,14 +31,14 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	public static parseDate(value: string): Date {
-		let selectedDate = this.asUtcTime(value, 7, 0, 0);
+		const selectedDate = this.asUtcTime(value, 7, 0, 0);
 		if (selectedDate) {
-			let dateAsNumber = Date.parse(selectedDate.toString());
+			const dateAsNumber = Date.parse(selectedDate.toString());
 			return isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
 		}
 	}
 
-	public static asUtcTime(date, hour, min, second) {
+	public static asUtcTime(date: Date | string, hour: number, min: number, second: number): Date {
 		/// <summary>Returns provided date as if it was UTC date.</summary>
 		/// <param name="date">Local date/time.</param>
 		/// <returns type="Date">Date object.</returns>
@@ -48,21 +48,21 @@ export class DateInputController extends umf.InputController<Date> {
 
 		// If string but not UTC.
 		if (typeof (date) === "string" && date[date.length - 1] !== "Z") {
-			let year = parseInt(date.substr(0, 4)),
-				month = parseInt(date.substr(5, 2)),
-				day = parseInt(date.substr(8, 2));
+			const year = parseInt(date.substr(0, 4), 10);
+			const month = parseInt(date.substr(5, 2), 10);
+			const day = parseInt(date.substr(8, 2), 10);
 
 			// Assume UTC.
 			return this.getIsoDate(year, month, day, hour, min, second);
 		}
 
-		var datepart = new Date(new Date(date).toISOString());
+		const datepart = new Date(new Date(date as Date).toISOString());
 
-
-		return this.getIsoDate(datepart.getFullYear(), datepart.getMonth() + 1, datepart.getDate(), hour, min, second)
+		return this.getIsoDate(datepart.getFullYear(), datepart.getMonth() + 1, datepart.getDate(), hour, min, second);
 	}
-	private static getIsoDate(year, month, day, hour, min, second): Date {
-		var iso = year +
+
+	private static getIsoDate(year: number, month: number, day: number, hour: number, min: number, second: number): Date {
+		const iso = year +
 			"-" + // year
 			this.format2DecimalPlaces(month) +
 			"-" + // month
@@ -76,7 +76,8 @@ export class DateInputController extends umf.InputController<Date> {
 			".000Z";
 		return new Date(iso);
 	}
-	public static format2DecimalPlaces(n) {
+
+	public static format2DecimalPlaces(n: number): string {
 		return ("0" + n).slice(-2);
 	}
 }

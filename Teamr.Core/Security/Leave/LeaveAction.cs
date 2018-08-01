@@ -1,7 +1,7 @@
 namespace Teamr.Core.Security.Leave
 {
 	using Teamr.Core.Domain;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	public class LeaveAction : EntityAction<Leave, LeaveRole>
 	{

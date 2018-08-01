@@ -3,7 +3,8 @@ namespace Teamr.Core.Security.Activity
 	using System.Collections.Generic;
 	using CPermissions;
 	using Teamr.Core.Domain;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.User;
 
 	public class ActivityRoleChecker : IRoleChecker<UserContext, ActivityRole, Activity>
 	{
@@ -14,7 +15,7 @@ namespace Teamr.Core.Security.Activity
 				yield return ActivityRole.Owner;
 			}
 
-			if (user.HasRole(CoreRoles.SysAdmin))
+			if (user.HasRole(CoreRoles.Admin))
 			{
 				yield return ActivityRole.Viewer;
 			}

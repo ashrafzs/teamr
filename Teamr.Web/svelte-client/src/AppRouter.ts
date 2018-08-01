@@ -1,6 +1,5 @@
 import * as umf from "core-framework";
 import {RouteParameterBuilder} from "RouteParameterBuilder";
-import { FormMetadata } from "uimf-core";
 import * as abstractStateRouter from "../node_modules/abstract-state-router/index";
 import * as svelteStateRenderer from "../node_modules/svelte-state-renderer/index";
 
@@ -42,13 +41,6 @@ export class AppRouter implements umf.IAppRouter {
 			resolve(data: any, parameters: any, cb: ResolveCallback): void {
 				cb(false, {
 					forms: app.forms,
-					getMenu: (form: FormMetadata) => {
-						if (form.customProperties != null) {
-							return app.getMenu(form.customProperties.menu);
-						}
-
-						return null;
-					},
 					makeUrl: (formId: string) => self.makeUrl(formId, null)
 				});
 			}

@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure
+namespace TeamR.Infrastructure
 {
 	public interface IAssemblyBootstrapper
 	{

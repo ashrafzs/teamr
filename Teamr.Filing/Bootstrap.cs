@@ -1,7 +1,7 @@
-namespace Teamr.Filing
+namespace TeamR.Filing
 {
 	using System.Reflection;
-	using Teamr.Infrastructure;
+	using TeamR.Infrastructure;
 
 	public class Bootstrap : IAssemblyBootstrapper
 	{

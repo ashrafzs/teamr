@@ -1,29 +1,29 @@
-{{#if selectedFiles != null && selectedFiles.length > 0}}
+{#if selectedFiles != null && selectedFiles.length > 0}
 <ul class="files-list">
-	{{#each selectedFiles as file, index}}
-	<li>{{file.name}}
+	{#each selectedFiles as file, index}
+	<li>{file.name}
 		<i class="fa fa-times second-color" on:click="removeFile(index)"></i>
 	</li>
-	{{/each}}
+	{/each}
 </ul>
-{{/if}}
+{/if}
 
 <div class="file-drop-area"	ref:dropzone>
-	{{#if uploaderConfig != null && uploaderConfig.allowMultipleFiles}}
+	{#if uploaderConfig != null && uploaderConfig.allowMultipleFiles}
 	<input type="file"
-		id="{{id}}"
-		tabindex="{{tabindex}}"
+		id="{id}"
+		tabindex="{tabindex}"
 		on:change="addFiles(this.files)"
 		multiple="multiple"
-		accept="{{uploaderConfig ? uploaderConfig.allowedFileExtensions : '*'}}"/>
-	{{else}}
+		accept="{uploaderConfig ? uploaderConfig.allowedFileExtensions : '*'}"/>
+	{:else}
 	<input type="file"
-		id="{{id}}"
-		tabindex="{{tabindex}}"
+		id="{id}"
+		tabindex="{tabindex}"
 		on:change="addFiles(this.files)"
-		accept="{{uploaderConfig ? uploaderConfig.allowedFileExtensions : '*'}}"/>
-	{{/if}}
-	<label for="{{id}}">drag or <strong class='second-color'>upload</strong> files</label>
+		accept="{uploaderConfig ? uploaderConfig.allowedFileExtensions : '*'}"/>
+	{/if}
+	<label for="{id}">drag or <strong class='second-color'>upload</strong> files</label>
 </div>
 
 <script>
@@ -60,20 +60,20 @@
 
 	function getAllowedFileExtensions(component) {
 		let	allowedExtension = "*";
-		if (component.get("uploaderConfig") && component.get("uploaderConfig").allowedFileExtensions) {
-			allowedExtension = component.get("uploaderConfig").allowedFileExtensions.split(",").map(item => item.trim());
+		if (component.get().uploaderConfig && component.get().uploaderConfig.allowedFileExtensions) {
+			allowedExtension = component.get().uploaderConfig.allowedFileExtensions.split(",").map(item => item.trim());
 		}
 
 		return allowedExtension;
 	}
 
 	function addFiles(component, files) {
-		const app = component.get("app");
+		const { app } = component.get();
 		const filesToAdd = objectToArray(files);
 		let listedFiles = [];
 
-		if (component.get("selectedFiles")) {
-			listedFiles = component.get("selectedFiles");
+		if (component.get().selectedFiles) {
+			listedFiles = component.get().selectedFiles;
 		}
 
 		const allowedFileExtensions = getAllowedFileExtensions(component);
@@ -81,7 +81,7 @@
 			.filter(file => canFileBeAdded(listedFiles, file, allowedFileExtensions, app));
 
 		if (filesThatCanBeAdded.length > 0) {
-			if (!component.get("uploaderConfig").allowMultipleFiles) {
+			if (!component.get().uploaderConfig.allowMultipleFiles) {
 				component.set({ selectedFiles: filesThatCanBeAdded.slice(0, 1) });
 			}
 			else {
@@ -94,17 +94,23 @@
 		methods: {
 			addFiles(files) {
 				addFiles(this, files);
+				this.get().field.selected = this.get().selectedFiles;
 			},
 			removeFile(index) {
-				const files = this.get("selectedFiles");
-				files.splice(index, 1);
-				this.set({ selectedFiles: files });
+				this.get().selectedFiles.splice(index, 1).splice(index, 1);
+				this.set({
+					selectedFiles: this.get().selectedFiles
+				});
+
+				this.get().field.selected = this.get().selectedFiles;
 			}
 		},
 		oncreate() {
-			const field = this.get("field");
-			const uploaderConfig = field.metadata.customProperties.fileUploaderConfig != null ?
-				field.metadata.customProperties.fileUploaderConfig : {
+			const { field } = this.get();
+
+			const uploaderConfig =
+				field.metadata.getCustomProperty("fileUploaderConfig") ||
+				{
 					allowMultipleFiles: true,
 					allowedFileExtensions: "*"
 				};
@@ -128,7 +134,7 @@
 
 			this.refs.dropzone.ondrop = e => {
 				e.preventDefault();
-				addFiles(self, e.dataTransfer.files);
+				self.addFiles(e.dataTransfer.files);
 				return false;
 			};
 		}
@@ -147,9 +153,9 @@
 		background: #fffde6;
 	}
 
-	.file-drop-area label{
+	.file-drop-area label {
 		margin: auto;
-    	line-height: 60px;
+		line-height: 60px;
 		display: block;
 	}
 
@@ -158,6 +164,6 @@
 	}
 
 	.second-color {
-		color:#f3818c;
+		color: #f3818c;
 	}
 </style>

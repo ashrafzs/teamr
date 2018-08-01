@@ -1,12 +1,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
-namespace Teamr.Core.Domain
+namespace TeamR.Core.Domain
 {
-	using System.Collections.Generic;
-	using Teamr.Core.Commands.Activity;
-	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core.Binding;
-
 	/// <summary>
 	/// Represents user registered in the system.
 	/// </summary>
@@ -15,10 +10,13 @@ namespace Teamr.Core.Domain
 		private RegisteredUser()
 		{
 			// This constructor is private, because we are not supposed to create new users
-			// from this library. All users are created by *Unops.Spgs.Users*. This assembly
+			// from this library. All users are created by *TeamR.Users*. This assembly
 			// can only read existing data.
 		}
 
+		public bool Active { get; private set; }
+
+		public string Email { get; private set; }
 		public int Id { get; private set; }
 		public string Name { get; private set; }
 
@@ -28,20 +26,6 @@ namespace Teamr.Core.Domain
 			{
 				Id = userId,
 				Name = name
-			};
-		}
-
-		public FormLink GetUserProfileLink()
-		{
-			return new FormLink
-			{
-				Label = this.Name,
-				Form = typeof(UserProfile).GetFormId(),
-				InputFieldValues = new Dictionary<string, object>
-				{
-					{ nameof(UserProfile.Request.UserId), this.Id }
-				}
-
 			};
 		}
 	}

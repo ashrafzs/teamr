@@ -1,22 +1,23 @@
 ﻿namespace Teamr.Core.Commands.LeaveType
 {
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using CPermissions;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "edit-leave-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit leave type",
-		SubmitButtonLabel = "Save changes")]
-	public class EditLeaveType : IMyAsyncForm<EditLeaveType.Request, EditLeaveType.Response>, ISecureHandler
+	[MyForm(Id = "edit-leave-type", PostOnLoad = true, PostOnLoadValidation = false, Label = "Edit leave type", SubmitButtonLabel = "Save changes")]
+	[Secure(typeof(CoreActions), nameof(CoreActions.ManageLeaveTypes))]
+	public class EditLeaveType : MyAsyncForm<EditLeaveType.Request, EditLeaveType.Response>
 	{
 		private readonly CoreDbContext context;
 
@@ -25,16 +26,16 @@
 			this.context = context;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
 			var leaveType = await this.context.LeaveTypes
-				.SingleOrExceptionAsync(s => s.Id == message.Id);
+				.SingleOrExceptionAsync(s => s.Id == request.Id);
 
-			if (message.Operation?.Value == RecordRequestOperation.Post)
+			if (request.Operation?.Value == RecordRequestOperation.Post)
 			{
-				if (message.Quantity != null)
+				if (request.Quantity != null)
 				{
-					leaveType.Edit(message.Name, message.Quantity.Value, message.Remarks?.Value, message.Tag);
+					leaveType.Edit(request.Name, request.Quantity.Value, request.Remarks?.Value, request.Tag);
 					this.context.SaveChanges();
 				}
 			}

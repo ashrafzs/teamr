@@ -1,23 +1,25 @@
-namespace Teamr.Users.Commands
+namespace TeamR.Users.Commands
 {
 	using System.Linq;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.AspNetCore.Identity;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Outputs;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users.Security;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Basic.Response;
 	using UiMetadataFramework.Core.Binding;
-	using Teamr.Infrastructure.User;
+	using UiMetadataFramework.MediatR;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
+	using TeamR.Users.Forms;
+	using TeamR.Users.Security;
 
 	[MyForm(Id = "set-password", Label = "Set account password", SubmitButtonLabel = "Confirm password")]
-	public class SetPassword : IMyAsyncForm<SetPassword.Request, SetPassword.Response>, ISecureHandler
+	[Secure(typeof(UserActions), nameof(UserActions.ManageMyAccount))]
+	public class SetPassword : AsyncForm<SetPassword.Request, RedirectResponse>
 	{
 		private readonly UserContext userContext;
 		private readonly UserManager<ApplicationUser> userManager;
@@ -26,27 +28,6 @@ namespace Teamr.Users.Commands
 		{
 			this.userManager = userManager;
 			this.userContext = userContext;
-		}
-
-		public async Task<Response> Handle(Request message)
-		{
-			var user = this.userManager.Users.Single(t => t.UserName == this.userContext.User.UserName);
-
-			var result = await this.userManager.AddPasswordAsync(
-				user,
-				message.Password.Value);
-
-			result.EnforceSuccess("Failed to set password.");
-
-			return new Response
-			{
-				Result = Alert.Success("Password was set successfully.")
-			};
-		}
-
-		public UserAction GetPermission()
-		{
-			return UserActions.ManageMyAccount;
 		}
 
 		public static FormLink Button()
@@ -58,14 +39,23 @@ namespace Teamr.Users.Commands
 			};
 		}
 
-		public class Response : FormResponse<MyFormResponseMetadata>
+		public override async Task<RedirectResponse> Handle(Request message, CancellationToken cancellationToken)
 		{
-			public Alert Result { get; set; }
+			var user = this.userManager.Users.Single(t => t.UserName == this.userContext.User.UserName);
+
+			var result = await this.userManager.AddPasswordAsync(
+				user,
+				message.Password.Value);
+
+			result.EnforceSuccess("Failed to set password.");
+
+			return MyAccount.Button().AsRedirectResponse();
 		}
 
-		public class Request : IRequest<Response>
+		public class Request : IRequest<RedirectResponse>
 		{
 			[InputField(Required = true)]
+			[TeamRPasswordInputConfig(true)]
 			public Password Password { get; set; }
 		}
 	}

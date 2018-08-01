@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Domain
+namespace TeamR.Infrastructure.Domain
 {
 	public abstract class DomainEvent : DomainEvent<int>
 	{

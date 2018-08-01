@@ -1,7 +1,7 @@
-namespace Teamr.Infrastructure.User
+namespace TeamR.Infrastructure.User
 {
 	using System.Collections.Generic;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	/// <summary>
 	/// Represents a class which can retrieve roles for the current user.

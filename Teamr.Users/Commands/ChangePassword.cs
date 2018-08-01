@@ -1,24 +1,25 @@
-namespace Teamr.Users.Commands
+namespace TeamR.Users.Commands
 {
-	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.AspNetCore.Identity;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.ClientFunctions;
-	using Teamr.Infrastructure.Forms.Outputs;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users.Security;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using Teamr.Infrastructure.User;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.ClientFunctions;
+	using TeamR.Infrastructure.Forms.Outputs;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
+	using TeamR.Users.Forms;
+	using TeamR.Users.Security;
 
 	[MyForm(Id = "change-password", Label = "Change account password")]
-	public class ChangePassword : IMyAsyncForm<ChangePassword.Request, ChangePassword.Response>, ISecureHandler
+	[Secure(typeof(UserActions), nameof(UserActions.ManageMyAccount))]
+	public class ChangePassword : MyAsyncForm<ChangePassword.Request, ChangePassword.Response>
 	{
 		private readonly UserContext userContext;
 		private readonly UserManager<ApplicationUser> userManager;
@@ -29,7 +30,16 @@ namespace Teamr.Users.Commands
 			this.userContext = userContext;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public static FormLink Button()
+		{
+			return new FormLink
+			{
+				Label = "Change password",
+				Form = typeof(ChangePassword).GetFormId()
+			};
+		}
+
+		public override async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
 			var user = await this.userManager.FindByNameAsync(this.userContext.User.UserName);
 
@@ -42,29 +52,8 @@ namespace Teamr.Users.Commands
 
 			return new Response
 			{
-				Result = Alert.Success("Password was changed successfully."),
-				Metadata = new MyFormResponseMetadata
-				{
-					FunctionsToRun = new List<ClientFunctionMetadata>
-					{
-						new GrowlNotification("Password was changed successfully.", GrowlNotification.Styles.Success).GetClientFunctionMetadata()
-					}
-				}
-			};
-		}
-
-		public UserAction GetPermission()
-		{
-			return UserActions.ManageMyAccount;
-		}
-
-		public static FormLink Button()
-		{
-			return new FormLink
-			{
-				Label = "Change password",
-				Form = typeof(ChangePassword).GetFormId()
-			};
+				Result = Alert.Success("Password was changed successfully.")
+			}.WithGrowlMessage("Password was changed successfully.", GrowlNotificationStyle.Success);
 		}
 
 		public class Response : FormResponse<MyFormResponseMetadata>
@@ -74,11 +63,12 @@ namespace Teamr.Users.Commands
 
 		public class Request : IRequest<Response>
 		{
-			[InputField(Required = true, Label = "Current password")]
-			public Password OldPassword { get; set; }
-
-			[InputField(Required = true, Label = "New password")]
+			[InputField(Required = true, Label = "New password", OrderIndex = 10)]
+			[TeamRPasswordInputConfig(true)]
 			public Password NewPassword { get; set; }
+
+			[InputField(Required = true, Label = "Current password", OrderIndex = 0)]
+			public Password OldPassword { get; set; }
 		}
 	}
 }

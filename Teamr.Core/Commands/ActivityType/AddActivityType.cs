@@ -1,23 +1,21 @@
 ﻿namespace Teamr.Core.Commands.ActivityType
 {
 	using System.Collections.Generic;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.CustomProperties;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.CustomProperties;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "add-activity-type", Label = "Add activity type",
-		SubmitButtonLabel = "Save changes")]
-	public class AddActivityType : IMyForm<AddActivityType.Request, AddActivityType.Response>, ISecureHandler
+	[MyForm(Id = "add-activity-type", Label = "Add activity type", SubmitButtonLabel = "Save changes")]
+	[Secure(typeof(CoreActions), nameof(CoreActions.ManageActivityTypes))]
+	public class AddActivityType : MyForm<AddActivityType.Request, AddActivityType.Response>
 	{
 		private readonly CoreDbContext context;
 		private readonly UserContext userContext;
@@ -28,23 +26,6 @@
 			this.userContext = userContext;
 		}
 
-		public Response Handle(Request message)
-		{
-			if (message.Points != null)
-			{
-				var activityType = new ActivityType(message.Name, this.userContext.User.UserId, message.Unit, message.Points.Value, message.Remarks?.Value, message.Tag);
-				this.context.ActivityTypes.Add(activityType);
-				this.context.SaveChanges();
-			}
-
-			return new Response();
-		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ManageActivityTypes;
-		}
-
 		public static FormLink Button()
 		{
 			return new FormLink
@@ -52,6 +33,25 @@
 				Label = "Add",
 				Form = typeof(AddActivityType).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>()
+			};
+		}
+
+		protected override Response Handle(Request message)
+		{
+			var activityType = new ActivityType(
+				message.Name,
+				this.userContext.User.UserId,
+				message.Unit,
+				message.Points.Value,
+				message.Remarks?.Value,
+				message.Tag);
+
+			this.context.ActivityTypes.Add(activityType);
+			this.context.SaveChanges();
+
+			return new Response
+			{
+				Id = activityType.Id
 			};
 		}
 
@@ -74,8 +74,9 @@
 			public string Unit { get; set; }
 		}
 
-		public class Response : FormResponse<MyFormResponseMetadata>
+		public class Response : MyFormResponse
 		{
+			public int Id { get; set; }
 		}
 	}
 }

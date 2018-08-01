@@ -2,25 +2,23 @@ namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Linq;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Menus;
 	using Teamr.Core.Pickers;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "activities-log", PostOnLoad = true, Label = "Activites log", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
-	public class ActivitiesLog : IForm<ActivitiesLog.Request, ActivitiesLog.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
+	public class ActivitiesLog : MyForm<ActivitiesLog.Request, ActivitiesLog.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -29,7 +27,7 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var query = this.dbContext.Activities
 				.Include(a => a.ActivityType)
@@ -61,11 +59,6 @@ namespace Teamr.Core.Commands.Activity
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewActivities;
-		}
-
 		public class Request : IRequest<Response>
 		{
 			[TypeaheadInputField(typeof(ActivityTypeTypeaheadRemoteSource), Label = "Activity Type")]
@@ -80,7 +73,7 @@ namespace Teamr.Core.Commands.Activity
 			public MultiSelect<int> UsersId { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[PaginatedData(nameof(Request.Paginator), Label = "")]
 			public PaginatedData<Activity> Activities { get; set; }
@@ -97,7 +90,7 @@ namespace Teamr.Core.Commands.Activity
 				this.ActivityType = t.ActivityType.Name;
 				this.Quantity = t.Quantity;
 				this.Points = t.Points;
-				this.User = t.CreatedByUser.GetUserProfileLink();
+				this.User = UserProfile.Button(t.CreatedByUser.Id, t.CreatedByUser.Name);
 			}
 
 			[OutputField(OrderIndex = 2, Label = "Activity type")]

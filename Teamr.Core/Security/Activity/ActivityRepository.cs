@@ -1,9 +1,9 @@
 namespace Teamr.Core.Security.Activity
 {
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Security;
 
 	[EntityRepository(EntityType = typeof(Activity))]
 	public class ActivityRepository : IEntityRepository

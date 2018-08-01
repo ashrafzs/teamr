@@ -1,10 +1,11 @@
-namespace Teamr.Core.Security
+namespace TeamR.Core.Security
 {
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	public class CoreRoles : RoleContainer
 	{
-		public static readonly SystemRole SysAdmin = new SystemRole(nameof(SysAdmin));
+		public static readonly SystemRole Admin = new SystemRole(nameof(Admin));
 		public static readonly SystemRole Member = new SystemRole(nameof(Member));
+		public static readonly SystemRole AuthenticatedUser = new SystemRole(nameof(AuthenticatedUser));
 	}
 }

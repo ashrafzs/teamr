@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.User
+namespace TeamR.Infrastructure.User
 {
 	using Newtonsoft.Json;
 

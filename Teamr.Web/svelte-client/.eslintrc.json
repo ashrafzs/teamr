@@ -17,8 +17,17 @@
 		"sourceType": "module"
 	},
 	"rules": {
+		"no-plusplus": [
+			"error",
+			{
+				"allowForLoopAfterthoughts": true
+			}
+		],
 		"no-continue": "off",
-		"arrow-parens": ["error", "as-needed"],
+		"arrow-parens": [
+			"error",
+			"as-needed"
+		],
 		"brace-style": [
 			"error",
 			"stroustrup",
@@ -33,7 +42,10 @@
 			"error",
 			"after"
 		],
-		"function-paren-newline": ["error", "multiline"],
+		"function-paren-newline": [
+			"error",
+			"multiline"
+		],
 		"no-var": "error",
 		"import/no-unresolved": [
 			"warn",

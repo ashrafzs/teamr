@@ -3,7 +3,8 @@ namespace Teamr.Core.Security.Leave
 	using System.Collections.Generic;
 	using CPermissions;
 	using Teamr.Core.Domain;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.User;
 
 	public class LeaveRoleChecker : IRoleChecker<UserContext, LeaveRole, Leave>
 	{
@@ -14,7 +15,7 @@ namespace Teamr.Core.Security.Leave
 				yield return LeaveRole.Owner;
 			}
 
-			if (user.HasRole(CoreRoles.SysAdmin))
+			if (user.HasRole(CoreRoles.Admin))
 			{
 				yield return LeaveRole.Viewer;
 			}

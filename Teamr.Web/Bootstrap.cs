@@ -1,7 +1,7 @@
-namespace Teamr.Web
+namespace TeamR.Web
 {
 	using StructureMap.TypeRules;
-	using Teamr.Infrastructure;
+	using TeamR.Infrastructure;
 
 	public class Bootstrap : IAssemblyBootstrapper
 	{

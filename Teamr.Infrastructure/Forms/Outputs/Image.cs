@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.Outputs
+namespace TeamR.Infrastructure.Forms.Outputs
 {
 	using UiMetadataFramework.Core.Binding;
 

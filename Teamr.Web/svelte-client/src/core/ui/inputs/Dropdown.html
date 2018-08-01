@@ -1,35 +1,33 @@
-{{#if options != null }}
+{#if options != null }
 <select
-	id="{{id}}"
+	id="{id}"
 	bind:value="field.selected"
-	required="{{field.metadata.required}}"
-	tabindex="{{tabindex}}"
+	required="{field.metadata.required}"
+	tabindex="{tabindex}"
 	on:change="onChange()"
 	class="form-control">
 	<option value=""></option>
-	{{#each options as option}}
-	<option value="{{option.value}}">{{option.label}}</option>
-	{{/each}}
+	{#each options as option}
+	<option value="{option.value}">{option.label}</option>
+	{/each}
 </select>
-{{/if}}
+{/if}
 
 <script>
 	function mapToTypeaheadItems(items) {
-		return items.map(t => {
-			return {
-				label: t.label,
-				value: t.value.toString()
-			};
-		});
+		return items.map(t => ({
+			label: t.label,
+			value: t.value.toString()
+		}));
 	}
 
 	function buildFilter(parentForm, parameters) {
-		var promise;
+		let promise;
 
-		var filter = {};
+		const filter = {};
 		if (parameters != null && parameters.length > 0) {
-			promise = parentForm.get("form").getSerializedInputValues().then(data => {
-				for (let p of parameters) {
+			promise = parentForm.get().form.getSerializedInputValues().then(data => {
+				for (const p of parameters) {
 					filter[p] = data[p];
 				}
 
@@ -45,17 +43,16 @@
 
 	export default {
 		oncreate() {
-			var field = this.get("field");
-			var source = field.metadata.customProperties.source;
-			var items = field.metadata.customProperties.items;
+			const { field } = this.get();
+			const { source, items } = field.metadata.customProperties;
 
 			if (items != null) {
 				this.set({ options: items });
 			}
 			else if (typeof (source) === "string") {
-				var parameters = field.metadata.customProperties.parameters;
-				var app = this.get("app");
-				var parentForm = this.get("form");
+				const { parameters } = field.metadata.customProperties;
+				const { app } = this.get();
+				const parentForm = this.get().form;
 
 				buildFilter(parentForm, parameters).then(filter => {
 					app.server.postForm(source, filter).then(data => {
@@ -66,13 +63,13 @@
 		},
 		methods: {
 			onChange() {
-				this.get("field").initFromSelected();
-				this.get("form").fireAndBubbleUp('input:changed', {
-					app: this.get('app'),
-					form: this.get('form'),
+				this.get().field.initFromSelected();
+				this.get().form.fireAndBubbleUp("input:changed", {
+					app: this.get().app,
+					form: this.get().form,
 					input: this
 				});
 			}
 		}
-	}
+	};
 </script>

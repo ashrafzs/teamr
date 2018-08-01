@@ -3,25 +3,23 @@ namespace Teamr.Core.Commands.Activity
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "user-day-report", PostOnLoad = true, Label = "User day report", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
-	public class UserDayReport : IForm<UserDayReport.Request, UserDayReport.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewReport))]
+	public class UserDayReport : MyForm<UserDayReport.Request, UserDayReport.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
@@ -33,7 +31,7 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var query = this.dbContext.Activities
 				.Include(a => a.ActivityType)
@@ -48,12 +46,7 @@ namespace Teamr.Core.Commands.Activity
 				TotalPoints = query.Sum(s => s.Points)
 			};
 		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewReport;
-		}
-
+		
 		public class Request : IRequest<Response>
 		{
 			[InputField(OrderIndex = 0, Required = true)]
@@ -62,7 +55,7 @@ namespace Teamr.Core.Commands.Activity
 			public Paginator Paginator { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 1, Label = "Total points")]
 			public decimal TotalPoints { get; set; }

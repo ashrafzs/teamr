@@ -1,7 +1,7 @@
-namespace Teamr.Infrastructure.Forms.Typeahead
+namespace TeamR.Infrastructure.Forms.Typeahead
 {
 	using MediatR;
-	using Teamr.Infrastructure.Forms.Inputs;
+	using TeamR.Infrastructure.Forms.Inputs;
 
 	public class TypeaheadRequest<T> : IRequest<TypeaheadResponse<T>>
 	{

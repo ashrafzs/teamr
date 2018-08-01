@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Messages
+namespace TeamR.Infrastructure.Messages
 {
 	using System.Threading.Tasks;
 

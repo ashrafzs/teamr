@@ -1,4 +1,4 @@
-namespace Teamr.Web.Controllers
+namespace TeamR.Web.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
 

@@ -1,25 +1,23 @@
 namespace Teamr.Core.Commands.ActivityType
 {
 	using System;
-	using CPermissions;
+	using System.Linq;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Menu = CoreMenus.Activity, Id = "activity-types", Label = "Activity types", PostOnLoad = true)]
-	public class ActivityTypes : IForm<ActivityTypes.Request, ActivityTypes.Response>,
-		ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivityTypes))]
+	public class ActivityTypes : MyForm<ActivityTypes.Request, ActivityTypes.Response>
 	{
 		private readonly CoreDbContext context;
 
@@ -28,12 +26,14 @@ namespace Teamr.Core.Commands.ActivityType
 			this.context = context;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var activityTypes = this.context.ActivityTypes
-				.Include(i => i.User)
+				.AsQueryable()
+				.Include(t => t.User)
 				.AsNoTracking()
 				.Paginate(t => t, message.ActivityTypePaginator);
+
 			return new Response
 			{
 				Results = activityTypes.Transform(s => new ActivityTypeItem
@@ -50,12 +50,7 @@ namespace Teamr.Core.Commands.ActivityType
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewActivityTypes;
-		}
-
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 0)]
 			public ActionList Actions { get; set; }

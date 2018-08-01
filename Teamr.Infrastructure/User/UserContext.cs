@@ -1,9 +1,9 @@
-namespace Teamr.Infrastructure.User
+namespace TeamR.Infrastructure.User
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	/// <summary>
 	/// Represents information about a user executing the code.
@@ -39,9 +39,14 @@ namespace Teamr.Infrastructure.User
 			return this.Roles.Any(t => t.Equals(role.Name, StringComparison.OrdinalIgnoreCase));
 		}
 
+		public bool HasRole(string role)
+		{
+			return this.Roles.Any(t => t.Equals(role, StringComparison.OrdinalIgnoreCase));
+		}
+
 		public override string ToString()
 		{
-			return this.User?.UserName;
+			return this.User?.UserName ?? string.Empty;
 		}
 	}
 }

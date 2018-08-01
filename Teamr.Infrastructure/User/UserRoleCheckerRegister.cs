@@ -1,17 +1,23 @@
-namespace Teamr.Infrastructure.User
+namespace TeamR.Infrastructure.User
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	/// <summary>
 	/// Represents a collection of <see cref="IUserRoleChecker"/> objects.
 	/// </summary>
 	public class UserRoleCheckerRegister
 	{
-		private readonly List<IUserRoleChecker> managers = new List<IUserRoleChecker>();
+		private readonly DependencyInjectionContainer dependencyInjectionContainer;
+		private readonly List<Type> managers = new List<Type>();
+
+		public UserRoleCheckerRegister(DependencyInjectionContainer dependencyInjectionContainer)
+		{
+			this.dependencyInjectionContainer = dependencyInjectionContainer;
+		}
 
 		/// <summary>
 		/// Gets dynamic roles for the given <see cref="UserContextData"/> instance.
@@ -20,10 +26,19 @@ namespace Teamr.Infrastructure.User
 		/// <returns>List of system roles that the user has.</returns>
 		public IEnumerable<SystemRole> GetDynamicRoles(UserContextData userContextData)
 		{
-			return this.managers
-				.SelectMany(t => t.GetDynamicRoles(userContextData))
-				.Distinct()
-				.ToArray();
+			var roleCheckers = this.managers
+				.Select(t => this.dependencyInjectionContainer.GetInstance(t))
+				.Cast<IUserRoleChecker>();
+
+			List<SystemRole> results = new List<SystemRole>();
+
+			foreach (var roleChecker in roleCheckers)
+			{
+				var rolesToAdd = roleChecker.GetDynamicRoles(userContextData).ToList();
+				results.AddRange(rolesToAdd);
+			}
+
+			return results.Distinct().ToArray();
 		}
 
 		/// <summary>
@@ -37,9 +52,7 @@ namespace Teamr.Infrastructure.User
 				.Where(t => t.IsClass && !t.IsAbstract)
 				.Where(t => t.ImplementsAtLeastOneInterface(typeof(IUserRoleChecker)))
 				// Make sure not to register same item twice.
-				.Where(t => this.managers.All(f => f.GetType() != t))
-				.Select(Activator.CreateInstance)
-				.Cast<IUserRoleChecker>()
+				.Where(t => this.managers.All(f => f != t))
 				.ToList();
 
 			this.managers.AddRange(roleDecorators);

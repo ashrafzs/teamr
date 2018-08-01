@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Security
+namespace TeamR.Infrastructure.Security
 {
 	public interface ISecureHandlerRequest
 	{

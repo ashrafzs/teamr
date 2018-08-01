@@ -1,4 +1,4 @@
-:setvar UserName Teamr
+:setvar UserName TeamR
 
 use [master]
 go

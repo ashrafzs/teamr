@@ -1,8 +1,8 @@
-﻿namespace Unops.Spgs.Core.DataAccess.Mapping
+﻿namespace TeamR.Core.DataAccess
 {
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.EntityFrameworkCore.Metadata.Builders;
-	using Teamr.Core.Domain;
+	using TeamR.Core.Domain;
 
 	public class RegisteredUserMap : IEntityTypeConfiguration<RegisteredUser>
 	{

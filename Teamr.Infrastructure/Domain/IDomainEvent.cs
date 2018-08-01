@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Domain
+namespace TeamR.Infrastructure.Domain
 {
 	public interface IDomainEvent
 	{

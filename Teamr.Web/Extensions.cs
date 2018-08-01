@@ -1,4 +1,4 @@
-namespace Teamr.Web
+namespace TeamR.Web
 {
 	using System.IO;
 	using System.Linq;
@@ -42,8 +42,7 @@ namespace Teamr.Web
 
 		public static int? ToInt(this string value)
 		{
-			int result;
-			if (!int.TryParse(value, out result))
+			if (!int.TryParse(value, out var result))
 			{
 				return null;
 			}

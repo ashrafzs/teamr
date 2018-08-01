@@ -1,4 +1,4 @@
-namespace Teamr.Filing.Forms.Inputs
+namespace TeamR.Filing.Forms.Inputs
 {
 	using UiMetadataFramework.Core.Binding;
 

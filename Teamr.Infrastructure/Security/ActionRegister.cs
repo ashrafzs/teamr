@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Security
+namespace TeamR.Infrastructure.Security
 {
 	using System;
 	using System.Collections.Concurrent;
@@ -26,6 +26,17 @@ namespace Teamr.Infrastructure.Security
 		{
 			this.registeredRoles.TryGetValue(role, out var actions);
 			return actions ?? new List<UserAction>().AsEnumerable();
+		}
+
+		/// <summary>
+		/// Attempts to get <see cref="SystemRole"/> given its name.
+		/// </summary>
+		/// <param name="role">Name of the role. Case-sensitive.</param>
+		/// <returns><see cref="SystemRole"/> instance or null if specified role was not registered.</returns>
+		public SystemRole GetRoleByName(string role)
+		{
+			this.roles.TryGetValue(role, out var result);
+			return result;
 		}
 
 		/// <summary>
@@ -82,17 +93,6 @@ namespace Teamr.Infrastructure.Security
 					this.roles.TryAdd(role.Name, role);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Attempts to get <see cref="SystemRole"/> given its name.
-		/// </summary>
-		/// <param name="role">Name of the role. Case-sensitive.</param>
-		/// <returns><see cref="SystemRole"/> instance or null if specified role was not registered.</returns>
-		public SystemRole GetRoleByName(string role)
-		{
-			this.roles.TryGetValue(role, out var result);
-			return result;
 		}
 	}
 }

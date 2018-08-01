@@ -1,23 +1,26 @@
 namespace Teamr.Core.Commands.Leave
 {
 	using System;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
 	using Teamr.Core.Pickers;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(PostOnLoad = true, Id = "add-leave", Label = "Add leave")]
-	public class AddLeave : IMyAsyncForm<AddLeave.Request, AddLeave.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.AddLeave))]
+	public class AddLeave : MyAsyncForm<AddLeave.Request, AddLeave.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
@@ -28,21 +31,16 @@ namespace Teamr.Core.Commands.Leave
 			this.userContext = userContext;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
-			var leaveType = await this.dbContext.LeaveTypes.FindOrExceptionAsync(message.LeaveTypeId.Value);
-			var leave = new Leave(this.userContext.User.UserId, leaveType, message.Notes, message.ScheduledOn);
+			var leaveType = await this.dbContext.LeaveTypes.FindOrExceptionAsync(request.LeaveTypeId.Value);
+			var leave = new Leave(this.userContext.User.UserId, leaveType, request.Notes, request.ScheduledOn);
 			this.dbContext.Leaves.Add(leave);
-			await this.dbContext.SaveChangesAsync();
+			await this.dbContext.SaveChangesAsync(cancellationToken);
 
 			return new Response();
 		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.AddLeave;
-		}
-
+		
 		public static FormLink Button()
 		{
 			return new FormLink

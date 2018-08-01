@@ -1,25 +1,28 @@
-namespace Teamr.Users.Commands
+namespace TeamR.Users.Commands
 {
-	using System.ComponentModel.DataAnnotations;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using System.Web;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.Extensions.Options;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Configuration;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Outputs;
-	using Teamr.Infrastructure.Messages;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Configuration;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Outputs;
+	using TeamR.Infrastructure.Messages;
+	using TeamR.Users.Security;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
+	using TeamR.Infrastructure.Forms.CustomProperties;
+	using TeamR.Infrastructure.Forms.Inputs;
+	using TeamR.Infrastructure.Security;
 
 	[MyForm(Id = "forgot-password", Label = "Forgot password", SubmitButtonLabel = "Reset my password", Menu = UserMenus.TopLevel)]
-	public class ForgotPassword : IAsyncForm<ForgotPassword.Request, ForgotPassword.Response>, ISecureHandler
+	[Secure(typeof(UserActions), nameof(UserActions.Login))]
+	[CssClass(UiFormConstants.CardLayout)]
+	public class ForgotPassword : AsyncForm<ForgotPassword.Request, ForgotPassword.Response>
 	{
 		private readonly AppConfig appConfig;
 		private readonly IEmailSender emailSender;
@@ -32,15 +35,13 @@ namespace Teamr.Users.Commands
 			this.appConfig = appConfig.Value;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public override async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
-			var user = new EmailAddressAttribute().IsValid(message.Email)
-				? await this.userManager.FindByEmailAsync(message.Email)
-				: await this.userManager.FindByNameAsync(message.Email);
+			var user = await this.userManager.FindByEmailAsync(message.Email?.Value);
 
 			if (user == null)
 			{
-				throw new BusinessException("Invalid username and/or password.");
+				throw new BusinessException("This email is not registered in the system.");
 			}
 
 			var token = await this.userManager.GeneratePasswordResetTokenAsync(user);
@@ -60,11 +61,6 @@ namespace Teamr.Users.Commands
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return UserActions.Login;
-		}
-
 		public class Response : FormResponse
 		{
 			public Alert Result { get; set; }
@@ -72,8 +68,8 @@ namespace Teamr.Users.Commands
 
 		public class Request : IRequest<Response>
 		{
-			[OutputField(Label = "Your email address")]
-			public string Email { get; set; }
+			[InputField(Label = "Your email address", Required = true)]
+			public Email Email { get; set; }
 		}
 	}
 }

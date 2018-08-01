@@ -1,4 +1,4 @@
-namespace Teamr.Core.Notification
+namespace TeamR.Core.Notification
 {
 	using System.Collections.Generic;
 	using System.Linq;
@@ -6,7 +6,7 @@ namespace Teamr.Core.Notification
 	public class NotificationCategory
 	{
 		private static readonly List<NotificationCategory> List;
-		public static NotificationCategory SomeThing = new NotificationCategory(1, "SomeThing", "SomeThing");
+		public static NotificationCategory Activity = new NotificationCategory(4, nameof(Activity), nameof(Activity));
 
 		static NotificationCategory()
 		{
@@ -27,10 +27,5 @@ namespace Teamr.Core.Notification
 		public int Id { get; }
 		public string Name { get; }
 		public string Tag { get; }
-
-		public static NotificationCategory Parse(int? category)
-		{
-			return List.SingleOrDefault(t => t.Id == category);
-		}
 	}
 }

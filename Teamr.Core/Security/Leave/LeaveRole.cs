@@ -1,6 +1,6 @@
 namespace Teamr.Core.Security.Leave
 {
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	public class LeaveRole : Role
 	{

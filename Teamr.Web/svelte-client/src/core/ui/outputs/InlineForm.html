@@ -5,19 +5,18 @@
 
 	export default {
 		oncreate() {
-			var app = this.get("app");
-			var field = this.get("field");
-			var parentFormComponent = this.get("parent");
+			const { app, field } = this.get();
+			const parentFormComponent = this.get().parent;
 
-			var formInstance = app.getFormInstance(field.data.form, true);	
-			
+			const formInstance = app.getFormInstance(field.data.form, true);
+
 			formInstance.initializeInputFields(field.data.inputFieldValues).then(() => {
-				var f = new FormComponent({
+				const f = new FormComponent({
 					target: this.refs.container,
 					data: {
 						metadata: formInstance.metadata,
 						form: formInstance,
-						app: app,
+						app,
 						useUrl: false,
 						parent: parentFormComponent
 					}
@@ -25,19 +24,19 @@
 
 				f.init();
 
-				this.set({current: f});
+				this.set({ current: f });
 			});
 
-			this.get("parent").on("destroy", () => this.destroy());
+			this.get().parent.on("destroy", () => this.destroy());
 		},
 		ondestroy() {
-			var form = this.get("current");
-			
-			if (form != null){
+			const form = this.get().current;
+
+			if (form != null) {
 				form.destroy();
 			}
 		}
-	}
+	};
 </script>
 
 <style>
@@ -48,14 +47,16 @@
 		margin: 30px 0;
 		border-radius: 5px;
 	}
-	.inline-form .form-header{
+
+	.inline-form .form-header {
 		border-bottom: none;
 		padding-top: 0;
 		padding-bottom: 0;
 		background: #eee;
 	}
+
 	.inline-form .response {
-		margin-top:0;
+		margin-top: 0;
 		padding: 10px 15px;
 	}
 
@@ -65,13 +66,13 @@
 		padding: 10px 15px 15px;
 	}
 
-	.inline-form .response .form-header{
+	.inline-form .response .form-header {
 		padding-top: 10px;
-    	border-bottom: 1px solid #bbd2d6;
-    	background-color: #fff
+		border-bottom: 1px solid #bbd2d6;
+		background-color: #fff;
 	}
 
-	.inline-form .response h2{
+	.inline-form .response h2 {
 		font-size: 2rem;
 	}
 </style>

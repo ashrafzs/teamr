@@ -1,7 +1,7 @@
-namespace Teamr.Users
+namespace TeamR.Users
 {
 	using System.Reflection;
-	using Teamr.Infrastructure;
+	using TeamR.Infrastructure;
 
 	public class Bootstrap : IAssemblyBootstrapper
 	{

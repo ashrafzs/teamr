@@ -1,4 +1,4 @@
-namespace Teamr.Users
+namespace TeamR.Users
 {
 	using Microsoft.AspNetCore.Identity;
 

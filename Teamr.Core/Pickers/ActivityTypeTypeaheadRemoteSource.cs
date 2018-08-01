@@ -2,14 +2,14 @@
 {
 	using System.Linq;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Typeahead;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Typeahead;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core.Binding;
 
 	[Form]
-	public class ActivityTypeTypeaheadRemoteSource : ITypeaheadRemoteSource<ActivityTypeTypeaheadRemoteSource.Request, int>
+	public class ActivityTypeTypeaheadRemoteSource : TypeaheadRemoteSource<ActivityTypeTypeaheadRemoteSource.Request, int>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -18,7 +18,7 @@
 			this.dbContext = dbContext;
 		}
 
-		public TypeaheadResponse<int> Handle(Request message)
+		protected override TypeaheadResponse<int> Handle(Request message)
 		{
 			var types = message.GetByIds
 				? this.dbContext.ActivityTypes.Where(t => message.Ids.Items.Contains(t.Id))

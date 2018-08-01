@@ -1,11 +1,13 @@
-namespace Teamr.Users.Pickers
+namespace TeamR.Users.Pickers
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Input.Typeahead;
+	using TeamR.Users.Security;
 
+	[Secure(typeof(UserActions), nameof(UserActions.ManageUsers))]
 	public class RoleTypeaheadInlineSource : ITypeaheadInlineSource<string>
 	{
 		private readonly ActionRegister actionRegister;

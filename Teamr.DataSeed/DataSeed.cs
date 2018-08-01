@@ -1,13 +1,13 @@
-namespace Teamr.DataSeed
+namespace TeamR.DataSeed
 {
 	using System.Linq;
 	using System.Threading.Tasks;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users;
-	using Teamr.Users.Security;
+	using Microsoft.EntityFrameworkCore.Internal;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Users;
 
 	public class DataSeed
 	{
@@ -25,16 +25,16 @@ namespace Teamr.DataSeed
 			this.actionRegister = actionRegister;
 		}
 
-		public async Task Seed(bool productionEnvironment = false)
+		public async Task<ApplicationUser> EnsureUser(string email, string password, params SystemRole[] roles)
 		{
-			if (!productionEnvironment)
-			{
-				await this.SeedUsers();
-			}
-		}
+			var dynamicRoles = roles.Where(t => t.IsDynamicallyAssigned).ToList();
 
-		private async Task<ApplicationUser> EnsureUser(string email, string password, params SystemRole[] roles)
-		{
+			if (dynamicRoles.Any())
+			{
+				throw new BusinessException(
+					$"Cannot assign dynamic roles {dynamicRoles.Select(t => $"'{t.Name}'").Join()} to a user.");
+			}
+
 			await this.userManager.CreateAsync(new ApplicationUser
 			{
 				UserName = email,
@@ -51,14 +51,22 @@ namespace Teamr.DataSeed
 			return user;
 		}
 
-		private async Task SeedUsers()
+		/// <summary>
+		/// Seeds only the minimum required data, without which the system won't function
+		/// (e.g. - user roles).
+		/// </summary>
+		/// <returns></returns>
+		public async Task SeedRequiredData()
+		{
+			await this.SeedRoles();
+		}
+
+		private async Task SeedRoles()
 		{
 			var manuallyAssignableSystemRoles = this.actionRegister.GetSystemRoles()
 				.Where(t => !t.IsDynamicallyAssigned).Select(t => t.Name);
 
 			await this.roleManager.EnsureRoles(manuallyAssignableSystemRoles);
-
-			await this.EnsureUser("admin@example.com", "Password1", UserManagementRoles.UserAdmin, CoreRoles.SysAdmin);
 		}
 	}
 }

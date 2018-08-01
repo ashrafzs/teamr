@@ -1,6 +1,6 @@
 namespace Teamr.Core.Security.Activity
 {
-	using Teamr.Infrastructure.Security;
+	using TeamR.Infrastructure.Security;
 
 	public class ActivityRole : Role
 	{

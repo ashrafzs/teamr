@@ -1,25 +1,22 @@
 namespace Teamr.Core.Commands.LeaveType
 {
 	using System;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Menu = CoreMenus.Leave, Id = "leave-types", Label = "Leave types", PostOnLoad = true)]
-	public class LeaveTypes : IForm<LeaveTypes.Request, LeaveTypes.Response>,
-		ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewLeaveTypes))]
+	public class LeaveTypes : MyForm<LeaveTypes.Request, LeaveTypes.Response>
 	{
 		private readonly CoreDbContext context;
 
@@ -28,12 +25,13 @@ namespace Teamr.Core.Commands.LeaveType
 			this.context = context;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var leaveTypes = this.context.LeaveTypes
 				.Include(i => i.User)
 				.AsNoTracking()
 				.Paginate(t => t, message.LeaveTypePaginator);
+
 			return new Response
 			{
 				Results = leaveTypes.Transform(s => new LeaveTypeItem
@@ -48,13 +46,8 @@ namespace Teamr.Core.Commands.LeaveType
 				Actions = new ActionList(AddLeaveType.Button())
 			};
 		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewLeaveTypes;
-		}
-
-		public class Response : FormResponse
+		
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 0)]
 			public ActionList Actions { get; set; }

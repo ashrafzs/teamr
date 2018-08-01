@@ -6,9 +6,14 @@ namespace Teamr.Core.Domain
 {
 	using System;
 	using Teamr.Core.Commands.Activity;
+	using TeamR.Core.Domain;
+	using TeamR.Core.Filing;
+	using TeamR.Filing;
+	using TeamR.Infrastructure.Domain;
 	using UiMetadataFramework.Basic.Output;
 
-	public class Activity
+	[FileContainer(ActivityFileManager.Key)]
+	public class Activity : DomainEntityWithKeyInt32
 	{
 		private Activity()
 		{
@@ -35,7 +40,6 @@ namespace Teamr.Core.Domain
 
 		public DateTime CreatedOn { get; private set; }
 
-		public int Id { get; set; }
 		public string Notes { get; private set; }
 		public DateTime? PerformedOn { get; private set; }
 		public decimal Points { get; private set; }
@@ -52,11 +56,6 @@ namespace Teamr.Core.Domain
 			this.Notes = notes;
 		}
 
-		public void EditQuantity(decimal quantity)
-		{
-			this.Quantity = quantity;
-		}
-
 		public void EditPerformedDate(DateTime performedOn)
 		{
 			this.PerformedOn = performedOn;
@@ -67,13 +66,18 @@ namespace Teamr.Core.Domain
 			this.Points = points * this.Quantity;
 		}
 
+		public void EditQuantity(decimal quantity)
+		{
+			this.Quantity = quantity;
+		}
+
 		public ActionList GetActions(bool canManage)
 		{
 			if (canManage)
 			{
 				var result = new ActionList();
 
-				if(this.CreatedOn.AddDays(5) > DateTime.UtcNow || this.PerformedOn == null  || this.PerformedOn?.AddDays(5) > DateTime.UtcNow)
+				if (this.CreatedOn.AddDays(5) > DateTime.UtcNow || this.PerformedOn == null || this.PerformedOn?.AddDays(5) > DateTime.UtcNow)
 				{
 					result.Actions.Add(EditActivity.Button(this.Id));
 					result.Actions.Add(DeleteActivity.Button(this.Id));
@@ -83,6 +87,7 @@ namespace Teamr.Core.Domain
 				{
 					result.Actions.Add(PerformActivity.Button(this.Id));
 				}
+
 				return result;
 			}
 

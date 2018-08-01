@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.Outputs
+namespace TeamR.Infrastructure.Forms.Outputs
 {
 	using UiMetadataFramework.Core.Binding;
 
@@ -16,6 +16,11 @@ namespace Teamr.Infrastructure.Forms.Outputs
 		public string Message { get; set; }
 		public string Style { get; set; }
 
+		public static Alert Error(string heading, string message = null)
+		{
+			return new Alert(heading, message, "danger");
+		}
+
 		public static Alert Success(string heading, string message = null)
 		{
 			return new Alert(heading, message, "success");
@@ -24,11 +29,6 @@ namespace Teamr.Infrastructure.Forms.Outputs
 		public static Alert Warning(string heading, string message = null)
 		{
 			return new Alert(heading, message, "warning");
-		}
-
-		public static Alert Error(string heading, string message = null)
-		{
-			return new Alert(heading, message, "danger");
 		}
 	}
 }

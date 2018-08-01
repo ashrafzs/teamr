@@ -1,4 +1,4 @@
-namespace Teamr.Core.Notification
+namespace TeamR.Core.Notification
 {
 	public class NotificationRecipientType
 	{

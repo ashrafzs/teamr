@@ -1,4 +1,4 @@
-namespace Teamr.Infrastructure.Forms.Inputs
+namespace TeamR.Infrastructure.Forms.Inputs
 {
 	using System.Collections.Generic;
 	using UiMetadataFramework.Core.Binding;

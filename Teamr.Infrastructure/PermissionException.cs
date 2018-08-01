@@ -1,7 +1,7 @@
-namespace Teamr.Infrastructure
+namespace TeamR.Infrastructure
 {
 	using CPermissions;
-	using Teamr.Infrastructure.User;
+	using TeamR.Infrastructure.User;
 
 	public class PermissionException : PermissionException<UserContext>
 	{

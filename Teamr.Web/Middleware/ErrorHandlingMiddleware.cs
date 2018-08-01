@@ -1,4 +1,4 @@
-namespace Teamr.Web.Middleware
+namespace TeamR.Web.Middleware
 {
 	using System;
 	using System.Net;

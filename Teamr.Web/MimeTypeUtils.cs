@@ -1,4 +1,4 @@
-namespace Teamr.Web
+namespace TeamR.Web
 {
 	using System;
 	using System.Collections.Generic;

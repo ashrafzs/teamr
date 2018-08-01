@@ -1,16 +1,15 @@
-namespace Teamr.Users.Pickers
+namespace TeamR.Users.Pickers
 {
 	using System;
 	using System.Linq;
-	using CPermissions;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Typeahead;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Users.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Typeahead;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Users.Security;
 
-	public class RoleTypeaheadRemoteSource : ITypeaheadRemoteSource<RoleTypeaheadRemoteSource.Request, string>,
-		ISecureHandler
+	[Secure(typeof(UserActions), nameof(UserActions.ManageUsers))]
+	public class RoleTypeaheadRemoteSource : TypeaheadRemoteSource<RoleTypeaheadRemoteSource.Request, string>
 	{
 		private readonly ActionRegister actionRegister;
 
@@ -19,12 +18,7 @@ namespace Teamr.Users.Pickers
 			this.actionRegister = actionRegister;
 		}
 
-		public UserAction GetPermission()
-		{
-			return UserActions.ManageUsers;
-		}
-
-		public TypeaheadResponse<string> Handle(Request message)
+		protected override TypeaheadResponse<string> Handle(Request message)
 		{
 			var manuallyAssignableRoles = this.actionRegister.GetSystemRoles()
 				.Where(t => t.IsDynamicallyAssigned == false);

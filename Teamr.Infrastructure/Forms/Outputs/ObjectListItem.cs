@@ -1,9 +1,18 @@
-namespace Teamr.Infrastructure.Forms.Outputs
+namespace TeamR.Infrastructure.Forms.Outputs
 {
 	using UiMetadataFramework.Core.Binding;
 
 	public class ObjectListItem<T>
 	{
+		public ObjectListItem()
+		{
+		}
+
+		public ObjectListItem(T value)
+		{
+			this.Value = value;
+		}
+
 		[OutputField(Label = "")]
 		public T Value { get; set; }
 	}

@@ -2,22 +2,21 @@ namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Domain;
 	using Teamr.Core.Security.Activity;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Forms.Record;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Forms.Record;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "perform-activity", PostOnLoad = true, PostOnLoadValidation = false, Label = "Perform-activity")]
-	public class PerformActivity : IMyAsyncForm<PerformActivity.Request, PerformActivity.Response>,
-		IAsyncSecureHandler<Activity, PerformActivity.Request, PerformActivity.Response>
+	[Secure(typeof(ActivityAction), nameof(ActivityAction.Perform))]
+	public class PerformActivity : MyAsyncForm<PerformActivity.Request, PerformActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -26,18 +25,13 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public UserAction<Activity> GetPermission()
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
-			return ActivityAction.Perform;
-		}
-
-		public async Task<Response> Handle(Request message)
-		{
-			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == message.Id);
-			if (message.Operation?.Value == RecordRequestOperation.Post)
+			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == request.Id);
+			if (request.Operation?.Value == RecordRequestOperation.Post)
 			{
-				activity.EditPerformedDate(message.PerformedOn);
-				await this.dbContext.SaveChangesAsync();
+				activity.EditPerformedDate(request.PerformedOn);
+				await this.dbContext.SaveChangesAsync(cancellationToken);
 			}
 
 			return new Response

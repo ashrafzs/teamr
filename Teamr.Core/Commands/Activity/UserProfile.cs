@@ -3,19 +3,18 @@ namespace Teamr.Core.Commands.Activity
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "user-profile", PostOnLoad = true, Label = "User profile")]
-	public class UserProfile : IForm<UserProfile.Request, UserProfile.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewUserProfile))]
+	public class UserProfile : MyForm<UserProfile.Request, UserProfile.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -24,7 +23,20 @@ namespace Teamr.Core.Commands.Activity
 			this.dbContext = dbContext;
 		}
 
-		public Response Handle(Request message)
+		public static FormLink Button(int userId, string label)
+		{
+			return new FormLink
+			{
+				Label = label,
+				Form = typeof(UserProfile).GetFormId(),
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.UserId), userId }
+				}
+			};
+		}
+
+		protected override Response Handle(Request message)
 		{
 			var query = this.dbContext.Activities
 				.Where(a => a.CreatedByUserId == message.UserId && a.PerformedOn != null);
@@ -47,31 +59,13 @@ namespace Teamr.Core.Commands.Activity
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewUserProfile;
-		}
-
-		public static FormLink Button(int userId, string label)
-		{
-			return new FormLink
-			{
-				Label = label,
-				Form = typeof(UserProfile).GetFormId(),
-				InputFieldValues = new Dictionary<string, object>
-				{
-					{ nameof(Request.UserId), userId }
-				}
-			};
-		}
-
 		public class Request : IRequest<Response>
 		{
 			[InputField(OrderIndex = 0, Required = true, Hidden = true)]
 			public int UserId { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 2, Label = "Average per day")]
 			public decimal AveragePerDay { get; set; }

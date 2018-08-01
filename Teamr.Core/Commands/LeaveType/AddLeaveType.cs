@@ -1,23 +1,20 @@
 ﻿namespace Teamr.Core.Commands.LeaveType
 {
 	using System.Collections.Generic;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.Commands.Activity;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "add-leave-type", Label = "Add leave type",
-		SubmitButtonLabel = "Save changes")]
-	public class AddLeaveType : IMyForm<AddLeaveType.Request, AddLeaveType.Response>, ISecureHandler
+	[MyForm(Id = "add-leave-type", Label = "Add leave type", SubmitButtonLabel = "Save changes")]
+	[Secure(typeof(CoreActions), nameof(CoreActions.ManageLeaveTypes))]
+	public class AddLeaveType : MyForm<AddLeaveType.Request, AddLeaveType.Response>
 	{
 		private readonly CoreDbContext context;
 		private readonly UserContext userContext;
@@ -28,7 +25,7 @@
 			this.userContext = userContext;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			if (message.Quantity != null)
 			{
@@ -39,12 +36,7 @@
 
 			return new Response();
 		}
-
-		public UserAction GetPermission()
-		{
-			return CoreActions.ManageLeaveTypes;
-		}
-
+		
 		public static FormLink Button()
 		{
 			return new FormLink
@@ -70,7 +62,7 @@
 			public TextareaValue Remarks { get; set; }
 		}
 
-		public class Response : FormResponse<MyFormResponseMetadata>
+		public class Response : MyFormResponse
 		{
 		}
 	}

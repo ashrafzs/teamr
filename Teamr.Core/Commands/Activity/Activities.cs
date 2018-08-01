@@ -5,23 +5,22 @@ namespace Teamr.Core.Commands.Activity
 	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
 	using Teamr.Core.Domain;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
 	using Teamr.Core.Security.Activity;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	[MyForm(Id = "activites", PostOnLoad = true, Label = "Activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
-	public class Activities : IForm<Activities.Request, Activities.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
+	public class Activities : MyForm<Activities.Request, Activities.Response>
 	{
 		private readonly ActivityPermissionManager activityPermissionManager;
 		private readonly CoreDbContext dbContext;
@@ -40,7 +39,7 @@ namespace Teamr.Core.Commands.Activity
 			this.activityPermissionManager = activityPermissionManager;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var query = this.dbContext.Activities
 				.Include(a => a.ActivityType)
@@ -73,7 +72,7 @@ namespace Teamr.Core.Commands.Activity
 			public Paginator Paginator { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = -10)]
 			public ActionList Actions { get; set; }

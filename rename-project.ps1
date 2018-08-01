@@ -1,5 +1,5 @@
 # Set the name of your new app
-$myappname = 'Teamr';
+$myappname = 'TeamR';
 
 # Don't change the below code
 $toreplace = 'UimfApp';

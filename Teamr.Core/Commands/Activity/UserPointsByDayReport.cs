@@ -3,36 +3,33 @@ namespace Teamr.Core.Commands.Activity
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Menus;
-	using Teamr.Core.Security;
-	using Teamr.Infrastructure.EntityFramework;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
-	using Teamr.Infrastructure.User;
+	using TeamR.Core.DataAccess;
+	using TeamR.Core.Menus;
+	using TeamR.Core.Security;
+	using TeamR.Infrastructure.EntityFramework;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
+	using TeamR.Infrastructure.User;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
-	
 
 	[MyForm(Id = "user-points-by-day-report", PostOnLoad = true, Label = "User points by day report", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
-	public class UserPointsByDayReport : IForm<UserPointsByDayReport.Request, UserPointsByDayReport.Response>, ISecureHandler
+	[Secure(typeof(CoreActions), nameof(CoreActions.ViewUserPointsByDayReport))]
+	public class UserPointsByDayReport : MyForm<UserPointsByDayReport.Request, UserPointsByDayReport.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
 
-		public UserPointsByDayReport(UserContext userContext,CoreDbContext dbContext)
+		public UserPointsByDayReport(UserContext userContext, CoreDbContext dbContext)
 		{
 			this.userContext = userContext;
 			this.dbContext = dbContext;
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var allActivities = this.dbContext.Activities
 				.Include(a => a.ActivityType)
@@ -63,11 +60,6 @@ namespace Teamr.Core.Commands.Activity
 			};
 		}
 
-		public UserAction GetPermission()
-		{
-			return CoreActions.ViewUserPointsByDayReport;
-		}
-
 		public class Request : IRequest<Response>
 		{
 			[InputField(OrderIndex = 0)]
@@ -76,7 +68,7 @@ namespace Teamr.Core.Commands.Activity
 			public Paginator Paginator { get; set; }
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[PaginatedData(nameof(Request.Paginator), Label = "", OrderIndex = 20)]
 			public PaginatedData<Item> Activities { get; set; }

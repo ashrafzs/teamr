@@ -1,4 +1,4 @@
-namespace Teamr.Filing
+namespace TeamR.Filing
 {
 	using System.Collections.Generic;
 	using UiMetadataFramework.Basic.Output;

@@ -1,22 +1,20 @@
 namespace Teamr.Core.Commands.Leave
 {
 	using System.Collections.Generic;
+	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
-	using Teamr.Core.DataAccess;
-	using Teamr.Core.Domain;
 	using Teamr.Core.Security.Leave;
-	using Teamr.Infrastructure;
-	using Teamr.Infrastructure.Forms;
-	using Teamr.Infrastructure.Security;
+	using TeamR.Core.DataAccess;
+	using TeamR.Infrastructure;
+	using TeamR.Infrastructure.Forms;
+	using TeamR.Infrastructure.Security;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	[MyForm(Id = "delete-Leave", PostOnLoad = true)]
-	public class DeleteLeave : IMyAsyncForm<DeleteLeave.Request, DeleteLeave.Response>,
-		IAsyncSecureHandler<Leave, DeleteLeave.Request, DeleteLeave.Response>
+	[Secure(typeof(LeaveAction), nameof(LeaveAction.Delete))]
+	public class DeleteLeave : MyAsyncForm<DeleteLeave.Request, DeleteLeave.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
@@ -24,18 +22,13 @@ namespace Teamr.Core.Commands.Leave
 		{
 			this.dbContext = dbContext;
 		}
-
-		public UserAction<Leave> GetPermission()
+		
+		public override async Task<Response> Handle(Request request, CancellationToken cancellationToken)
 		{
-			return LeaveAction.Delete;
-		}
-
-		public async Task<Response> Handle(Request message)
-		{
-			var leave = await this.dbContext.Leaves.SingleOrExceptionAsync(t => t.Id == message.Id);
+			var leave = await this.dbContext.Leaves.SingleOrExceptionAsync(t => t.Id == request.Id);
 
 			this.dbContext.Leaves.Remove(leave);
-			await this.dbContext.SaveChangesAsync();
+			await this.dbContext.SaveChangesAsync(cancellationToken);
 
 			return new Response();
 		}
@@ -53,7 +46,7 @@ namespace Teamr.Core.Commands.Leave
 			}.WithAction(FormLinkActions.Run).WithCssClass("btn-danger btn-icon");
 		}
 
-		public class Response : FormResponse<MyFormResponseMetadata>
+		public class Response : MyFormResponse
 		{
 		}
 
