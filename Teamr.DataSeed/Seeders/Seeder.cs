@@ -10,7 +10,7 @@ namespace TeamR.DataSeed.Seeders
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.EntityFrameworkCore.Internal;
 	using Teamr.Core.Commands.ActivityType;
-	using Teamr.Core.Domain;
+	using Teamr.Core.Commands.LeaveType;
 	using TeamR.Core.DataAccess;
 	using TeamR.Core.Domain;
 	using TeamR.Infrastructure;
@@ -38,6 +38,11 @@ namespace TeamR.DataSeed.Seeders
 			set => this.Container.CurrentUserSession = value;
 		}
 
+		public ActivityTypeQuery ActivityType(string name)
+		{
+			return new ActivityTypeQuery(name, this.Container, this.Tracker);
+		}
+
 		public async Task<ActivityTypeQuery> AddActivityType(string name)
 		{
 			var activityName = this.Faker.Lorem.Word();
@@ -58,6 +63,26 @@ namespace TeamR.DataSeed.Seeders
 
 			this.Tracker.RegisterEntity(name, workItem);
 			return new ActivityTypeQuery(name, this.Container, this.Tracker);
+		}
+
+		public async Task<LeaveTypeQuery> AddLeaveType(string name, decimal quantity)
+		{
+			var command = new AddLeaveType.Request
+			{
+				Name = name,
+				Quantity = quantity,
+				Remarks = new TextareaValue
+				{
+					Value = this.Faker.Lorem.Sentence()
+				},
+				Tag = name.Humanize(LetterCasing.Title).Acronymize()
+			};
+
+			var response = await this.RunMediatorCommand(command);
+			var workItem = this.GetContext().LeaveTypes.SingleOrException(t => t.Id == response.Id);
+
+			this.Tracker.RegisterEntity(name, workItem);
+			return new LeaveTypeQuery(name, this.Container, this.Tracker);
 		}
 
 		public async Task<UserQuery> EnsureUser(string name, params SystemRole[] roles)
@@ -137,13 +162,6 @@ namespace TeamR.DataSeed.Seeders
 			await coreDbContext.SaveChangesAsync();
 
 			return user;
-		}
-	}
-
-	public class ActivityTypeQuery : Query<ActivityType>
-	{
-		public ActivityTypeQuery(string entityName, DataSeedDiContainer container, DatabaseEntityTracker tracker) : base(entityName, container, tracker)
-		{
 		}
 	}
 }

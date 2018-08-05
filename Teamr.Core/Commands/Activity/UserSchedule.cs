@@ -15,7 +15,7 @@
 		public IEnumerable<Schedule> Schedules { get; set; }
 
 		[OutputField(OrderIndex = 1)]
-		public string Year { get; set; }
+		public int Year { get; set; }
 	}
 
 	public class Schedule

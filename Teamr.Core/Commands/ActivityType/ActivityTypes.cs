@@ -5,8 +5,8 @@ namespace Teamr.Core.Commands.ActivityType
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
 	using TeamR.Core.DataAccess;
-	using TeamR.Core.Menus;
 	using TeamR.Core.Security;
+	using TeamR.Help;
 	using TeamR.Infrastructure;
 	using TeamR.Infrastructure.EntityFramework;
 	using TeamR.Infrastructure.Forms;
@@ -15,8 +15,9 @@ namespace Teamr.Core.Commands.ActivityType
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Menu = CoreMenus.Activity, Id = "activity-types", Label = "Activity types", PostOnLoad = true)]
+	[MyForm(Id = "activity-types", Label = "Activity types", PostOnLoad = true)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivityTypes))]
+	[Documentation(DocumentationPlacement.Inline, DocumentationSourceType.String, "Show list of all activity types that users can record in their activity log.")]
 	public class ActivityTypes : MyForm<ActivityTypes.Request, ActivityTypes.Response>
 	{
 		private readonly CoreDbContext context;
@@ -24,6 +25,15 @@ namespace Teamr.Core.Commands.ActivityType
 		public ActivityTypes(CoreDbContext context)
 		{
 			this.context = context;
+		}
+
+		public static FormLink Button(string label)
+		{
+			return new FormLink
+			{
+				Form = typeof(ActivityTypes).GetFormId(),
+				Label = label
+			};
 		}
 
 		protected override Response Handle(Request message)
@@ -46,7 +56,8 @@ namespace Teamr.Core.Commands.ActivityType
 					Remarks = s.Remarks,
 					Actions = new ActionList(EditActivityType.Button(s.Id), DeleteActivityType.Button(s.Id))
 				}),
-				Actions = new ActionList(AddActivityType.Button())
+				Actions = new ActionList(AddActivityType.Button()),
+				Tabs = TabstripUtility.GetConfigurationTabs<ActivityTypes>()
 			};
 		}
 
@@ -57,6 +68,9 @@ namespace Teamr.Core.Commands.ActivityType
 
 			[PaginatedData(nameof(Request.ActivityTypePaginator), OrderIndex = 10, Label = "")]
 			public PaginatedData<ActivityTypeItem> Results { get; set; }
+
+			[OutputField(OrderIndex = -10)]
+			public Tabstrip Tabs { get; set; }
 		}
 
 		public class Request : IRequest<Response>
@@ -66,6 +80,8 @@ namespace Teamr.Core.Commands.ActivityType
 
 		public class ActivityTypeItem
 		{
+			[OutputField(OrderIndex = 90, Label = "")]
+			public ActionList Actions { get; set; }
 
 			[OutputField(OrderIndex = 70, Label = "Created by")]
 			public string CreatedBy { get; set; }
@@ -77,16 +93,21 @@ namespace Teamr.Core.Commands.ActivityType
 			public string Name { get; set; }
 
 			[OutputField(OrderIndex = 30)]
+			[Documentation(
+				DocumentationPlacement.Hint,
+				DocumentationSourceType.String,
+				"Number of points user should receive for each time they perform this activity.")]
 			public decimal Points { get; set; }
 
 			[OutputField(OrderIndex = 50)]
 			public string Remarks { get; set; }
 
 			[OutputField(OrderIndex = 20)]
+			[Documentation(
+				DocumentationPlacement.Hint,
+				DocumentationSourceType.String,
+				"Unit of measurement. For each unit user will receive some points (as specified by the *points* column).")]
 			public string Unit { get; set; }
-
-			[OutputField(OrderIndex = 90)]
-			public ActionList Actions { get; set; }
 		}
 	}
 }

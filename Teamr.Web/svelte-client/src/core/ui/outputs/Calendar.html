@@ -1,153 +1,162 @@
- 
-{{#if field.data != null }}
-<table class="table" ref:table>
-	 <thead><th colspan="32" class="tableHeader">{{field.data.items[0].month }} {{field.data.items[0].year }}</th></thead>
-		<thead>
-			<tr>
-			<th> </th>
-			{{#if days != null && days.length > 1}}
-			
-			{{#each days as day}}
-				<th style="font-size: 11px;">{{day.day}}</th>
-			{{/each}}
-			{{/if}}
-			</tr>
-			<tr>
-				<th> </th>
-			 {{#if days != null && days.length > 1}} 
-			 {{#each days as day}}
-				<th style="font-size: 9px;">{{GetDayName(new Date(field.data.items[0].year,GetMonth(field.data.items[0].month),day.day).getDay())}}</th>
-			{{/each}}
-			{{/if}}
-			</tr>
-		</thead>
 
-		<tbody style="font-size: 8px;">
-			 {{#if users != null && users.length > 0}}
-			 {{#each users as user}}
+{#if field.data != null}
+<h3>{field.data.items[0].month} {field.data.items[0].year}</h3>
+
+<table class="table" ref:table>
+	<thead>
+		<tr>
+			<th></th>
+			{#if days != null && days.length > 1}
+				{#each days as day}
+					<th class="day-number">{day.day}</th>
+				{/each}
+			{/if}
+		</tr>
+		<tr>
+			<th></th>
+			{#if days != null && days.length > 1}
+				{#each days as day}
+					<th class="day">{getDayName(new Date(field.data.items[0].year,getMonth(field.data.items[0].month),day.day).getDay())}</th>
+				{/each}
+			{/if}
+		</tr>
+	</thead>
+
+	<tbody>
+		{#if users != null && users.length > 0}
+			{#each users as user}
 			<tr>
-				<td>{{user.name}}</td>
-				 {{#if days != null && days.length > 0}} 
-				 {{#each days as day}}
-				 {{#if user.schedules != null && user.schedules.length > 0}}
-				 {{#if GetUserSchedule(day.schedules, user).length > 1}}
-					<td style ="background-image: linear-gradient(225deg, red, red 8px, transparent 2px, transparent);" 
-					data-tooltip="{{GetUserEvents(day.schedules, user)}}"> 
-						 {{GetUserSchedule(day.schedules, user)[0].tag}}
-					</td>
-					 {{else}}
-					 {{#if GetUserSchedule(day.schedules, user) != ''}}
-					<td data-tooltip="{{GetUserEvents(day.schedules, user)}}">
-						 {{GetUserSchedule(day.schedules, user)[0].tag}}
-					</td>
-					  {{else}} 
-					 <td>{{GetUserSchedule(day.schedules, user)}}</td>
-					  {{/if}}
-					 {{/if}}
-				 {{else}}
-				<td> </td>
-				{{/if}}
-				{{/each}}
-				{{/if}}
+				<td>{user.name}</td>
+				{#if days != null && days.length > 0}
+					{#each days as day}
+						{#if user.schedules != null && user.schedules.length > 0}
+							{#if getUserSchedule(day.schedules, user).length > 1}
+								<td class="tag" data-tooltip="{getUserActivities(day.schedules, user)}">
+									{getUserSchedule(day.schedules, user)[0].tag}
+								</td>
+							{:elseif getUserSchedule(day.schedules, user) != ''}
+								<td data-tooltip="{getUserActivities(day.schedules, user)}">
+									{getUserSchedule(day.schedules, user)[0].tag}
+								</td>
+							{:else}
+								<td>{getUserSchedule(day.schedules, user)}</td>
+							{/if}
+						{:else}
+						<td></td>
+						{/if}
+					{/each}
+				{/if}
 			</tr>
-			 {{/each}}
-			 {{/if}}
-		</tbody>
-	</table>
-{{/if}}
-<script>    
+			{/each}
+		{/if}
+	</tbody>
+</table>
+{/if}
+
+<script>
 	export default {
-		oncreate() {
-			var data = this.get("field").data;
-			this.set({ color: "red "});
+		onstate() {
+			const { data } = this.get().field;
 
 			if (data == null) {
 				return;
 			}
-			var users = data.items;
-			var app = this.get("app");
-			var metadata = this.get("field").metadata;
-			
-			var days =[];
-			for(var day =1 ; day<= 31; day++){
-				var schedules = [];
-				for (var user of users) {
-					var task = this.Check(day, user.schedules);
-					schedules.push({ user : user, task : task});
+
+			const users = data.items;
+
+			const days = [];
+			for (let day = 1; day <= 31; day++) {
+				const schedules = [];
+				for (const user of users) {
+					const task = this.getTasksForTheDay(day, user.schedules);
+					schedules.push({ user, task });
 				}
 				days.push({
-					day : day,
-					schedules: schedules
+					day,
+					schedules
 				});
 			}
-			
+
 			this.set({
-				days : days
-			})
+				days
+			});
 		},
-		 methods: {
-			Check : function(number, list) {
-				 var tasks = [];
-				 for (let i = 0; i < list.length; i++) {
-					 if (list[i].day == number) {
-						 tasks.push(list[i]);
-					 }
-				 };
-				 if (tasks.length)
-					 return tasks;
-				 else
-					 return '';
-			 },
-			
-		 },
+		methods: {
+			getTasksForTheDay(dayNumber, allActivities) {
+				return allActivities.filter(t => t.day === dayNumber);
+			}
+		},
 		computed: {
-				users: (field) => {
-					if(field.data != null){
-						return field.data.items;
-					}
-					
+			users: field => {
+				if (field.data != null) {
+					return field.data.items;
 				}
+
+				return [];
+			}
 		},
 		helpers: {
-				GetUserSchedule(schedules, user){
-					var schedule= schedules.filter(a => a.user == user)[0];
-					if(schedule != null)
+			getUserSchedule(schedules, user) {
+				const schedule = schedules.filter(a => a.user === user)[0];
+				if (schedule != null) {
 					return schedule.task;
-				},
-				GetUserEvents(schedules, user) {
-					var events=[];
-						var schedule = schedules.filter(a => a.user == user)[0];
-						if (schedule != null){
-							for (var task of schedule.task) {
-								events.push(task.event);
-							}
-							return events;
-						}		
-					},
-				GetMonth(mon) {
-					return new Date(Date.parse(mon + " 1, 2012")).getMonth();
-				},
-				GetDayName(day)
-				{
-					var days=["Su","Mo","Tu","We","Th","Fr","Sa"];
-					return days[day];
 				}
+
+				return [];
 			},
-        components: {}
+			getUserActivities(schedules, user) {
+				const events = [];
+				const schedule = schedules.filter(a => a.user === user)[0];
+				if (schedule != null) {
+					for (const task of schedule.task) {
+						events.push(task.event);
+					}
+					return events;
+				}
+
+				return [];
+			},
+			getMonth(month) {
+				return new Date(Date.parse(`${month} 1, 2012`)).getMonth();
+			},
+			getDayName(day) {
+				const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+				return days[day];
+			}
+		},
+		components: {}
 	};
 </script>
 
 <style>
-	.table{
+	.table {
 		margin-bottom: 40px;
 		font-size: 12px;
 	}
-	th, td {
-		font-size: 13px; 
+
+	th,
+	td {
+		font-size: 13px;
 	}
+
+	table > tbody > tr > td {
+		font-size: 8px;
+	}
+
 	.tableHeader {
 		text-align: center;
 		font-weight: bold;
 	}
 
+	th.day {
+		font-size: 9px;
+	}
+
+	.day-number {
+		font-size: 11px;
+	}
+
+	.tag {
+		background-image: linear-gradient(225deg, red, red 8px, transparent 2px, transparent);
+	}
 </style>

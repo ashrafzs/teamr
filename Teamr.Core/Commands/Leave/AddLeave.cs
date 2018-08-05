@@ -3,7 +3,6 @@ namespace Teamr.Core.Commands.Leave
 	using System;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using CPermissions;
 	using MediatR;
 	using Teamr.Core.Domain;
 	using Teamr.Core.Pickers;
@@ -38,7 +37,10 @@ namespace Teamr.Core.Commands.Leave
 			this.dbContext.Leaves.Add(leave);
 			await this.dbContext.SaveChangesAsync(cancellationToken);
 
-			return new Response();
+			return new Response
+			{
+				Id = leave.Id
+			};
 		}
 		
 		public static FormLink Button()
@@ -52,6 +54,8 @@ namespace Teamr.Core.Commands.Leave
 
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
+			[NotField]
+			public int Id { get; set; }
 		}
 
 		public class Request : IRequest<Response>

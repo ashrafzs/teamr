@@ -27,16 +27,16 @@
 
 		protected override Response Handle(Request message)
 		{
-			if (message.Quantity != null)
-			{
-				var leaveType = new LeaveType(message.Name, this.userContext.User.UserId, message.Quantity.Value, message.Remarks?.Value,message.Tag);
-				this.context.LeaveTypes.Add(leaveType);
-				this.context.SaveChanges();
-			}
+			var leaveType = new LeaveType(message.Name, this.userContext.User.UserId, message.Quantity.Value, message.Remarks?.Value, message.Tag);
+			this.context.LeaveTypes.Add(leaveType);
+			this.context.SaveChanges();
 
-			return new Response();
+			return new Response
+			{
+				Id = leaveType.Id
+			};
 		}
-		
+
 		public static FormLink Button()
 		{
 			return new FormLink
@@ -64,6 +64,8 @@
 
 		public class Response : MyFormResponse
 		{
+			[NotField]
+			public int Id { get; set; }
 		}
 	}
 }

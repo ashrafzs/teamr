@@ -8,7 +8,6 @@ namespace Teamr.Core.Commands.Activity
 	using Teamr.Core.Domain;
 	using Teamr.Core.Security.Activity;
 	using TeamR.Core.DataAccess;
-	using TeamR.Core.Menus;
 	using TeamR.Core.Security;
 	using TeamR.Infrastructure.EntityFramework;
 	using TeamR.Infrastructure.Forms;
@@ -18,7 +17,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "activites", PostOnLoad = true, Label = "Activites", Menu = CoreMenus.Activity, MenuOrderIndex = 1)]
+	[MyForm(Id = "activites", PostOnLoad = true, Label = "Activites", MenuOrderIndex = 1)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
 	public class Activities : MyForm<Activities.Request, Activities.Response>
 	{
@@ -54,7 +53,7 @@ namespace Teamr.Core.Commands.Activity
 			{
 				Users = result,
 				Actions = this.permissionManager.CanDo(CoreActions.ViewActivities, this.userContext)
-					? new ActionList(AddCompletedActivity.Button(), AddPlanActivity.Button())
+					? new ActionList(AddCompletedActivity.Button(), AddPlannedActivity.Button())
 					: null
 			};
 		}

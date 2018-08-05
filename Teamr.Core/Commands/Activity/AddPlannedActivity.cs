@@ -18,14 +18,14 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(PostOnLoad = true, Id = "add-plan-activity", Label = "Add plan activity")]
+	[MyForm(PostOnLoad = true, Id = "add-planned-activity", Label = "Add planned activity")]
 	[Secure(typeof(CoreActions), nameof(CoreActions.AddActivity))]
-	public class AddPlanActivity : MyAsyncForm<AddPlanActivity.Request, AddPlanActivity.Response>
+	public class AddPlannedActivity : MyAsyncForm<AddPlannedActivity.Request, AddPlannedActivity.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly UserContext userContext;
 
-		public AddPlanActivity(CoreDbContext dbContext, UserContext userContext)
+		public AddPlannedActivity(CoreDbContext dbContext, UserContext userContext)
 		{
 			this.dbContext = dbContext;
 			this.userContext = userContext;
@@ -39,26 +39,37 @@ namespace Teamr.Core.Commands.Activity
 			}
 
 			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(request.ActivityTypeId.Value);
-				var activity = new Activity(this.userContext.User.UserId, activityType, request.Quantity, request.Notes, request.ScheduledOn);
-				this.dbContext.Activities.Add(activity);
-		
 
+			var activity = new Activity(
+				this.userContext.User.UserId, 
+				activityType, 
+				request.Quantity, 
+				request.Notes, 
+				request.ScheduledOn);
+
+			this.dbContext.Activities.Add(activity);
+		
 			await this.dbContext.SaveChangesAsync(cancellationToken);
 			
-			return new Response();
+			return new Response
+			{
+				Id = activity.Id
+			};
 		}
 		
 		public static FormLink Button()
 		{
 			return new FormLink
 			{
-				Form = typeof(AddPlanActivity).GetFormId(),
+				Form = typeof(AddPlannedActivity).GetFormId(),
 				Label = "Add plan activity"
 			};
 		}
 
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
+			[NotField]
+			public int Id { get; set; }
 		}
 
 		public class Request : IRequest<Response>

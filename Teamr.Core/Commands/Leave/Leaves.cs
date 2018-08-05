@@ -16,7 +16,7 @@ namespace Teamr.Core.Commands.Leave
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "leaves", PostOnLoad = true, Label = "Leaves", Menu = CoreMenus.Leave, MenuOrderIndex = 1)]
+	[MyForm(Id = "leaves", PostOnLoad = true, Label = "Leaves", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
 	public class Leaves : MyForm<Leaves.Request, Leaves.Response>
 	{

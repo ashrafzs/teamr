@@ -39,11 +39,22 @@ namespace Teamr.Core.Commands.Activity
 			}
 
 			var activityType = await this.dbContext.ActivityTypes.FindOrExceptionAsync(request.ActivityTypeId.Value);
-			var activity = new Activity(this.userContext.User.UserId, activityType, request.Quantity, request.Notes, request.PerformedOn, request.PerformedOn);
+
+			var activity = new Activity(
+				this.userContext.User.UserId, 
+				activityType, 
+				request.Quantity, 
+				request.Notes, 
+				request.PerformedOn, 
+				request.PerformedOn);
+
 			this.dbContext.Activities.Add(activity);
 			await this.dbContext.SaveChangesAsync(cancellationToken);
 
-			return new Response();
+			return new Response
+			{
+				Id = activity.Id
+			};
 		}
 
 		public static FormLink Button()
@@ -57,6 +68,8 @@ namespace Teamr.Core.Commands.Activity
 
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
+			[NotField]
+			public int Id { get; set; }
 		}
 
 		public class Request : IRequest<Response>
