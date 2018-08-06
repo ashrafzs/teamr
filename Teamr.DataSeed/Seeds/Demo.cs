@@ -41,7 +41,7 @@ namespace TeamR.DataSeed.Seeds
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					await t.AddActivityType($"activity-type{i}");
+					await t.AddActivityType($"activity-type-{i}");
 				}
 
 				var al = await t.AddLeaveType("AL", 1);
@@ -51,26 +51,31 @@ namespace TeamR.DataSeed.Seeds
 
 				for (int i = 0; i < 10; i++)
 				{
-					var user = await t.EnsureUser($"user{i}", CoreRoles.Member);
+					var user = await t.EnsureUser($"user-{i}", CoreRoles.Member);
 
-					for (int j = 0; j < 5; j++)
+					var userIndex = i;
+
+					await user.Do(async a =>
 					{
-						var leaveType = faker.PickRandom(al, sl, usl, ul).GetEntity();
-						var leaveDate = DateTime.Today.StartOfMonth().AddDays(j + i);
+						for (int j = 0; j < 5; j++)
+						{
+							var leaveType = faker.PickRandom(al, sl, usl, ul).GetEntity();
+							var leaveDate = DateTime.Today.StartOfMonth().AddDays(j + userIndex);
 
-						await user.RequestLeave($"leave{i}", leaveType, leaveDate);
-					}
+							await user.RequestLeave($"leave-{userIndex}:{j}", leaveType, leaveDate);
+						}
 
-					for (int j = 0; j < 5; j++)
-					{
-						var activityType = this.Seeder.ActivityType($"activity-type{faker.Random.Number(10)}").GetEntity();
+						for (int j = 0; j < 5; j++)
+						{
+							var activityType = this.Seeder.ActivityType($"activity-type-{faker.Random.Number(0, 9)}").GetEntity();
 
-						var completedActivityDate = DateTime.Today.AddDays(-faker.Random.Number(0, 30));
-						await user.AddCompletedActivity($"completed-activity{i}", activityType, completedActivityDate, 1);
+							var completedActivityDate = DateTime.Today.AddDays(-faker.Random.Number(0, 30));
+							await user.AddCompletedActivity($"completed-activity-{userIndex}:{j}", activityType, completedActivityDate, 1);
 
-						var plannedActivityDate = DateTime.Today.AddDays(faker.Random.Number(0, 30));
-						await user.AddPlannedActivity($"planned-activity{i}", activityType, plannedActivityDate, 1);
-					}
+							var plannedActivityDate = DateTime.Today.AddDays(faker.Random.Number(0, 30));
+							await user.AddPlannedActivity($"planned-activity-{userIndex}:{j}", activityType, plannedActivityDate, 1);
+						}
+					});
 				}
 			});
 		}

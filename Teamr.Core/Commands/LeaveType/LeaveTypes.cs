@@ -48,6 +48,7 @@ namespace Teamr.Core.Commands.LeaveType
 				{
 					Quantity = s.Quantity,
 					Name = s.Name,
+					Tag = s.Tag,
 					CreatedBy = s.User?.Name,
 					CreatedOn = s.CreatedOn,
 					Remarks = s.Remarks,
@@ -85,6 +86,9 @@ namespace Teamr.Core.Commands.LeaveType
 
 			[OutputField(OrderIndex = 60, Label = "Created on")]
 			public DateTime CreatedOn { get; set; }
+
+			[OutputField(OrderIndex = 11)]
+			public string Tag { get; set; }
 
 			[OutputField(OrderIndex = 10)]
 			public string Name { get; set; }

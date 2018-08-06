@@ -1,154 +1,119 @@
 
 {#if field.data != null}
-<h3>{field.data.items[0].month} {field.data.items[0].year}</h3>
+<h4>Calendar for {field.data.month}/{field.data.year}</h4>
 
-<table class="table" ref:table>
-	<thead>
-		<tr>
-			<th></th>
-			{#if days != null && days.length > 1}
-				{#each days as day}
-					<th class="day-number">{day.day}</th>
-				{/each}
-			{/if}
-		</tr>
-		<tr>
-			<th></th>
-			{#if days != null && days.length > 1}
-				{#each days as day}
-					<th class="day">{getDayName(new Date(field.data.items[0].year,getMonth(field.data.items[0].month),day.day).getDay())}</th>
-				{/each}
-			{/if}
-		</tr>
-	</thead>
-
-	<tbody>
-		{#if users != null && users.length > 0}
-			{#each users as user}
+	{#if calendarDays != null}
+	<table class="table" ref:table>
+		<thead>
 			<tr>
-				<td>{user.name}</td>
-				{#if days != null && days.length > 0}
-					{#each days as day}
-						{#if user.schedules != null && user.schedules.length > 0}
-							{#if getUserSchedule(day.schedules, user).length > 1}
-								<td class="tag" data-tooltip="{getUserActivities(day.schedules, user)}">
-									{getUserSchedule(day.schedules, user)[0].tag}
-								</td>
-							{:elseif getUserSchedule(day.schedules, user) != ''}
-								<td data-tooltip="{getUserActivities(day.schedules, user)}">
-									{getUserSchedule(day.schedules, user)[0].tag}
-								</td>
-							{:else}
-								<td>{getUserSchedule(day.schedules, user)}</td>
-							{/if}
-						{:else}
-						<td></td>
-						{/if}
-					{/each}
-				{/if}
+				<th></th>
+				{#each calendarDays as calendarDay}
+					<th class="day-number">{calendarDay.date}</th>
+				{/each}
 			</tr>
-			{/each}
-		{/if}
-	</tbody>
-</table>
+			<tr>
+				<th></th>
+				{#each calendarDays as calendarDay}
+					<th class="day-name">{calendarDay.dayName}</th>
+				{/each}
+			</tr>
+		</thead>
+
+		<tbody>
+				{#each field.data.userCalendars as userCalendar}
+				<tr>
+					<td>{userCalendar.user}</td>
+
+					{#each calendarDays as calendarDay}
+					<td>
+						{#each calendarDay.entries[userCalendar.user] as entry}
+							<span
+								class="entry { entry.isLeave ? 'leave' : 'activity' }"
+								data-tooltip="{entry.activity}"
+								style="{getStyle(entry)};">
+								{entry.tag}
+							</span>
+						{/each}
+					</td>
+					{/each}
+				</tr>
+				{/each}
+		</tbody>
+	</table>
+	{/if}
 {/if}
 
 <script>
+	import { Color } from "utilities/Color";
+
+	function daysInMonth(year, month) {
+		return new Date(year, month, 0).getDate();
+	}
+
+	function getDayName(year, month, day) {
+		const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+		const dayOfWeek = new Date(year, month, day).getDay();
+
+		return days[dayOfWeek];
+	}
+
 	export default {
-		onstate() {
-			const { data } = this.get().field;
+		onstate({ previous }) {
+			if (previous == null) {
+				const { data } = this.get().field;
 
-			if (data == null) {
-				return;
-			}
-
-			const users = data.items;
-
-			const days = [];
-			for (let day = 1; day <= 31; day++) {
-				const schedules = [];
-				for (const user of users) {
-					const task = this.getTasksForTheDay(day, user.schedules);
-					schedules.push({ user, task });
+				if (data == null) {
+					return;
 				}
-				days.push({
-					day,
-					schedules
+
+				for (const userCalendar of data.userCalendars) {
+					for (const log of userCalendar.log)	{
+						log.date = new Date(log.date);
+					}
+				}
+
+				const dayCount = daysInMonth(data.year, data.month);
+				const calendarDays = new Array(dayCount);
+
+				for (let day = 1; day <= dayCount; day++) {
+					const logEntries = {};
+
+					for (const userCalendar of data.userCalendars) {
+						logEntries[userCalendar.user] = userCalendar.log.filter(t => t.date.getDate() === day);
+					}
+
+					calendarDays[day - 1] = {
+						entries: logEntries,
+						date: day,
+						dayName: getDayName(data.year, data.month, day)
+					};
+				}
+
+				this.set({
+					calendarDays
 				});
-			}
-
-			this.set({
-				days
-			});
-		},
-		methods: {
-			getTasksForTheDay(dayNumber, allActivities) {
-				return allActivities.filter(t => t.day === dayNumber);
-			}
-		},
-		computed: {
-			users: field => {
-				if (field.data != null) {
-					return field.data.items;
-				}
-
-				return [];
 			}
 		},
 		helpers: {
-			getUserSchedule(schedules, user) {
-				const schedule = schedules.filter(a => a.user === user)[0];
-				if (schedule != null) {
-					return schedule.task;
+			getStyle(entry) {
+				let style = "";
+
+				if (entry.isLeave) {
+					style += `border-color: ${Color.stringToColor(entry.activity, 0.5)};`;
+				}
+				else {
+					const bg = Color.stringToColor(entry.activity, 0.5);
+					style += `background-color: ${bg}; color: ${Color.contrastColor(bg)};`;
 				}
 
-				return [];
-			},
-			getUserActivities(schedules, user) {
-				const events = [];
-				const schedule = schedules.filter(a => a.user === user)[0];
-				if (schedule != null) {
-					for (const task of schedule.task) {
-						events.push(task.event);
-					}
-					return events;
-				}
-
-				return [];
-			},
-			getMonth(month) {
-				return new Date(Date.parse(`${month} 1, 2012`)).getMonth();
-			},
-			getDayName(day) {
-				const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-				return days[day];
+				return style;
 			}
-		},
-		components: {}
+		}
 	};
 </script>
 
 <style>
-	.table {
-		margin-bottom: 40px;
-		font-size: 12px;
-	}
-
-	th,
-	td {
-		font-size: 13px;
-	}
-
-	table > tbody > tr > td {
-		font-size: 8px;
-	}
-
-	.tableHeader {
-		text-align: center;
-		font-weight: bold;
-	}
-
-	th.day {
+	.day-name {
 		font-size: 9px;
 	}
 
@@ -158,5 +123,25 @@
 
 	.tag {
 		background-image: linear-gradient(225deg, red, red 8px, transparent 2px, transparent);
+	}
+
+	.entry {
+		border-bottom: 3px solid transparent;
+	}
+
+	.leave {
+		opacity: 1;
+		font-size: 0.8em;
+		border-bottom: 1px solid transparent;
+	}
+
+	.activity {
+		opacity: 0.5;
+		font-size: 0.8em;
+		display: inline-block;
+		margin: 0 1px;
+		line-height: 1em;
+		padding: 0 4px;
+		top: -2px;
 	}
 </style>

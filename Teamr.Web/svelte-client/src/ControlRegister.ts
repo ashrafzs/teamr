@@ -29,6 +29,7 @@ import Textarea from "core-ui/inputs/Textarea";
 
 import ActionList from "core-ui/outputs/ActionList";
 import Alert from "core-ui/outputs/Alert";
+import Calendar from "core-ui/outputs/Calendar";
 import DateTimeOutput from "core-ui/outputs/Datetime";
 import Documentation from "core-ui/outputs/Documentation";
 import DownloadableFile from "core-ui/outputs/DownloadableFile";
@@ -76,25 +77,26 @@ controlRegister.registerInputFieldControl("textarea", Textarea, TextareaInputCon
 controlRegister.registerInputFieldControl("file-uploader", FileUploader, FileUploaderController, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerInputFieldControl("number-range", NumberRangeInput, NumberRangeInputController);
 
+controlRegister.registerOutputFieldControl("action-list", ActionList, new umf.OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("alert", Alert, new umf.OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("calendar", Calendar, new umf.OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("datetime", DateTimeOutput);
+controlRegister.registerOutputFieldControl("documentation", Documentation, new umf.OutputControlConfiguration(true, true));
+controlRegister.registerOutputFieldControl("downloadable-file", DownloadableFile);
 controlRegister.registerOutputFieldControl("text", TextOutput);
 controlRegister.registerOutputFieldControl("number", NumberOutput);
-controlRegister.registerOutputFieldControl("datetime", DateTimeOutput);
 controlRegister.registerOutputFieldControl("table", TableOutput, new umf.OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("formlink", FormLink);
 controlRegister.registerOutputFieldControl("tabstrip", Tabstrip, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("paginated-data", Paginator, new umf.OutputControlConfiguration(false, true));
-controlRegister.registerOutputFieldControl("action-list", ActionList, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("inline-form", InlineForm, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("text-value", TextValue);
 controlRegister.registerOutputFieldControl("text-value-multiline", TextValueMultiline, new umf.OutputControlConfiguration(false, true));
-controlRegister.registerOutputFieldControl("downloadable-file", DownloadableFile);
-controlRegister.registerOutputFieldControl("alert", Alert, new umf.OutputControlConfiguration(true, true));
 controlRegister.registerOutputFieldControl("file-size", FileSize);
 controlRegister.registerOutputFieldControl("image", Image, new umf.OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("link", Link);
 controlRegister.registerOutputFieldControl("object-list", ObjectList, new umf.OutputControlConfiguration(false, true));
 controlRegister.registerOutputFieldControl("html-string", HtmlString);
-controlRegister.registerOutputFieldControl("documentation", Documentation, new umf.OutputControlConfiguration(true, true));
 
 // Form event handlers.
 controlRegister.registerFormEventHandler("log-to-console", new FormLogToConsole());

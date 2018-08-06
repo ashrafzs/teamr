@@ -50,6 +50,7 @@ namespace Teamr.Core.Commands.ActivityType
 				{
 					Points = s.Points,
 					Name = s.Name,
+					Tag = s.Tag,
 					Unit = s.Unit,
 					CreatedBy = s.User?.Name,
 					CreatedOn = s.CreatedOn,
@@ -91,6 +92,9 @@ namespace Teamr.Core.Commands.ActivityType
 
 			[OutputField(OrderIndex = 10)]
 			public string Name { get; set; }
+
+			[OutputField(OrderIndex = 11)]
+			public string Tag { get; set; }
 
 			[OutputField(OrderIndex = 30)]
 			[Documentation(

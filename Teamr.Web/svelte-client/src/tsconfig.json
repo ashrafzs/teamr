@@ -21,7 +21,8 @@
 			"core-framework": ["./core/framework/index"],
 			"core-handlers": ["./core/handlers/index"],
 			"core-eventHandlers": ["./core/eventHandlers/index"],
-			"core-functions": ["./core/functions/index"]
+			"core-functions": ["./core/functions/index"],
+			"utilities/*": ["./core/utilities/*"]
 		}
 	},
 	"files": [

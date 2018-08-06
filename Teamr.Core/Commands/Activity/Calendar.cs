@@ -2,6 +2,8 @@ namespace Teamr.Core.Commands.Activity
 {
 	using System;
 	using System.Linq;
+	using System.Threading;
+	using System.Threading.Tasks;
 	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
@@ -19,7 +21,7 @@ namespace Teamr.Core.Commands.Activity
 
 	[MyForm(Id = "calendar", PostOnLoad = true, Label = "Calendar", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
-	public class Calendar : MyForm<Calendar.Request, Calendar.Response>
+	public class Calendar : MyAsyncForm<Calendar.Request, Calendar.Response>
 	{
 		public enum MonthEnum
 		{
@@ -38,14 +40,10 @@ namespace Teamr.Core.Commands.Activity
 		}
 
 		private readonly CoreDbContext dbContext;
-		private readonly MetadataBinder metadataBinder;
 
-		public Calendar(
-			CoreDbContext dbContext,
-			MetadataBinder metadataBinder)
+		public Calendar(CoreDbContext dbContext)
 		{
 			this.dbContext = dbContext;
-			this.metadataBinder = metadataBinder;
 		}
 
 		public static FormLink Button(string label)
@@ -62,7 +60,7 @@ namespace Teamr.Core.Commands.Activity
 			return CoreActions.ViewActivities;
 		}
 
-		protected override Response Handle(Request message)
+		public override async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
 			var year = message.Year ?? DateTime.Today.Year;
 			var month = message.Month?.Value != null ? (int)message.Month.Value.Value : DateTime.Today.Month;
@@ -77,32 +75,40 @@ namespace Teamr.Core.Commands.Activity
 			var minDate = DateTimeUtils.StartOfMonth(year, month);
 			var maxDate = DateTimeUtils.EndOfMonth(year, month);
 
-			var leaves = this.dbContext.Leaves
-				.Where(u => u.ScheduledOn >= minDate && u.ScheduledOn <= maxDate);
+			var leaves = await this.dbContext.Leaves
+				.Where(u => u.ScheduledOn >= minDate && u.ScheduledOn <= maxDate)
+				.GroupBy(t => t.CreatedByUserId, u => new CalendarEntry
+				{
+					Date = u.ScheduledOn,
+					Activity = u.LeaveType.Name,
+					Tag = u.LeaveType.Tag,
+					IsLeave = true
+				})
+				.ToListAsync(cancellationToken: cancellationToken);
 
-			var activities = this.dbContext.Activities
-				.Where(u => u.ScheduledOn >= minDate && u.ScheduledOn <= maxDate);
+			var activities = await this.dbContext.Activities
+				.Where(u => u.ScheduledOn >= minDate && u.ScheduledOn <= maxDate)
+				.GroupBy(t => t.CreatedByUserId, u => new CalendarEntry
+				{
+					Date = u.ScheduledOn,
+					Activity = u.ActivityType.Name,
+					Tag = u.ActivityType.Tag
+				})
+				.ToListAsync(cancellationToken: cancellationToken);
+
+			var schedules = users
+				.Select(t => new UserCalendar
+				{
+					User = t.Name,
+					Log = leaves.Where(x => x.Key == t.Id)
+						.Union(activities.Where(u => u.Key == t.Id))
+						.SelectMany(x => x.ToList())
+				})
+				.ToList();
 
 			return new Response
 			{
-				TeamSchedule = new TeamCalendar<UserSchedule>(
-					users.Select(t => new UserSchedule
-					{
-						Name = t.Name,
-						Month = message.Month.Value.ToString(),
-						Year = year,
-						Schedules = leaves.Where(u => u.CreatedByUserId == t.Id).Select(u => new Schedule
-						{
-							Day = u.ScheduledOn.Day,
-							Event = u.LeaveType.Name,
-							Tag = u.LeaveType.Tag
-						}).Union(activities.Where(u => u.CreatedByUserId == t.Id).Select(u => new Schedule
-						{
-							Day = u.ScheduledOn.Day,
-							Event = u.ActivityType.Name,
-							Tag = u.ActivityType.Tag
-						})).ToList()
-					}), this.metadataBinder)
+				TeamSchedule = new TeamCalendar(year, month, schedules)
 			};
 		}
 
@@ -121,7 +127,7 @@ namespace Teamr.Core.Commands.Activity
 		public class Response : MyFormResponse
 		{
 			[OutputField(OrderIndex = 0, Label = "")]
-			public TeamCalendar<UserSchedule> TeamSchedule { get; set; }
+			public TeamCalendar TeamSchedule { get; set; }
 		}
 	}
 }
