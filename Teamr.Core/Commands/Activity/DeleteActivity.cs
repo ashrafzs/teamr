@@ -29,12 +29,12 @@ namespace Teamr.Core.Commands.Activity
 			var activity = await this.dbContext.Activities.SingleOrExceptionAsync(t => t.Id == request.Id);
 
 			this.dbContext.Activities.Remove(activity);
-			await this.dbContext.SaveChangesAsync();
+			await this.dbContext.SaveChangesAsync(cancellationToken);
 
 			return new Response();
 		}
 
-		public static FormLink Button(int userId)
+		public static FormLink Button(int id)
 		{
 			return new FormLink
 			{
@@ -42,7 +42,7 @@ namespace Teamr.Core.Commands.Activity
 				Label = UiFormConstants.DeleteLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
-					{ nameof(Request.Id), userId }
+					{ nameof(Request.Id), id }
 				}
 			}.WithAction(FormLinkActions.Run).WithCssClass("btn-danger btn-icon");
 		}

@@ -65,24 +65,24 @@ namespace TeamR.DataSeed.Seeders
 			return new ActivityTypeQuery(name, this.Container, this.Tracker);
 		}
 
-		public async Task<LeaveTypeQuery> AddLeaveType(string name, decimal quantity)
+		public async Task<LeaveTypeQuery> AddLeaveType(string queryName, string leaveName, decimal quantity)
 		{
 			var command = new AddLeaveType.Request
 			{
-				Name = name,
+				Name = leaveName,
 				Quantity = quantity,
 				Remarks = new TextareaValue
 				{
 					Value = this.Faker.Lorem.Sentence()
 				},
-				Tag = name.Humanize(LetterCasing.Title).Acronymize()
+				Tag = leaveName.Humanize(LetterCasing.Title).Acronymize()
 			};
 
 			var response = await this.RunMediatorCommand(command);
 			var workItem = this.GetContext().LeaveTypes.SingleOrException(t => t.Id == response.Id);
 
-			this.Tracker.RegisterEntity(name, workItem);
-			return new LeaveTypeQuery(name, this.Container, this.Tracker);
+			this.Tracker.RegisterEntity(queryName, workItem);
+			return new LeaveTypeQuery(queryName, this.Container, this.Tracker);
 		}
 
 		public async Task<UserQuery> EnsureUser(string name, params SystemRole[] roles)

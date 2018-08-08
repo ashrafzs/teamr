@@ -22,17 +22,18 @@
 		<tbody>
 				{#each field.data.userCalendars as userCalendar}
 				<tr>
-					<td>{userCalendar.user}</td>
+					<td>{userCalendar.userName}</td>
 
 					{#each calendarDays as calendarDay}
 					<td>
-						{#each calendarDay.entries[userCalendar.user] as entry}
-							<span
+						{#each calendarDay.entries[userCalendar.userName] as entry}
+							<a
+								href="{getDayReportLink(app, entry.date, userCalendar.userId)}"
 								class="entry { entry.isLeave ? 'leave' : 'activity' }"
 								data-tooltip="{entry.activity}"
 								style="{getStyle(entry)};">
 								{entry.tag}
-							</span>
+							</a>
 						{/each}
 					</td>
 					{/each}
@@ -79,7 +80,7 @@
 					const logEntries = {};
 
 					for (const userCalendar of data.userCalendars) {
-						logEntries[userCalendar.user] = userCalendar.log.filter(t => t.date.getDate() === day);
+						logEntries[userCalendar.userName] = userCalendar.log.filter(t => t.date.getDate() === day);
 					}
 
 					calendarDays[day - 1] = {
@@ -107,6 +108,13 @@
 				}
 
 				return style;
+			},
+			getDayReportLink(app, date, userId) {
+				debugger;
+				return app.makeUrl("day-report", {
+					Day: date,
+					User: { value: userId }
+				});
 			}
 		}
 	};

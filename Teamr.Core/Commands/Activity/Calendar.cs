@@ -7,6 +7,8 @@ namespace Teamr.Core.Commands.Activity
 	using CPermissions;
 	using MediatR;
 	using Microsoft.EntityFrameworkCore;
+	using Teamr.Core.Commands.Leave;
+	using Teamr.Core.Forms.Outputs;
 	using Teamr.Core.Pickers;
 	using TeamR.Core;
 	using TeamR.Core.DataAccess;
@@ -19,7 +21,7 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "calendar", PostOnLoad = true, Label = "Calendar", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
+	[MyForm(Id = "calendar", PostOnLoad = true, Label = "Team calendar", Menu = CoreMenus.Main, MenuOrderIndex = 1, SubmitButtonLabel = "Search")]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
 	public class Calendar : MyAsyncForm<Calendar.Request, Calendar.Response>
 	{
@@ -99,8 +101,10 @@ namespace Teamr.Core.Commands.Activity
 			var schedules = users
 				.Select(t => new UserCalendar
 				{
-					User = t.Name,
-					Log = leaves.Where(x => x.Key == t.Id)
+					UserId = t.Id,
+					UserName = t.Name,
+					Log = leaves
+						.Where(x => x.Key == t.Id)
 						.Union(activities.Where(u => u.Key == t.Id))
 						.SelectMany(x => x.ToList())
 				})
@@ -108,7 +112,11 @@ namespace Teamr.Core.Commands.Activity
 
 			return new Response
 			{
-				TeamSchedule = new TeamCalendar(year, month, schedules)
+				TeamSchedule = new TeamCalendar(year, month, schedules),
+				Actions = new ActionList(
+					AddLeave.Button(), 
+					AddCompletedActivity.Button(), 
+					AddPlannedActivity.Button())
 			};
 		}
 
@@ -126,6 +134,9 @@ namespace Teamr.Core.Commands.Activity
 
 		public class Response : MyFormResponse
 		{
+			[OutputField(OrderIndex = -10)]
+			public ActionList Actions { get; set; }
+
 			[OutputField(OrderIndex = 0, Label = "")]
 			public TeamCalendar TeamSchedule { get; set; }
 		}

@@ -16,15 +16,15 @@ namespace Teamr.Core.Commands.Leave
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "leaves", PostOnLoad = true, Label = "Leaves", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
+	[MyForm(Id = "my-leave", PostOnLoad = true, Label = "My leave", Menu = CoreMenus.Main, MenuOrderIndex = 1)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
-	public class Leaves : MyForm<Leaves.Request, Leaves.Response>
+	public class MyLeave : MyForm<MyLeave.Request, MyLeave.Response>
 	{
 		private readonly CoreDbContext dbContext;
 		private readonly SystemPermissionManager permissionManager;
 		private readonly UserContext userContext;
 
-		public Leaves(
+		public MyLeave(
 			SystemPermissionManager permissionManager,
 			UserContext userContext,
 			CoreDbContext dbContext)
@@ -87,7 +87,7 @@ namespace Teamr.Core.Commands.Leave
 
 		public class Item
 		{
-			public Item(Leave t, Leaves cmd)
+			public Item(Leave t, MyLeave cmd)
 			{
 				this.Id = t.Id;
 				this.Notes = t.Notes;

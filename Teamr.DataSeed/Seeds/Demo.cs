@@ -44,10 +44,10 @@ namespace TeamR.DataSeed.Seeds
 					await t.AddActivityType($"activity-type-{i}");
 				}
 
-				var al = await t.AddLeaveType("AL", 1);
-				var sl = await t.AddLeaveType("SL", 1);
-				var usl = await t.AddLeaveType("USL", 1);
-				var ul = await t.AddLeaveType("UL", 1);
+				var al = await t.AddLeaveType("AL", "Annual leave", 1);
+				var sl = await t.AddLeaveType("SL", "Sick leave", 1);
+				var usl = await t.AddLeaveType("USL", "Uncertified sick leave", 1);
+				var ul = await t.AddLeaveType("UL", "Unpaid leave", 1);
 
 				for (int i = 0; i < 10; i++)
 				{

@@ -33,7 +33,7 @@ namespace Teamr.Core.Commands.Leave
 			return new Response();
 		}
 
-		public static FormLink Button(int userId)
+		public static FormLink Button(int leaveId)
 		{
 			return new FormLink
 			{
@@ -41,7 +41,7 @@ namespace Teamr.Core.Commands.Leave
 				Label = UiFormConstants.DeleteLabel,
 				InputFieldValues = new Dictionary<string, object>
 				{
-					{ nameof(Request.Id), userId }
+					{ nameof(Request.Id), leaveId }
 				}
 			}.WithAction(FormLinkActions.Run).WithCssClass("btn-danger btn-icon");
 		}

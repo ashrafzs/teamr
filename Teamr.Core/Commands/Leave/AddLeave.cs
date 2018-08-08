@@ -48,7 +48,7 @@ namespace Teamr.Core.Commands.Leave
 			return new FormLink
 			{
 				Form = typeof(AddLeave).GetFormId(),
-				Label = "Add Leave"
+				Label = "Add leave"
 			};
 		}
 

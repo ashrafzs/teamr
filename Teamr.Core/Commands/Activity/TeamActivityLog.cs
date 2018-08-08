@@ -16,13 +16,13 @@ namespace Teamr.Core.Commands.Activity
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 
-	[MyForm(Id = "activities-log", PostOnLoad = true, Label = "Activites log", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
+	[MyForm(Id = "team-activity-log", PostOnLoad = true, Label = "Team activity log", Menu = CoreMenus.Reports, MenuOrderIndex = 1)]
 	[Secure(typeof(CoreActions), nameof(CoreActions.ViewActivities))]
-	public class ActivitiesLog : MyForm<ActivitiesLog.Request, ActivitiesLog.Response>
+	public class TeamActivityLog : MyForm<TeamActivityLog.Request, TeamActivityLog.Response>
 	{
 		private readonly CoreDbContext dbContext;
 
-		public ActivitiesLog(CoreDbContext dbContext)
+		public TeamActivityLog(CoreDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}

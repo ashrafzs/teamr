@@ -62,7 +62,7 @@ namespace Teamr.Core.Commands.Activity
 			return new FormLink
 			{
 				Form = typeof(AddPlannedActivity).GetFormId(),
-				Label = "Add plan activity"
+				Label = "Add planned activity"
 			};
 		}
 

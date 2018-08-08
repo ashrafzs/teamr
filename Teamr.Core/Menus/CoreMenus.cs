@@ -27,11 +27,6 @@ namespace TeamR.Core.Menus
 			{
 				yield return ActivityTypes.Button("Configuration").AsMenuItem(System);
 			}
-
-			if (this.userSecurityContext.CanAccess<Calendar>())
-			{
-				yield return Calendar.Button("Calendar").AsMenuItem(System);
-			}
 		}
 
 		public override IEnumerable<MenuGroup> GetMenuGroups()
