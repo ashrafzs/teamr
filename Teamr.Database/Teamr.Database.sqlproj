@@ -68,9 +68,11 @@
     <Folder Include="users\Tables" />
     <Folder Include="nofy\Tables" />
     <Folder Include="core\Tables" />
-    <Folder Include="core\Views" />
-    <Folder Include="core\Stored Procedures" />
+    <Folder Include="core\View" />
+    <Folder Include="jira" />
+    <Folder Include="jira\Tables" />
     <Folder Include="script" />
+    <Folder Include="core\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="nofy\ntf.sql" />
@@ -89,10 +91,13 @@
     <Build Include="core\Tables\ActivityType.sql" />
     <Build Include="core\Tables\Leave.sql" />
     <Build Include="core\Tables\LeaveType.sql" />
+    <Build Include="jira\Tables\Project.sql" />
+    <Build Include="jira\Tables\TeamMember.sql" />
+    <Build Include="jira\Tables\Issue.sql" />
+    <Build Include="jira\jira.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="create-db-login-and-user.sql" />
-    <None Include="localdb.publish.xml" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
