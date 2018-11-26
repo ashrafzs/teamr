@@ -108,6 +108,7 @@ namespace Teamr.Core.Commands.Activity
 						.Union(activities.Where(u => u.Key == t.Id))
 						.SelectMany(x => x.ToList())
 				})
+				.Where(w => w.Log.Any())
 				.ToList();
 
 			return new Response
